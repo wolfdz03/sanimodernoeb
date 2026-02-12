@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { getProductPrimaryImage } from "@/lib/product-images";
 
 interface ProductRow {
   id: string;
   name: string;
   slug: string;
   price_dzd: number;
+  price_old_dzd?: number | null;
   image_url: string | null;
+  image_urls?: string[] | null;
   categories: { name?: string } | null;
 }
 
@@ -59,9 +62,9 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
               >
                 <td className="px-6 py-4">
                   <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 relative">
-                    {product.image_url ? (
+                    {getProductPrimaryImage(product) ? (
                       <img
-                        src={product.image_url}
+                        src={getProductPrimaryImage(product)!}
                         alt=""
                         className="w-full h-full object-cover"
                         width={48}
@@ -81,6 +84,11 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
                   {product.categories?.name ?? "—"}
                 </td>
                 <td className="px-6 py-4 font-semibold text-[#13ecec]">
+                  {product.price_old_dzd != null && product.price_old_dzd > 0 && (
+                    <span className="block text-xs text-slate-400 line-through">
+                      {product.price_old_dzd.toLocaleString("fr-DZ")} DA
+                    </span>
+                  )}
                   {product.price_dzd.toLocaleString("fr-DZ")} DA
                 </td>
                 <td className="px-6 py-4">

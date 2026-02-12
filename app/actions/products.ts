@@ -9,11 +9,16 @@ export async function createProduct(formData: {
   category_id: string | null;
   description: string | null;
   price_dzd: number;
-  image_url: string | null;
+  price_old_dzd?: number | null;
+  image_urls: string[];
   badge: string | null;
   badge_color: string | null;
   stock: number;
 }) {
+  const urls = Array.isArray(formData.image_urls)
+    ? formData.image_urls.filter((u) => typeof u === "string" && u.trim())
+    : [];
+  const firstUrl = urls[0]?.trim() || null;
   const supabase = createServiceClient();
   const { error } = await supabase.from("products").insert({
     name: formData.name.trim(),
@@ -21,7 +26,9 @@ export async function createProduct(formData: {
     category_id: formData.category_id || null,
     description: formData.description?.trim() || null,
     price_dzd: Number(formData.price_dzd) || 0,
-    image_url: formData.image_url?.trim() || null,
+    price_old_dzd: formData.price_old_dzd != null && Number(formData.price_old_dzd) > 0 ? Number(formData.price_old_dzd) : null,
+    image_url: firstUrl,
+    image_urls: urls.length ? urls : [],
     badge: formData.badge?.trim() || null,
     badge_color: formData.badge_color?.trim() || null,
     stock: Number(formData.stock) ?? 0,
@@ -41,12 +48,17 @@ export async function updateProduct(
     category_id: string | null;
     description: string | null;
     price_dzd: number;
-    image_url: string | null;
+    price_old_dzd?: number | null;
+    image_urls: string[];
     badge: string | null;
     badge_color: string | null;
     stock: number;
   }
 ) {
+  const urls = Array.isArray(formData.image_urls)
+    ? formData.image_urls.filter((u) => typeof u === "string" && u.trim())
+    : [];
+  const firstUrl = urls[0]?.trim() || null;
   const supabase = createServiceClient();
   const { error } = await supabase
     .from("products")
@@ -56,7 +68,9 @@ export async function updateProduct(
       category_id: formData.category_id || null,
       description: formData.description?.trim() || null,
       price_dzd: Number(formData.price_dzd) || 0,
-      image_url: formData.image_url?.trim() || null,
+      price_old_dzd: formData.price_old_dzd != null && Number(formData.price_old_dzd) > 0 ? Number(formData.price_old_dzd) : null,
+      image_url: firstUrl,
+      image_urls: urls.length ? urls : [],
       badge: formData.badge?.trim() || null,
       badge_color: formData.badge_color?.trim() || null,
       stock: Number(formData.stock) ?? 0,

@@ -27,7 +27,7 @@ export default async function DashboardProduitEditPage({ params }: PageProps) {
     <div>
       <Link
         href="/dashboard/produits"
-        className="text-sm text-[#2563EB] hover:underline mb-4 inline-block"
+        className="text-sm text-[#0ea5a5] hover:underline mb-4 inline-block"
       >
         ← Retour aux produits
       </Link>

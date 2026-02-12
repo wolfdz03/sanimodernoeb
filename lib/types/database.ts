@@ -32,7 +32,10 @@ export interface Product {
   slug: string;
   description: string | null;
   price_dzd: number;
+  price_old_dzd?: number | null;
   image_url: string | null;
+  /** Multiple images (first is primary). Fallback: use image_url if image_urls empty. */
+  image_urls?: string[] | null;
   badge: string | null;
   badge_color: string | null;
   stock: number;

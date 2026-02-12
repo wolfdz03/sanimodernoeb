@@ -22,7 +22,7 @@ export default async function DashboardCategoryEditPage({ params }: PageProps) {
     <div>
       <Link
         href="/dashboard/categories"
-        className="text-sm text-[#2563EB] hover:underline mb-4 inline-block"
+        className="text-sm text-[#0ea5a5] hover:underline mb-4 inline-block"
       >
         ← Retour aux catégories
       </Link>

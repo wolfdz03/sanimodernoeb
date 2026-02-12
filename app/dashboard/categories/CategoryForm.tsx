@@ -2,15 +2,60 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  ShowerHead,
+  Bath,
+  Droplets,
+  Toilet,
+  Wrench,
+  Sparkles,
+  Droplet,
+  Thermometer,
+  Home,
+  Building2,
+  Package,
+  Box,
+  Truck,
+  Shield,
+  Award,
+  Star,
+  CheckCircle,
+  Zap,
+  Flame,
+  Wind,
+  Sun,
+  Filter,
+  Gauge,
+  type LucideIcon,
+} from "lucide-react";
 
-const ICON_OPTIONS = [
-  "ShowerHead",
-  "Bath",
-  "Droplets",
-  "Toilet",
-  "Wrench",
-  "Sparkles",
+export const CATEGORY_ICONS: { name: string; Icon: LucideIcon }[] = [
+  { name: "ShowerHead", Icon: ShowerHead },
+  { name: "Bath", Icon: Bath },
+  { name: "Droplets", Icon: Droplets },
+  { name: "Droplet", Icon: Droplet },
+  { name: "Toilet", Icon: Toilet },
+  { name: "Wrench", Icon: Wrench },
+  { name: "Sparkles", Icon: Sparkles },
+  { name: "Thermometer", Icon: Thermometer },
+  { name: "Home", Icon: Home },
+  { name: "Building2", Icon: Building2 },
+  { name: "Package", Icon: Package },
+  { name: "Box", Icon: Box },
+  { name: "Truck", Icon: Truck },
+  { name: "Shield", Icon: Shield },
+  { name: "Award", Icon: Award },
+  { name: "Star", Icon: Star },
+  { name: "CheckCircle", Icon: CheckCircle },
+  { name: "Zap", Icon: Zap },
+  { name: "Flame", Icon: Flame },
+  { name: "Wind", Icon: Wind },
+  { name: "Sun", Icon: Sun },
+  { name: "Filter", Icon: Filter },
+  { name: "Gauge", Icon: Gauge },
 ];
+
+const DEFAULT_COLOR = "#0ea5a5";
 
 interface Category {
   id: string;
@@ -45,6 +90,14 @@ export function CategoryForm({
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(
+    category?.icon_name ?? null
+  );
+  const [color, setColor] = useState<string>(
+    category?.color && /^#[0-9A-Fa-f]{6}$/.test(category.color)
+      ? category.color
+      : DEFAULT_COLOR
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -54,15 +107,10 @@ export function CategoryForm({
     const formData = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
       slug: (form.elements.namedItem("slug") as HTMLInputElement).value,
-      icon_name:
-        (form.elements.namedItem("icon_name") as HTMLSelectElement).value ||
-        null,
-      color: (form.elements.namedItem("color") as HTMLInputElement).value || null,
-      bg_color:
-        (form.elements.namedItem("bg_color") as HTMLInputElement).value || null,
-      text_color:
-        (form.elements.namedItem("text_color") as HTMLInputElement).value ||
-        null,
+      icon_name: selectedIcon,
+      color: color || null,
+      bg_color: null as string | null,
+      text_color: null as string | null,
       sort_order: Number(
         (form.elements.namedItem("sort_order") as HTMLInputElement).value
       ) || 0,
@@ -109,7 +157,7 @@ export function CategoryForm({
           type="text"
           required
           defaultValue={category?.name}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div>
@@ -121,63 +169,53 @@ export function CategoryForm({
           type="text"
           defaultValue={category?.slug}
           placeholder="nom-categorie"
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div>
         <label className="block text-sm font-medium text-slate-600 mb-1">
-          Icône (Lucide)
+          Couleur
         </label>
-        <select
-          name="icon_name"
-          defaultValue={category?.icon_name ?? ""}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] outline-none transition"
-        >
-          <option value="">—</option>
-          {ICON_OPTIONS.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-3">
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            className="h-10 w-14 cursor-pointer rounded-lg border border-slate-200 p-1 bg-white"
+          />
+          <input
+            type="text"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] font-mono text-sm focus:border-[#0ea5a5] outline-none transition"
+            placeholder="#0ea5a5"
+          />
+        </div>
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            Couleur (gradient)
-          </label>
-          <input
-            name="color"
-            type="text"
-            defaultValue={category?.color ?? ""}
-            placeholder="from-blue-500 to-blue-600"
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] outline-none transition"
-          />
+      <div>
+        <label className="block text-sm font-medium text-slate-600 mb-2">
+          Icône
+        </label>
+        <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-48 overflow-y-auto p-2 border border-slate-200 rounded-xl bg-slate-50/50">
+          {CATEGORY_ICONS.map(({ name, Icon }) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => setSelectedIcon(selectedIcon === name ? null : name)}
+              className={`flex flex-col items-center justify-center p-2 rounded-lg border-2 transition-colors ${
+                selectedIcon === name
+                  ? "border-[#0ea5a5] bg-[#0ea5a5]/10 text-[#0ea5a5]"
+                  : "border-transparent bg-white hover:bg-slate-100 text-slate-600"
+              }`}
+              title={name}
+            >
+              <Icon className="w-6 h-6" strokeWidth={2} />
+            </button>
+          ))}
         </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            Bg (Tailwind)
-          </label>
-          <input
-            name="bg_color"
-            type="text"
-            defaultValue={category?.bg_color ?? ""}
-            placeholder="bg-blue-50"
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] outline-none transition"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1">
-            Texte (Tailwind)
-          </label>
-          <input
-            name="text_color"
-            type="text"
-            defaultValue={category?.text_color ?? ""}
-            placeholder="text-blue-600"
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] outline-none transition"
-          />
-        </div>
+        <p className="text-xs text-slate-500 mt-1">
+          Choisir une icône (optionnel)
+        </p>
       </div>
       <div>
         <label className="block text-sm font-medium text-slate-600 mb-1">
@@ -188,7 +226,7 @@ export function CategoryForm({
           type="number"
           min={0}
           defaultValue={category?.sort_order ?? 0}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div className="flex gap-4 pt-4">

@@ -3,7 +3,9 @@
 import { motion } from "motion/react";
 import { ShoppingBag, Heart, Eye } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Product } from "@/lib/types/database";
+import { getProductPrimaryImage } from "@/lib/product-images";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface ProductCardProps {
@@ -11,12 +13,13 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter();
   const { t } = useLanguage();
   const categoryName =
     product.categories && "name" in product.categories
       ? (product.categories as { name: string }).name
       : null;
-  const imageUrl = product.image_url ?? "/placeholder-product.png";
+  const imageUrl = getProductPrimaryImage(product) ?? "/placeholder-product.png";
   const badgeColor = product.badge_color ?? "bg-[var(--primary)]";
   const checkoutUrl = `/checkout?productId=${product.id}&qty=1`;
 
@@ -28,14 +31,16 @@ export function ProductCard({ product }: ProductCardProps) {
       transition={{ duration: 0.5 }}
       className="group relative bg-white rounded-2xl overflow-hidden border border-[var(--border)] hover:border-[var(--primary)]/30 hover:shadow-2xl transition-all duration-500"
     >
-      <Link href={`/produit/${product.id}`}>
-        <div className="relative aspect-square overflow-hidden bg-slate-100 cursor-pointer">
+      <div className="relative aspect-square overflow-hidden bg-slate-100 cursor-pointer">
+        <Link
+          href={`/produit/${product.id}`}
+          className="block w-full h-full"
+        >
           <img
             src={imageUrl}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
-
           {product.badge && (
             <div
               className={`absolute top-3 left-3 px-3 py-1 rounded-full ${badgeColor} text-white text-xs font-semibold`}
@@ -43,33 +48,43 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.badge}
             </div>
           )}
+        </Link>
 
-          <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <button
-              onClick={(e) => e.preventDefault()}
-              className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[var(--text)] hover:bg-white hover:text-[var(--primary)] transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-            >
-              <Heart className="w-5 h-5" />
-            </button>
-            <Link
-              href={`/produit/${product.id}`}
-              className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[var(--text)] hover:bg-white hover:text-[var(--primary)] transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-            >
-              <Eye className="w-5 h-5" />
-            </Link>
-          </div>
-
-          <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <Link
-              href={checkoutUrl}
-              className="block w-full py-2.5 rounded-xl bg-white text-[var(--text)] font-semibold hover:bg-[var(--primary)] hover:text-white transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              {t("product_order_now")}
-            </Link>
-          </div>
+        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            type="button"
+            className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[var(--text)] hover:bg-white hover:text-[var(--primary)] transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+          >
+            <Heart className="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/produit/${product.id}`);
+            }}
+            className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[var(--text)] hover:bg-white hover:text-[var(--primary)] transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+          >
+            <Eye className="w-5 h-5" />
+          </button>
         </div>
-      </Link>
+
+        <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(checkoutUrl);
+            }}
+            className="w-full py-2.5 rounded-xl bg-white text-[var(--text)] font-semibold hover:bg-[var(--primary)] hover:text-white transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            {t("product_order_now")}
+          </button>
+        </div>
+      </div>
 
       <Link href={`/produit/${product.id}`}>
         <div className="p-5 cursor-pointer">
@@ -82,8 +97,15 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </h3>
           <div className="flex items-center justify-between">
-            <div className="font-bold text-xl text-[var(--primary)]">
-              {product.price_dzd.toLocaleString("fr-DZ")} DA
+            <div className="flex flex-col gap-0.5">
+              {product.price_old_dzd != null && product.price_old_dzd > 0 && (
+                <span className="text-sm text-slate-400 line-through">
+                  {product.price_old_dzd.toLocaleString("fr-DZ")} DA
+                </span>
+              )}
+              <span className="font-bold text-xl text-[var(--primary)]">
+                {product.price_dzd.toLocaleString("fr-DZ")} DA
+              </span>
             </div>
             <div className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
               <span className="text-yellow-500">★</span>

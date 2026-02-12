@@ -5,7 +5,7 @@ export default async function DashboardProduitsPage() {
   const supabase = createServiceClient();
   const { data } = await supabase
     .from("products")
-    .select("id, name, slug, price_dzd, image_url, badge, categories(name)")
+    .select("id, name, slug, price_dzd, price_old_dzd, image_url, image_urls, badge, categories(name)")
     .order("created_at", { ascending: false });
 
   const products = (data ?? []).map((p) => ({
@@ -13,7 +13,9 @@ export default async function DashboardProduitsPage() {
     name: p.name,
     slug: p.slug,
     price_dzd: p.price_dzd,
+    price_old_dzd: p.price_old_dzd ?? null,
     image_url: p.image_url,
+    image_urls: p.image_urls ?? null,
     categories: Array.isArray(p.categories)
       ? (p.categories[0] as { name?: string } | undefined) ?? null
       : (p.categories as { name?: string } | null),

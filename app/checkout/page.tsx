@@ -1,4 +1,5 @@
 import { getProductById } from "@/lib/supabase/queries";
+import { getProductPrimaryImage } from "@/lib/product-images";
 import { CheckoutForm } from "./CheckoutForm";
 import { CheckoutEmpty } from "./CheckoutEmpty";
 import { CheckoutSuccess } from "./CheckoutSuccess";
@@ -25,7 +26,7 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
   }
 
   const quantity = Math.max(1, parseInt(qtyParam ?? "1", 10) || 1);
-  const imageUrl = product.image_url ?? "/placeholder-product.png";
+  const imageUrl = getProductPrimaryImage(product) ?? "/placeholder-product.png";
   const items = [
     {
       productId: product.id,

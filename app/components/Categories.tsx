@@ -9,6 +9,23 @@ import {
   Toilet,
   Wrench,
   Sparkles,
+  Droplet,
+  Thermometer,
+  Home,
+  Building2,
+  Package,
+  Box,
+  Truck,
+  Shield,
+  Award,
+  Star,
+  CheckCircle,
+  Zap,
+  Flame,
+  Wind,
+  Sun,
+  Filter,
+  Gauge,
   type LucideIcon,
 } from "lucide-react";
 import type { Category } from "@/lib/types/database";
@@ -18,9 +35,26 @@ const iconMap: Record<string, LucideIcon> = {
   ShowerHead,
   Bath,
   Droplets,
+  Droplet,
   Toilet,
   Wrench,
   Sparkles,
+  Thermometer,
+  Home,
+  Building2,
+  Package,
+  Box,
+  Truck,
+  Shield,
+  Award,
+  Star,
+  CheckCircle,
+  Zap,
+  Flame,
+  Wind,
+  Sun,
+  Filter,
+  Gauge,
 };
 
 interface CategoriesProps {
@@ -56,9 +90,10 @@ export function Categories({ categories }: CategoriesProps) {
               category.icon_name && iconMap[category.icon_name]
                 ? iconMap[category.icon_name]
                 : Sparkles;
-            const color = category.color ?? "from-red-500 to-red-600";
-            const bgColor = category.bg_color ?? "bg-red-50";
-            const textColor = category.text_color ?? "text-red-600";
+            const isHex = category.color?.startsWith("#");
+            const gradientClass = isHex ? "" : (category.color ?? "from-red-500 to-red-600");
+            const bgColor = isHex ? "" : (category.bg_color ?? "bg-red-50");
+            const textColor = isHex ? "" : (category.text_color ?? "text-red-600");
             return (
               <Link
                 key={category.id}
@@ -71,15 +106,24 @@ export function Categories({ categories }: CategoriesProps) {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="group relative p-8 rounded-2xl bg-white border-2 border-[var(--border)] hover:border-[var(--primary)]/30 hover:shadow-2xl transition-all duration-500 text-left overflow-hidden"
                 >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
-                  />
+                  {isHex ? (
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500"
+                      style={{ background: `linear-gradient(135deg, ${category.color}, ${category.color}dd)` }}
+                    />
+                  ) : (
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+                    />
+                  )}
 
                   <div
-                    className={`relative w-16 h-16 rounded-2xl ${bgColor} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}
+                    className={`relative w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 ${!isHex ? bgColor : ""}`}
+                    style={isHex ? { backgroundColor: `${category.color}20` } : undefined}
                   >
                     <Icon
-                      className={`w-8 h-8 ${textColor}`}
+                      className={`w-8 h-8 ${!isHex ? textColor : ""}`}
+                      style={isHex ? { color: category.color ?? undefined } : undefined}
                       strokeWidth={2}
                     />
                   </div>

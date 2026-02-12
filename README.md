@@ -10,6 +10,8 @@ Copy `env.example` to `.env.local` and set your Supabase credentials:
 
 Run the SQL in `supabase/migrations/` in the Supabase SQL Editor (00001, 00002, 00003), then `supabase/seed.sql`. To create an admin: run `supabase/admin_setup.sql` and replace `admin@example.com` with your email; then sign in at `/connexion` to access `/dashboard`. Admin access is determined only by the `public.admins` table (not auth.users).
 
+**Product images** are uploaded to a Supabase Storage bucket named `product-images`. The bucket is created automatically on first upload (using the service role key). You can also create it manually in the Dashboard: Storage → New bucket → name `product-images`, set to **Public**.
+
 ## Getting Started
 
 First, run the development server:
