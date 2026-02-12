@@ -1,123 +1,117 @@
 "use client";
 
 import { motion } from "motion/react";
-import { CheckCircle2, Users, Building2, TrendingUp } from "lucide-react";
+import { Tag, Wrench, ShieldCheck, Leaf } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
-const achievements = [
-  { icon: Users, value: "50 000+", labelKey: "about_stat_clients" as const },
-  { icon: Building2, value: "15+", labelKey: "about_stat_years" as const },
-  { icon: TrendingUp, value: "98%", labelKey: "about_stat_satisfaction" as const },
+const benefitCards = [
+  {
+    icon: Tag,
+    titleKey: "about_benefit_price_title" as const,
+    descKey: "about_benefit_price_desc" as const,
+  },
+  {
+    icon: Wrench,
+    titleKey: "about_benefit_install_title" as const,
+    descKey: "about_benefit_install_desc" as const,
+  },
+  {
+    icon: ShieldCheck,
+    titleKey: "about_benefit_guarantee_title" as const,
+    descKey: "about_benefit_guarantee_desc" as const,
+  },
+  {
+    icon: Leaf,
+    titleKey: "about_benefit_eco_title" as const,
+    descKey: "about_benefit_eco_desc" as const,
+  },
 ];
 
-const benefitKeys = [
-  "about_benefit1",
-  "about_benefit2",
-  "about_benefit3",
-  "about_benefit4",
-  "about_benefit5",
-  "about_benefit6",
-] as const;
+const ABOUT_IMAGE =
+  "https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=800&auto=format&fit=crop";
 
 export function Experience() {
   const { t } = useLanguage();
   return (
-    <section
-      id="about"
-      className="relative py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden"
-    >
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-blue-500 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-red-500 to-transparent rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+    <section id="about" className="relative py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Left: Image with overlay badge */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.7 }}
+            className="relative rounded-2xl overflow-hidden shadow-2xl"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-blue-500/20 text-blue-400 text-sm font-semibold mb-6">
-              {t("about_badge")}
-            </span>
-
-            <h2 className="font-bold text-4xl sm:text-5xl text-white mb-6 leading-tight">
-              {t("about_title")}
-              <span className="block bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent">
-                {t("about_title_highlight")}
-              </span>
-            </h2>
-
-            <p className="text-lg text-slate-300 leading-relaxed mb-8">
-              {t("about_para1")}
-            </p>
-
-            <p className="text-slate-400 leading-relaxed mb-10">
-              {t("about_para2")}
-            </p>
-
-            <div className="grid sm:grid-cols-2 gap-4 mb-10">
-              {benefitKeys.map((key, index) => (
-                <motion.div
-                  key={key}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex items-start gap-3"
-                >
-                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-slate-300">{t(key)}</span>
-                </motion.div>
-              ))}
+            <img
+              src={ABOUT_IMAGE}
+              alt="Sani Modern OEB showroom"
+              className="w-full h-[500px] lg:h-[600px] object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
+            <div className="absolute bottom-8 right-8 bg-white/10 backdrop-blur-md px-8 py-6 rounded-xl border border-white/20 text-white">
+              <div className="text-4xl font-extrabold mb-1">15+</div>
+              <p className="text-sm font-semibold tracking-widest uppercase">
+                {t("about_excellence_badge")}
+              </p>
             </div>
-
-            <button className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#DC2626] to-[#B91C1C] text-white font-semibold hover:shadow-2xl hover:shadow-red-500/30 transition-all duration-300 hover:-translate-y-1">
-              {t("about_btn")}
-            </button>
           </motion.div>
 
+          {/* Right: Content */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative"
+            transition={{ duration: 0.7 }}
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=800&auto=format&fit=crop"
-                alt="Modern bathroom"
-                className="w-full aspect-[4/5] object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-            </div>
-
-            <div className="absolute -bottom-8 -left-8 right-8 grid grid-cols-3 gap-4">
-              {achievements.map((achievement, index) => (
+            <h2 className="text-4xl font-extrabold text-[var(--text)] mb-6 leading-tight">
+              {t("about_title_full")}
+            </h2>
+            <p className="text-lg text-[var(--text-muted)] mb-10 leading-relaxed">
+              {t("about_para1")}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
+              {benefitCards.map((card, index) => (
                 <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={card.titleKey}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                  className="p-4 rounded-2xl bg-white shadow-xl border border-slate-200"
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
+                  className="flex items-start gap-4"
                 >
-                  <achievement.icon className="w-6 h-6 text-[#2563EB] mb-2" />
-                  <div className="font-bold text-xl text-[#1E293B]">
-                    {achievement.value}
+                  <div className="w-12 h-12 rounded-xl bg-[var(--primary-muted)] flex items-center justify-center flex-shrink-0">
+                    <card.icon
+                      className="w-6 h-6 text-[var(--primary)]"
+                      strokeWidth={2}
+                    />
                   </div>
-                  <div className="text-xs text-[#64748B] leading-tight">
-                    {t(achievement.labelKey)}
+                  <div>
+                    <h4 className="font-bold text-[var(--text)] mb-1">
+                      {t(card.titleKey)}
+                    </h4>
+                    <p className="text-sm text-[var(--text-muted)]">
+                      {t(card.descKey)}
+                    </p>
                   </div>
                 </motion.div>
               ))}
             </div>
-
-            <div className="absolute -top-6 -right-6 w-32 h-32 border-4 border-blue-500/30 rounded-3xl -z-10" />
-            <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-gradient-to-br from-red-500/20 to-transparent rounded-full blur-2xl" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 bg-[var(--primary-subtle)]/50 rounded-xl border border-[var(--border)]">
+              <div>
+                <div className="text-3xl font-extrabold text-[var(--primary)]">
+                  {t("about_satisfaction_label")}
+                </div>
+                <div className="text-xs font-bold text-[var(--text-muted)] uppercase">
+                  {t("about_satisfaction_sublabel")}
+                </div>
+              </div>
+              <div className="h-10 w-px bg-[var(--border)] hidden sm:block" />
+              <p className="text-sm font-medium text-[var(--text-muted)]">
+                {t("about_satisfaction_desc")}
+              </p>
+            </div>
           </motion.div>
         </div>
       </div>

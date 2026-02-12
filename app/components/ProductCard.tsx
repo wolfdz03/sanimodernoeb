@@ -1,10 +1,9 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ShoppingCart, Heart, Eye } from "lucide-react";
+import { ShoppingBag, Heart, Eye } from "lucide-react";
 import Link from "next/link";
 import type { Product } from "@/lib/types/database";
-import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface ProductCardProps {
@@ -12,25 +11,14 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addItem } = useCart();
   const { t } = useLanguage();
   const categoryName =
     product.categories && "name" in product.categories
       ? (product.categories as { name: string }).name
       : null;
   const imageUrl = product.image_url ?? "/placeholder-product.png";
-  const badgeColor = product.badge_color ?? "bg-[#DC2626]";
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addItem({
-      productId: product.id,
-      name: product.name,
-      price: product.price_dzd,
-      image: imageUrl,
-      quantity: 1,
-    });
-  };
+  const badgeColor = product.badge_color ?? "bg-[var(--primary)]";
+  const checkoutUrl = `/checkout?productId=${product.id}&qty=1`;
 
   return (
     <motion.div
@@ -38,7 +26,7 @@ export function ProductCard({ product }: ProductCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5 }}
-      className="group relative bg-white rounded-2xl overflow-hidden border border-slate-200 hover:border-blue-300 hover:shadow-2xl transition-all duration-500"
+      className="group relative bg-white rounded-2xl overflow-hidden border border-[var(--border)] hover:border-[var(--primary)]/30 hover:shadow-2xl transition-all duration-500"
     >
       <Link href={`/produit/${product.id}`}>
         <div className="relative aspect-square overflow-hidden bg-slate-100 cursor-pointer">
@@ -59,26 +47,26 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
               onClick={(e) => e.preventDefault()}
-              className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#1E293B] hover:bg-white hover:text-[#DC2626] transition-colors shadow-lg"
+              className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[var(--text)] hover:bg-white hover:text-[var(--primary)] transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
             >
               <Heart className="w-5 h-5" />
             </button>
             <Link
               href={`/produit/${product.id}`}
-              className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#1E293B] hover:bg-white hover:text-[#2563EB] transition-colors shadow-lg"
+              className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[var(--text)] hover:bg-white hover:text-[var(--primary)] transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
             >
               <Eye className="w-5 h-5" />
             </Link>
           </div>
 
           <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <button
-              onClick={handleAddToCart}
-              className="w-full py-2.5 rounded-xl bg-white text-[#1E293B] font-semibold hover:bg-[#DC2626] hover:text-white transition-colors flex items-center justify-center gap-2"
+            <Link
+              href={checkoutUrl}
+              className="block w-full py-2.5 rounded-xl bg-white text-[var(--text)] font-semibold hover:bg-[var(--primary)] hover:text-white transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
             >
-              <ShoppingCart className="w-4 h-4" />
-              {t("product_add_to_cart")}
-            </button>
+              <ShoppingBag className="w-4 h-4" />
+              {t("product_order_now")}
+            </Link>
           </div>
         </div>
       </Link>
@@ -86,18 +74,18 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/produit/${product.id}`}>
         <div className="p-5 cursor-pointer">
           {categoryName && (
-            <div className="text-xs text-[#2563EB] font-semibold mb-2">
+            <div className="text-xs text-[var(--primary)] font-semibold mb-2">
               {categoryName}
             </div>
           )}
-          <h3 className="font-bold text-[#1E293B] mb-3 line-clamp-2 min-h-[3rem] group-hover:text-[#DC2626] transition-colors">
+          <h3 className="font-bold text-[var(--text)] mb-3 line-clamp-2 min-h-[3rem] group-hover:text-[var(--primary)] transition-colors">
             {product.name}
           </h3>
           <div className="flex items-center justify-between">
-            <div className="font-bold text-xl text-[#DC2626]">
+            <div className="font-bold text-xl text-[var(--primary)]">
               {product.price_dzd.toLocaleString("fr-DZ")} DA
             </div>
-            <div className="flex items-center gap-1 text-xs text-[#64748B]">
+            <div className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
               <span className="text-yellow-500">★</span>
               <span className="font-semibold">4.8</span>
             </div>

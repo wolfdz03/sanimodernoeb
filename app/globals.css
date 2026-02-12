@@ -3,20 +3,27 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --radius: 0.625rem;
-  /* Sani Modern OEB brand palette from inspo */
+  --radius: 0.75rem;
+  /* Sani Modern OEB – red-dominant palette */
   --primary: #DC2626;
   --primary-hover: #B91C1C;
-  --accent: #2563EB;
-  --accent-hover: #1D4ED8;
+  --primary-muted: #FEE2E2;
+  --primary-subtle: #FEF2F2;
   --text: #1E293B;
   --text-muted: #64748B;
   --border: #E2E8F0;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-muted: var(--primary-muted);
+  --color-primary-subtle: var(--primary-subtle);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: calc(var(--radius) - 4px);
@@ -37,6 +44,11 @@ body {
     "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Arabic: use Cairo for proper Arabic script rendering */
+html[lang="ar"] body {
+  font-family: var(--font-cairo), var(--font-geist-sans), system-ui, sans-serif;
 }
 
 /* Form fields: always dark text on light background (readable everywhere) */

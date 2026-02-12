@@ -10,7 +10,6 @@ export interface CheckoutFormData {
   shipping_wilaya: string;
   shipping_city: string;
   shipping_address: string;
-  shipping_email?: string;
 }
 
 export async function createOrder(
@@ -40,7 +39,6 @@ export async function createOrder(
       shipping_wilaya: formData.shipping_wilaya?.trim() || null,
       shipping_city: formData.shipping_city?.trim() || null,
       shipping_address: formData.shipping_address.trim(),
-      shipping_email: formData.shipping_email?.trim() || null,
     })
     .select("id")
     .single();

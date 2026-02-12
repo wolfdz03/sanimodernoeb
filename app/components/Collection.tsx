@@ -15,25 +15,28 @@ export function Collection({ products }: CollectionProps) {
   return (
     <section
       id="products"
-      className="relative py-24 bg-gradient-to-b from-white to-slate-50"
+      className="relative py-24 bg-gradient-to-b from-white to-[var(--primary-subtle)]/30"
     >
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.6 }}
+          className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-10"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-blue-100 text-[#2563EB] text-sm font-semibold mb-4">
-            {t("collection_badge")}
-          </span>
-          <h2 className="font-bold text-4xl sm:text-5xl text-[#1E293B] mb-4">
-            {t("collection_title")}
-          </h2>
-          <p className="text-lg text-[#64748B] max-w-2xl mx-auto">
-            {t("collection_subtitle")}
-          </p>
+          <div>
+            <h2 className="text-3xl font-extrabold text-[var(--text)] mb-2">
+              {t("collection_title_short")}
+            </h2>
+            <div className="h-1 w-20 bg-[var(--primary)] rounded-full" />
+          </div>
+          <Link
+            href="/produits"
+            className="text-[var(--primary)] font-bold hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded"
+          >
+            {t("collection_see_all")}
+          </Link>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -51,7 +54,7 @@ export function Collection({ products }: CollectionProps) {
         >
           <Link
             href="/produits"
-            className="inline-block px-8 py-4 rounded-xl bg-[#1E293B] text-white font-semibold hover:bg-[#0F172A] transition-colors"
+            className="inline-block px-8 py-4 rounded-xl bg-[var(--primary)] text-white font-semibold hover:bg-[var(--primary-hover)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
           >
             {t("collection_btn")}
           </Link>

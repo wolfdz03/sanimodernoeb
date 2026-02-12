@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { ShoppingCart, Menu, X, Search } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { Menu, X, Search } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { LangToggle } from "./LangToggle";
 
@@ -20,7 +19,6 @@ const navLinkKeys = [
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { totalItems } = useCart();
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -75,20 +73,20 @@ export function Nav() {
                     <button
                       key={link.key}
                       onClick={() => handleNavClick(link.href)}
-                      className="text-[#475569] hover:text-[#DC2626] font-medium text-sm transition-colors duration-300 relative group"
+                      className="text-[var(--text-muted)] hover:text-[var(--primary)] font-medium text-sm transition-colors duration-300 relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded-md"
                     >
                       {t(link.key)}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#DC2626] group-hover:w-full transition-all duration-300" />
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--primary)] group-hover:w-full transition-all duration-300" />
                     </button>
                   ) : (
                     <Link
                       key={link.key}
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="text-[#475569] hover:text-[#DC2626] font-medium text-sm transition-colors duration-300 relative group"
+                      className="text-[var(--text-muted)] hover:text-[var(--primary)] font-medium text-sm transition-colors duration-300 relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded-md"
                     >
                       {t(link.key)}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#DC2626] group-hover:w-full transition-all duration-300" />
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--primary)] group-hover:w-full transition-all duration-300" />
                     </Link>
                   )
                 )}
@@ -96,24 +94,13 @@ export function Nav() {
 
               <div className="flex items-center gap-3">
                 <LangToggle />
-                <button className="hidden sm:flex w-10 h-10 rounded-xl bg-[#F1F5F9] hover:bg-[#E2E8F0] items-center justify-center text-[#475569] transition-colors">
+                <button className="hidden sm:flex w-10 h-10 rounded-xl bg-[#F1F5F9] hover:bg-[#E2E8F0] items-center justify-center text-[var(--text-muted)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2">
                   <Search className="w-5 h-5" />
                 </button>
-                <Link
-                  href="/panier"
-                  className="relative hidden sm:flex w-10 h-10 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] items-center justify-center text-white transition-colors shadow-lg shadow-blue-500/30"
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  {totalItems > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#DC2626] text-white text-xs font-bold flex items-center justify-center">
-                      {totalItems > 99 ? "99+" : totalItems}
-                    </span>
-                  )}
-                </Link>
 
                 <button
                   onClick={() => setMobileOpen(!mobileOpen)}
-                  className="md:hidden w-10 h-10 rounded-xl bg-[#F1F5F9] flex items-center justify-center text-[#475569]"
+                  className="md:hidden w-10 h-10 rounded-xl bg-[#F1F5F9] flex items-center justify-center text-[var(--text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                 >
                   {mobileOpen ? (
                     <X className="w-5 h-5" />
@@ -145,7 +132,7 @@ export function Nav() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => handleNavClick(link.href)}
-                    className="text-[#1E293B] font-bold text-2xl text-left"
+                    className="text-[var(--text)] font-bold text-2xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded-lg"
                   >
                     {t(link.key)}
                   </motion.button>
@@ -159,24 +146,13 @@ export function Nav() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="text-[#1E293B] font-bold text-2xl block"
+                      className="text-[var(--text)] font-bold text-2xl block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded-lg"
                     >
                       {t(link.key)}
                     </motion.span>
                   </Link>
                 )
               )}
-              <Link href="/panier">
-                <motion.button
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                  onClick={() => setMobileOpen(false)}
-                  className="mt-4 px-8 py-4 rounded-xl bg-[#DC2626] text-white font-semibold w-fit"
-                >
-                  {t("nav_cart")} {totalItems > 0 ? `(${totalItems})` : ""}
-                </motion.button>
-              </Link>
             </div>
           </motion.div>
         )}
