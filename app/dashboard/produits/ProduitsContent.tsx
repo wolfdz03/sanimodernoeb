@@ -71,7 +71,7 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
                         height={48}
                       />
                     ) : (
-                      <span className="text-[#64748B] dark:text-slate-400 text-xs flex items-center justify-center h-full">
+                      <span className="text-slate-600 dark:text-slate-400 text-xs flex items-center justify-center h-full">
                         —
                       </span>
                     )}
@@ -80,12 +80,12 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
                 <td className="px-6 py-4 font-medium text-[#1E293B] dark:text-white">
                   {product.name}
                 </td>
-                <td className="px-6 py-4 text-[#64748B] dark:text-slate-400">
+                <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
                   {product.categories?.name ?? "—"}
                 </td>
-                <td className="px-6 py-4 font-semibold text-[#13ecec]">
+                <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-100">
                   {product.price_old_dzd != null && product.price_old_dzd > 0 && (
-                    <span className="block text-xs text-slate-400 line-through">
+                    <span className="block text-xs text-slate-500 line-through">
                       {product.price_old_dzd.toLocaleString("fr-DZ")} DA
                     </span>
                   )}
@@ -94,7 +94,7 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
                 <td className="px-6 py-4">
                   <Link
                     href={`/dashboard/produits/${product.id}`}
-                    className="text-[#13ecec] font-medium hover:underline text-sm"
+                    className="text-teal-700 dark:text-[#13ecec] font-medium hover:underline text-sm"
                   >
                     {t("dashboard_edit")}
                   </Link>
@@ -104,11 +104,11 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
           </tbody>
         </table>
         {(!products || products.length === 0) && (
-          <p className="px-6 py-12 text-center text-[#64748B] dark:text-slate-400">
+          <p className="px-6 py-12 text-center text-slate-600 dark:text-slate-400">
             {t("dashboard_no_produits")}{" "}
             <Link
               href="/dashboard/produits/nouveau"
-              className="text-[#13ecec] hover:underline"
+              className="text-teal-700 dark:text-[#13ecec] hover:underline"
             >
               {t("dashboard_no_produits_add")}
             </Link>

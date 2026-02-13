@@ -7,6 +7,7 @@ Copy `env.example` to `.env.local` and set your Supabase credentials:
 - `NEXT_PUBLIC_SUPABASE_URL` – from your [Supabase project](https://supabase.com/dashboard)
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` – anon/public key from Project Settings → API
 - `ADMIN_EMAILS` (optional) – comma-separated emails allowed to access `/dashboard`
+- `NEXT_PUBLIC_FB_PIXEL_ID` (optional) – Facebook/Meta Pixel ID for conversion tracking and ads
 
 Run the SQL in `supabase/migrations/` in the Supabase SQL Editor (00001, 00002, 00003), then `supabase/seed.sql`. To create an admin: run `supabase/admin_setup.sql` and replace `admin@example.com` with your email; then sign in at `/connexion` to access `/dashboard`. Admin access is determined only by the `public.admins` table (not auth.users).
 

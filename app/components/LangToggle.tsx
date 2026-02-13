@@ -17,7 +17,7 @@ export function LangToggle() {
         className={`px-3 py-2 text-sm font-medium transition-colors ${
           lang === "fr"
             ? "bg-[#2563EB] text-white"
-            : "text-slate-600 hover:bg-slate-100"
+            : "text-slate-700 hover:bg-slate-100"
         }`}
         aria-pressed={lang === "fr"}
       >
@@ -29,7 +29,7 @@ export function LangToggle() {
         className={`px-3 py-2 text-sm font-medium transition-colors ${
           lang === "ar"
             ? "bg-[#2563EB] text-white"
-            : "text-slate-600 hover:bg-slate-100"
+            : "text-slate-700 hover:bg-slate-100"
         }`}
         aria-pressed={lang === "ar"}
       >

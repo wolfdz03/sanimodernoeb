@@ -62,6 +62,16 @@ export function ProductForm({
   const [urlInput, setUrlInput] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Parse badge_color from "bg-[#RRGGBB]" to hex, default #DC2626
+  const parseBadgeHex = (v: string | null | undefined): string => {
+    if (!v?.trim()) return "#DC2626";
+    const m = v.trim().match(/bg-\[#([0-9A-Fa-f]{6})\]/) ?? v.trim().match(/#([0-9A-Fa-f]{6})/);
+    return m ? `#${m[1]}` : v.trim().startsWith("#") ? v.trim() : "#DC2626";
+  };
+  const [badgeHex, setBadgeHex] = useState<string>(() =>
+    parseBadgeHex(product?.badge_color ?? null)
+  );
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -84,8 +94,7 @@ export function ProductForm({
       })(),
       image_urls: imageUrls,
       badge: (form.elements.namedItem("badge") as HTMLInputElement).value || null,
-      badge_color: (form.elements.namedItem("badge_color") as HTMLInputElement)
-        .value || null,
+      badge_color: badgeHex ? `bg-[${badgeHex}]` : null,
       stock: Number(
         (form.elements.namedItem("stock") as HTMLInputElement).value
       ) || 0,
@@ -132,7 +141,7 @@ export function ProductForm({
           type="text"
           required
           defaultValue={product?.name}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div>
@@ -144,7 +153,7 @@ export function ProductForm({
           type="text"
           defaultValue={product?.slug}
           placeholder="nom-du-produit"
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div>
@@ -154,7 +163,7 @@ export function ProductForm({
         <select
           name="category_id"
           defaultValue={product?.category_id ?? ""}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
         >
           <option value="">—</option>
           {categories.map((c) => (
@@ -172,7 +181,7 @@ export function ProductForm({
           name="description"
           rows={3}
           defaultValue={product?.description ?? ""}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition resize-none"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition resize-none"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -186,7 +195,7 @@ export function ProductForm({
             min={0}
             defaultValue={product?.price_old_dzd ?? ""}
             placeholder="—"
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
           />
         </div>
         <div>
@@ -199,7 +208,7 @@ export function ProductForm({
             required
             min={0}
             defaultValue={product?.price_dzd ?? 0}
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
           />
         </div>
       </div>
@@ -214,7 +223,7 @@ export function ProductForm({
               type="file"
               accept="image/jpeg,image/png,image/gif,image/webp"
               multiple
-              className="block w-full text-sm text-slate-500 file:me-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-[#13ecec] file:text-[#102222] file:font-semibold file:cursor-pointer hover:file:bg-[#0ea5a5]"
+              className="block w-full text-sm text-slate-600 file:me-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-[#13ecec] file:text-[#102222] file:font-semibold file:cursor-pointer hover:file:bg-[#0ea5a5]"
               onChange={async (e) => {
                 const files = e.target.files;
                 if (!files?.length) return;
@@ -272,7 +281,7 @@ export function ProductForm({
                   }
                 }
               }}
-              className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+              className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
             />
             <button
               type="button"
@@ -290,7 +299,7 @@ export function ProductForm({
           </div>
           {imageUrls.length > 0 && (
             <div className="mt-3">
-              <p className="text-xs text-slate-500 mb-2">
+              <p className="text-xs text-slate-600 mb-2">
                 Ordre : première image = image principale. Utilisez les flèches pour réorganiser.
               </p>
               <ul className="flex flex-wrap gap-3">
@@ -310,7 +319,7 @@ export function ProductForm({
                             return next;
                           })
                         }
-                        className="p-0.5 rounded text-slate-400 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-0.5 rounded text-slate-500 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Monter"
                       >
                         <ChevronUp className="w-4 h-4" />
@@ -325,7 +334,7 @@ export function ProductForm({
                             return next;
                           })
                         }
-                        className="p-0.5 rounded text-slate-400 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-0.5 rounded text-slate-500 hover:text-slate-700 disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label="Descendre"
                       >
                         <ChevronDown className="w-4 h-4" />
@@ -336,7 +345,7 @@ export function ProductForm({
                       alt=""
                       className="h-20 w-20 object-cover rounded-lg"
                     />
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-slate-600">
                       {index === 0 ? "Principale" : index + 1}
                     </span>
                     <button
@@ -366,20 +375,28 @@ export function ProductForm({
             type="text"
             defaultValue={product?.badge ?? ""}
             placeholder="Bestseller, Nouveau…"
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-slate-600 mb-1">
-            Couleur badge (Tailwind)
+            Couleur badge
           </label>
-          <input
-            name="badge_color"
-            type="text"
-            defaultValue={product?.badge_color ?? ""}
-            placeholder="bg-[#DC2626]"
-            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
-          />
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              value={badgeHex}
+              onChange={(e) => setBadgeHex(e.target.value)}
+              className="h-10 w-14 cursor-pointer rounded-lg border border-slate-200 bg-white p-0.5"
+              title="Choisir la couleur"
+            />
+            <input
+              name="badge_color"
+              type="hidden"
+              value={badgeHex ? `bg-[${badgeHex}]` : ""}
+            />
+            <span className="text-sm font-mono text-slate-600">{badgeHex}</span>
+          </div>
         </div>
       </div>
       <div>
@@ -391,7 +408,7 @@ export function ProductForm({
           type="number"
           min={0}
           defaultValue={product?.stock ?? 0}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div className="flex gap-4 pt-4">
@@ -407,7 +424,7 @@ export function ProductForm({
             type="button"
             onClick={handleDelete}
             disabled={loading}
-            className="px-6 py-3 rounded-xl border border-slate-200 text-[#64748B] font-medium hover:bg-slate-50 transition-colors disabled:opacity-50"
+            className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 transition-colors disabled:opacity-50"
           >
             Supprimer
           </button>

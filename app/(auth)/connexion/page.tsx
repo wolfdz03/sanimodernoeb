@@ -34,7 +34,7 @@ export default function ConnexionPage() {
           <h1 className="font-bold text-3xl text-[#1E293B] mb-2">
             Connexion administrateur
           </h1>
-          <p className="text-[#64748B] mb-8">
+          <p className="text-[var(--text-muted)] mb-8">
             Accès réservé aux administrateurs. Après connexion vous serez redirigé vers le tableau de bord.
           </p>
 
@@ -43,14 +43,14 @@ export default function ConnexionPage() {
             className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4"
           >
             {error && (
-              <p className="text-sm text-[#DC2626] bg-red-50 p-3 rounded-xl">
+              <p className="text-sm text-red-700 bg-red-50 p-3 rounded-xl">
                 {error}
               </p>
             )}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-600 mb-1"
+                className="block text-sm font-medium text-slate-700 mb-1"
               >
                 Email *
               </label>
@@ -59,15 +59,16 @@ export default function ConnexionPage() {
                 name="email"
                 type="email"
                 required
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
               />
             </div>
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-600 mb-1"
+                className="block text-sm font-medium text-slate-700 mb-1"
               >
                 Mot de passe *
               </label>
@@ -76,9 +77,11 @@ export default function ConnexionPage() {
                 name="password"
                 type="password"
                 required
+                minLength={8}
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
               />
             </div>
             <button
@@ -90,7 +93,7 @@ export default function ConnexionPage() {
             </button>
           </form>
 
-          <p className="text-center text-[#64748B] mt-6 text-sm">
+          <p className="text-center text-[var(--text-muted)] mt-6 text-sm">
             Accès réservé aux administrateurs.
           </p>
         </div>

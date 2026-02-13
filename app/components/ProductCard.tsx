@@ -99,7 +99,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
               {product.price_old_dzd != null && product.price_old_dzd > 0 && (
-                <span className="text-sm text-slate-400 line-through">
+                <span className="text-sm text-slate-500 line-through">
                   {product.price_old_dzd.toLocaleString("fr-DZ")} DA
                 </span>
               )}

@@ -52,19 +52,19 @@ export function CategoriesContent({ categories }: CategoriesContentProps) {
                 key={cat.id}
                 className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
               >
-                <td className="px-6 py-4 text-[#64748B] dark:text-slate-400">
+                <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
                   {cat.sort_order}
                 </td>
                 <td className="px-6 py-4 font-medium text-[#1E293B] dark:text-white">
                   {cat.name}
                 </td>
-                <td className="px-6 py-4 text-[#64748B] dark:text-slate-400">
+                <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
                   {cat.slug}
                 </td>
                 <td className="px-6 py-4">
                   <Link
                     href={`/dashboard/categories/${cat.id}`}
-                    className="text-[#13ecec] font-medium hover:underline text-sm"
+                    className="text-teal-700 dark:text-[#13ecec] font-medium hover:underline text-sm"
                   >
                     {t("dashboard_edit")}
                   </Link>
@@ -74,11 +74,11 @@ export function CategoriesContent({ categories }: CategoriesContentProps) {
           </tbody>
         </table>
         {(!categories || categories.length === 0) && (
-          <p className="px-6 py-12 text-center text-[#64748B] dark:text-slate-400">
+          <p className="px-6 py-12 text-center text-slate-600 dark:text-slate-400">
             {t("dashboard_no_categories_page")}{" "}
             <Link
               href="/dashboard/categories/nouveau"
-              className="text-[#13ecec] hover:underline"
+              className="text-teal-700 dark:text-[#13ecec] hover:underline"
             >
               {t("dashboard_categories_add")}
             </Link>

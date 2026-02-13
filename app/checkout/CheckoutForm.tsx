@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Nav } from "../components/Nav";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { createOrder } from "../actions/orders";
 import { WILAYAS } from "@/lib/wilayas";
+import { trackInitiateCheckout } from "@/lib/facebook-pixel";
 import type { CartItem } from "@/context/CartContext";
 
 interface CheckoutFormProps {
@@ -20,6 +21,10 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
   const [error, setError] = useState<string | null>(null);
 
   const totalDzd = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
+  useEffect(() => {
+    trackInitiateCheckout({ value: totalDzd, num_items: items.length });
+  }, [totalDzd, items.length]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,7 +49,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
       return;
     }
     if (result.orderId) {
-      router.push(`/checkout?success=${result.orderId}`);
+      router.push(`/checkout?success=${result.orderId}&total=${totalDzd}`);
       return;
     }
   }
@@ -67,7 +72,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                 <div>
                   <label
                     htmlFor="shipping_name"
-                    className="block text-sm font-medium text-slate-600 mb-1"
+                    className="block text-sm font-medium text-slate-700 mb-1"
                   >
                     Nom complet *
                   </label>
@@ -76,13 +81,13 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                     name="shipping_name"
                     type="text"
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="shipping_phone"
-                    className="block text-sm font-medium text-slate-600 mb-1"
+                    className="block text-sm font-medium text-slate-700 mb-1"
                   >
                     {t("checkout_phone")} *
                   </label>
@@ -93,13 +98,13 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                     required
                     placeholder="0XXX XX XX XX ou +213 XXX XX XX XX"
                     title="Ex: 0550123456, 0550 12 34 56 ou +213 550 123 456"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="shipping_wilaya"
-                    className="block text-sm font-medium text-slate-600 mb-1"
+                    className="block text-sm font-medium text-slate-700 mb-1"
                   >
                     {t("checkout_wilaya")} *
                   </label>
@@ -120,7 +125,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                 <div>
                   <label
                     htmlFor="shipping_city"
-                    className="block text-sm font-medium text-slate-600 mb-1"
+                    className="block text-sm font-medium text-slate-700 mb-1"
                   >
                     {t("checkout_city")} *
                   </label>
@@ -130,13 +135,13 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                     type="text"
                     required
                     placeholder="Ex: Alger Centre, Bab Ezzouar..."
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="shipping_address"
-                    className="block text-sm font-medium text-slate-600 mb-1"
+                    className="block text-sm font-medium text-slate-700 mb-1"
                   >
                     Adresse complète (rue, numéro, lieu-dit) *
                   </label>
@@ -146,7 +151,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                     required
                     rows={3}
                     placeholder="Rue, numéro, bâtiment, étage..."
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition resize-none"
                   />
                 </div>
               </div>
@@ -178,7 +183,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                     {totalDzd.toLocaleString("fr-DZ")} DA
                   </span>
                 </div>
-                <p className="text-xs text-[#64748B] mt-4">
+                <p className="text-xs text-[var(--text-muted)] mt-4">
                   Paiement à la livraison.
                 </p>
               </div>

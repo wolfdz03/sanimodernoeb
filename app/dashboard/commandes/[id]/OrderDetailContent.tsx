@@ -31,7 +31,7 @@ export function OrderDetailContent({ order, items }: OrderDetailContentProps) {
     <div>
       <Link
         href="/dashboard/commandes"
-        className="text-sm text-[#13ecec] hover:underline mb-4 inline-block"
+        className="text-sm text-teal-700 dark:text-[#13ecec] hover:underline mb-4 inline-block"
       >
         ← {t("dashboard_order_back")}
       </Link>
@@ -47,20 +47,20 @@ export function OrderDetailContent({ order, items }: OrderDetailContentProps) {
           <p className="font-medium text-[#1E293B] dark:text-white">
             {order.shipping_name}
           </p>
-          <p className="text-[#64748B] dark:text-slate-400">
+          <p className="text-slate-600 dark:text-slate-400">
             {order.shipping_phone}
           </p>
           {order.shipping_wilaya && (
-            <p className="text-[#64748B] dark:text-slate-400">
+            <p className="text-slate-600 dark:text-slate-400">
               {order.shipping_wilaya}
             </p>
           )}
           {order.shipping_city && (
-            <p className="text-[#64748B] dark:text-slate-400">
+            <p className="text-slate-600 dark:text-slate-400">
               {order.shipping_city}
             </p>
           )}
-          <p className="text-[#64748B] dark:text-slate-400 mt-2">
+          <p className="text-slate-600 dark:text-slate-400 mt-2">
             {order.shipping_address}
           </p>
         </div>
@@ -105,10 +105,10 @@ export function OrderDetailContent({ order, items }: OrderDetailContentProps) {
                 <td className="py-3 text-[#1E293B] dark:text-white">
                   {item.product_name}
                 </td>
-                <td className="py-3 text-[#64748B] dark:text-slate-400">
+                <td className="py-3 text-slate-600 dark:text-slate-400">
                   {item.quantity}
                 </td>
-                <td className="py-3 text-[#64748B] dark:text-slate-400">
+                <td className="py-3 text-slate-600 dark:text-slate-400">
                   {item.unit_price_dzd.toLocaleString("fr-DZ")} DA
                 </td>
                 <td className="py-3 font-medium text-[#1E293B] dark:text-white">
@@ -120,7 +120,7 @@ export function OrderDetailContent({ order, items }: OrderDetailContentProps) {
           </tbody>
         </table>
         <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
-          <span className="font-bold text-[#13ecec]">
+          <span className="font-bold text-slate-800 dark:text-slate-100">
             {t("dashboard_total_label")} :{" "}
             {order.total_dzd.toLocaleString("fr-DZ")} DA
           </span>

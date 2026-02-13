@@ -2,8 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Phone, MapPin } from "lucide-react";
+import { Phone, MapPin, Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import type { SiteSettings } from "@/lib/site-settings";
+
+interface FooterProps {
+  settings?: SiteSettings | null;
+}
 
 const navLinks = [
   { key: "nav_products" as const, href: "/produits" },
@@ -18,8 +23,13 @@ const supportLinks = [
   { key: "footer_guarantee" as const, href: "#" },
 ];
 
-export function Footer() {
+export function Footer({ settings }: FooterProps) {
   const { t } = useLanguage();
+  const phone = settings?.phone ?? t("footer_phone");
+  const email = settings?.email ?? t("footer_email");
+  const address = settings?.address ?? t("footer_address");
+  const tagline = settings?.tagline ?? t("footer_tagline");
+  const copyrightText = settings?.copyright_text ?? t("footer_copyright");
 
   return (
     <footer
@@ -43,7 +53,7 @@ export function Footer() {
               />
             </Link>
             <p className="mt-4 text-sm text-[var(--text-muted)] leading-relaxed">
-              {t("footer_tagline")}
+              {tagline}
             </p>
           </div>
 
@@ -102,26 +112,41 @@ export function Footer() {
               {t("footer_contact_title")}
             </h5>
             <ul className="space-y-4 text-sm text-[var(--text-muted)]">
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[var(--primary)] flex-shrink-0" />
-                <a
-                  href={`tel:${t("footer_phone").replace(/\s/g, "")}`}
-                  className="hover:text-[var(--primary)] transition-colors"
-                >
-                  {t("footer_phone")}
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[var(--primary)] flex-shrink-0" />
-                <span>{t("footer_address")}</span>
-              </li>
+              {phone && (
+                <li className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-[var(--primary)] flex-shrink-0" />
+                  <a
+                    href={`tel:${phone.replace(/\s/g, "")}`}
+                    className="hover:text-[var(--primary)] transition-colors"
+                  >
+                    {phone}
+                  </a>
+                </li>
+              )}
+              {email && (
+                <li className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-[var(--primary)] flex-shrink-0" />
+                  <a
+                    href={`mailto:${email}`}
+                    className="hover:text-[var(--primary)] transition-colors"
+                  >
+                    {email}
+                  </a>
+                </li>
+              )}
+              {address && (
+                <li className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[var(--primary)] flex-shrink-0" />
+                  <span>{address}</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>
 
         <div className="border-t border-[var(--border)] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-[var(--text-muted)]">
-            {t("footer_copyright")}
+            {copyrightText}
           </p>
         </div>
       </div>

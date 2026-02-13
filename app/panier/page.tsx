@@ -22,7 +22,7 @@ export default function PanierPage() {
 
           {items.length === 0 ? (
             <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-              <p className="text-[#64748B] mb-6">
+              <p className="text-[var(--text-muted)] mb-6">
                 {t("panier_empty")}
               </p>
               <Link
@@ -91,7 +91,7 @@ export default function PanierPage() {
 
               <div className="bg-white rounded-2xl border border-slate-200 p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <span className="text-[#64748B] font-medium">{t("panier_total")}</span>
+                  <span className="text-[var(--text-muted)] font-medium">{t("panier_total")}</span>
                   <span className="font-bold text-2xl text-[#DC2626]">
                     {totalDzd.toLocaleString("fr-DZ")} DA
                   </span>

@@ -5,15 +5,16 @@ import { CheckoutEmpty } from "./CheckoutEmpty";
 import { CheckoutSuccess } from "./CheckoutSuccess";
 
 interface PageProps {
-  searchParams: Promise<{ productId?: string; qty?: string; success?: string }>;
+  searchParams: Promise<{ productId?: string; qty?: string; success?: string; total?: string }>;
 }
 
 export default async function CheckoutPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const { productId, qty: qtyParam, success } = params;
+  const { productId, qty: qtyParam, success, total } = params;
 
   if (success) {
-    return <CheckoutSuccess orderId={success} />;
+    const totalDzd = total ? parseInt(total, 10) : undefined;
+    return <CheckoutSuccess orderId={success} totalDzd={totalDzd} />;
   }
 
   if (!productId) {

@@ -31,7 +31,7 @@ export function Features() {
             >
               <div className="w-10 h-10 rounded-lg bg-[var(--primary-muted)] flex items-center justify-center flex-shrink-0">
                 <feature.icon
-                  className="w-5 h-5 text-[var(--primary)]"
+                  className="w-5 h-5 text-[var(--primary-hover)]"
                   strokeWidth={2}
                 />
               </div>

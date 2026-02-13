@@ -63,6 +63,24 @@ export async function createOrder(
     return { error: "Erreur lors de l'enregistrement des articles." };
   }
 
+  // Optional: send new order notification email to admin
+  try {
+    const { getSiteSettings } = await import("@/lib/site-settings");
+    const { sendNewOrderNotification } = await import("@/lib/email");
+    const settings = await getSiteSettings();
+    const toEmail = settings.admin_notification_email?.trim() || process.env.ADMIN_NOTIFICATION_EMAIL?.trim();
+    if (toEmail && process.env.RESEND_API_KEY) {
+      await sendNewOrderNotification({
+        orderId: order.id,
+        totalDzd: total_dzd,
+        shippingName: formData.shipping_name.trim(),
+        toEmail,
+      });
+    }
+  } catch {
+    // Don't fail order creation if notification fails
+  }
+
   return { orderId: order.id };
 }
 

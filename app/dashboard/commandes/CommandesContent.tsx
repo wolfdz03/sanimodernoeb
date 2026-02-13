@@ -36,16 +36,26 @@ export function CommandesContent({
 
   return (
     <div>
-      <h1 className="font-bold text-2xl text-[#1E293B] dark:text-white mb-6">
-        {t("dashboard_commandes_title")}
-      </h1>
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h1 className="font-bold text-2xl text-[#1E293B] dark:text-white">
+          {t("dashboard_commandes_title")}
+        </h1>
+        <a
+          href="/api/dashboard/export-orders"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#0d1b1b] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+          download
+          title={t("hint_export")}
+        >
+          {t("dashboard_export_report")}
+        </a>
+      </div>
       <div className="flex gap-2 mb-6 flex-wrap">
         <Link
           href="/dashboard/commandes"
           className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
             !currentStatus
               ? "bg-[#13ecec] text-[#102222]"
-              : "bg-white dark:bg-[#0d1b1b] border border-slate-200 dark:border-slate-700 text-[#64748B] hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              : "bg-white dark:bg-[#0d1b1b] border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50"
           }`}
         >
           {t("dashboard_filter_all")}
@@ -57,7 +67,7 @@ export function CommandesContent({
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
               currentStatus === s
                 ? "bg-[#13ecec] text-[#102222]"
-                : "bg-white dark:bg-[#0d1b1b] border border-slate-200 dark:border-slate-700 text-[#64748B] hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                : "bg-white dark:bg-[#0d1b1b] border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50"
             }`}
           >
             {t(statusKeys[s])}
@@ -89,13 +99,13 @@ export function CommandesContent({
                 key={order.id}
                 className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/50"
               >
-                <td className="px-6 py-4 text-sm text-[#64748B] dark:text-slate-400">
+                <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
                   {new Date(order.created_at).toLocaleDateString("fr-FR")}
                 </td>
                 <td className="px-6 py-4 font-medium text-[#1E293B] dark:text-white">
                   {order.shipping_name}
                 </td>
-                <td className="px-6 py-4 font-semibold text-[#13ecec]">
+                <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-100">
                   {order.total_dzd.toLocaleString("fr-DZ")} DA
                 </td>
                 <td className="px-6 py-4">
@@ -104,7 +114,7 @@ export function CommandesContent({
                       order.status === "pending"
                         ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
                         : order.status === "delivered"
-                          ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                          ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300"
                           : order.status === "cancelled"
                             ? "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
                             : "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
@@ -118,7 +128,7 @@ export function CommandesContent({
                 <td className="px-6 py-4">
                   <Link
                     href={`/dashboard/commandes/${order.id}`}
-                    className="text-[#13ecec] font-medium hover:underline text-sm"
+                    className="text-teal-700 dark:text-[#13ecec] font-medium hover:underline text-sm"
                   >
                     {t("dashboard_detail")}
                   </Link>
@@ -128,7 +138,7 @@ export function CommandesContent({
           </tbody>
         </table>
         {(!orders || orders.length === 0) && (
-          <p className="px-6 py-12 text-center text-[#64748B] dark:text-slate-400">
+          <p className="px-6 py-12 text-center text-slate-600 dark:text-slate-400">
             {t("dashboard_no_orders_page")}
           </p>
         )}

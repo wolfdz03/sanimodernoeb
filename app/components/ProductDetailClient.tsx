@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { trackViewContent } from "@/lib/facebook-pixel";
 import type { Product } from "@/lib/types/database";
 
 interface ProductDetailClientProps {
@@ -10,6 +12,14 @@ interface ProductDetailClientProps {
 
 export function ProductDetailClient({ product }: ProductDetailClientProps) {
   const { t } = useLanguage();
+
+  useEffect(() => {
+    trackViewContent({
+      id: product.id,
+      name: product.name,
+      price_dzd: product.price_dzd,
+    });
+  }, [product.id, product.name, product.price_dzd]);
   const checkoutUrl = `/checkout?productId=${product.id}&qty=1`;
 
   return (

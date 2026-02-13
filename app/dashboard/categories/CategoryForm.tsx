@@ -157,7 +157,7 @@ export function CategoryForm({
           type="text"
           required
           defaultValue={category?.name}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div>
@@ -169,7 +169,7 @@ export function CategoryForm({
           type="text"
           defaultValue={category?.slug}
           placeholder="nom-categorie"
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div>
@@ -213,7 +213,7 @@ export function CategoryForm({
             </button>
           ))}
         </div>
-        <p className="text-xs text-slate-500 mt-1">
+        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
           Choisir une icône (optionnel)
         </p>
       </div>
@@ -226,7 +226,7 @@ export function CategoryForm({
           type="number"
           min={0}
           defaultValue={category?.sort_order ?? 0}
-          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-slate-400 focus:border-[#0ea5a5] outline-none transition"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#0ea5a5] outline-none transition"
         />
       </div>
       <div className="flex gap-4 pt-4">
@@ -242,7 +242,7 @@ export function CategoryForm({
             type="button"
             onClick={handleDelete}
             disabled={loading}
-            className="px-6 py-3 rounded-xl border border-slate-200 text-[#64748B] font-medium hover:bg-slate-50 transition-colors disabled:opacity-50"
+            className="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 transition-colors disabled:opacity-50"
           >
             Supprimer
           </button>

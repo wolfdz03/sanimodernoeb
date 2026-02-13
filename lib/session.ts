@@ -2,9 +2,14 @@ import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 
 const COOKIE_NAME = "session";
-const SECRET = new TextEncoder().encode(
-  process.env.SESSION_SECRET || "change-me-in-production-min-32-chars"
-);
+const DEFAULT_SECRET = "change-me-in-production-min-32-chars";
+
+function getSecret(): Uint8Array {
+  const s = process.env.SESSION_SECRET ?? DEFAULT_SECRET;
+  return new TextEncoder().encode(s);
+}
+
+const SECRET = getSecret();
 
 export interface SessionUser {
   id: string;

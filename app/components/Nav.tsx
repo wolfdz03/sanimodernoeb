@@ -94,13 +94,13 @@ export function Nav() {
 
               <div className="flex items-center gap-3">
                 <LangToggle />
-                <button className="hidden sm:flex w-10 h-10 rounded-xl bg-[#F1F5F9] hover:bg-[#E2E8F0] items-center justify-center text-[var(--text-muted)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2">
+                <button className="hidden sm:flex w-10 h-10 rounded-xl bg-[#E2E8F0] hover:bg-[#CBD5E1] items-center justify-center text-[var(--text)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2">
                   <Search className="w-5 h-5" />
                 </button>
 
                 <button
                   onClick={() => setMobileOpen(!mobileOpen)}
-                  className="md:hidden w-10 h-10 rounded-xl bg-[#F1F5F9] flex items-center justify-center text-[var(--text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                  className="md:hidden w-10 h-10 rounded-xl bg-[#E2E8F0] flex items-center justify-center text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                 >
                   {mobileOpen ? (
                     <X className="w-5 h-5" />

@@ -24,7 +24,7 @@ export default async function ProductPage({ params }: PageProps) {
       <Nav />
       <main className="min-h-screen bg-white pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-6">
-          <nav className="flex items-center gap-2 text-sm text-[#64748B] mb-8">
+          <nav className="flex items-center gap-2 text-sm text-[var(--text-muted)] mb-8">
             <Link href="/" className="hover:text-[#DC2626]">
               Accueil
             </Link>
@@ -76,12 +76,12 @@ export default async function ProductPage({ params }: PageProps) {
                     {product.price_dzd.toLocaleString("fr-DZ")} DA
                   </span>
                 </div>
-                <span className="flex items-center gap-1 text-[#64748B]">
+                <span className="flex items-center gap-1 text-[var(--text-muted)]">
                   <span className="text-yellow-500">★</span> 4.8
                 </span>
               </div>
               {product.description && (
-                <p className="text-[#64748B] mb-8 leading-relaxed">
+                <p className="text-[var(--text-muted)] mb-8 leading-relaxed">
                   {product.description}
                 </p>
               )}

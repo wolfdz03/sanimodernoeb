@@ -7,6 +7,9 @@ import {
   ShoppingBag,
   Package,
   FolderTree,
+  Settings,
+  Type,
+  HelpCircle,
   LogOut,
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
@@ -25,6 +28,9 @@ export function DashboardSidebar({ adminName }: DashboardSidebarProps) {
     { href: "/dashboard/commandes", icon: ShoppingBag, label: t("dashboard_orders") },
     { href: "/dashboard/produits", icon: Package, label: t("dashboard_products") },
     { href: "/dashboard/categories", icon: FolderTree, label: t("dashboard_categories") },
+    { href: "/dashboard/parametres", icon: Settings, label: t("dashboard_settings") },
+    { href: "/dashboard/contenu", icon: Type, label: t("dashboard_content") },
+    { href: "/dashboard/aide", icon: HelpCircle, label: "Aide" },
   ];
 
   return (
@@ -52,7 +58,7 @@ export function DashboardSidebar({ adminName }: DashboardSidebarProps) {
               className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
                 isActive
                   ? "bg-[#13ecec] text-[#102222] shadow-lg shadow-[#13ecec]/20"
-                  : "text-slate-400 hover:text-[#13ecec] hover:bg-white/5"
+                  : "text-slate-300 hover:text-[#13ecec] hover:bg-white/5"
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -70,12 +76,12 @@ export function DashboardSidebar({ adminName }: DashboardSidebarProps) {
             <p className="text-sm font-medium text-white truncate">
               {adminName ?? t("dashboard_admin_role")}
             </p>
-            <p className="text-xs text-slate-400 truncate">{t("dashboard_admin_role")}</p>
+            <p className="text-xs text-slate-300 truncate">{t("dashboard_admin_role")}</p>
           </div>
           <form action={logout}>
             <button
               type="submit"
-              className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+              className="p-1.5 text-slate-300 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
               aria-label={t("dashboard_logout")}
             >
               <LogOut className="w-5 h-5" />
@@ -84,7 +90,7 @@ export function DashboardSidebar({ adminName }: DashboardSidebarProps) {
         </div>
         <Link
           href="/"
-          className="block mt-2 px-2 py-1.5 text-xs text-slate-400 hover:text-[#13ecec] transition-colors"
+          className="block mt-2 px-2 py-1.5 text-xs text-slate-300 hover:text-[#13ecec] transition-colors"
         >
           {t("dashboard_back_site")}
         </Link>

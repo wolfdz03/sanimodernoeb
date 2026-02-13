@@ -1,15 +1,24 @@
 "use client";
 
+import { useEffect } from "react";
 import { Nav } from "../components/Nav";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { trackPurchase } from "@/lib/facebook-pixel";
 
 interface CheckoutSuccessProps {
   orderId: string;
+  totalDzd?: number;
 }
 
-export function CheckoutSuccess({ orderId }: CheckoutSuccessProps) {
+export function CheckoutSuccess({ orderId, totalDzd }: CheckoutSuccessProps) {
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (totalDzd != null && totalDzd > 0) {
+      trackPurchase({ orderId, value: totalDzd });
+    }
+  }, [orderId, totalDzd]);
 
   return (
     <>
@@ -19,10 +28,10 @@ export function CheckoutSuccess({ orderId }: CheckoutSuccessProps) {
           <h1 className="font-bold text-3xl text-[#1E293B] mb-4">
             {t("checkout_success_title")}
           </h1>
-          <p className="text-[#64748B] mb-6">
+          <p className="text-[var(--text-muted)] mb-6">
             {t("checkout_success_message")}
           </p>
-          <p className="text-sm text-[#64748B] mb-8">
+          <p className="text-sm text-[var(--text-muted)] mb-8">
             <strong className="text-[#1E293B]">{orderId}</strong>
           </p>
           <Link

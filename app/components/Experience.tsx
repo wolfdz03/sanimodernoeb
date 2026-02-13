@@ -50,7 +50,7 @@ export function Experience() {
               className="w-full h-[500px] lg:h-[600px] object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
-            <div className="absolute bottom-8 right-8 bg-white/10 backdrop-blur-md px-8 py-6 rounded-xl border border-white/20 text-white">
+            <div className="absolute bottom-8 right-8 bg-black/50 backdrop-blur-md px-8 py-6 rounded-xl border border-white/30 text-white">
               <div className="text-4xl font-extrabold mb-1">15+</div>
               <p className="text-sm font-semibold tracking-widest uppercase">
                 {t("about_excellence_badge")}

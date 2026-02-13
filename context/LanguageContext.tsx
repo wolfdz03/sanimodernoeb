@@ -15,6 +15,8 @@ import {
 
 const STORAGE_KEY = "sani-lang";
 
+export type ContentOverrides = Record<string, { value_fr: string | null; value_ar: string | null }>;
+
 type LanguageContextValue = {
   lang: Lang;
   setLang: (lang: Lang) => void;
@@ -30,7 +32,13 @@ function getStoredLang(): Lang {
   return "fr";
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+export function LanguageProvider({
+  children,
+  contentOverrides = {},
+}: {
+  children: React.ReactNode;
+  contentOverrides?: ContentOverrides;
+}) {
   const [lang, setLangState] = useState<Lang>("fr");
   const [mounted, setMounted] = useState(false);
 
@@ -55,8 +63,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [lang, mounted]);
 
   const t = useCallback(
-    (key: TranslationKey) => translations[lang][key] ?? translations.fr[key],
-    [lang]
+    (key: TranslationKey) => {
+      const override = contentOverrides[key as string];
+      const val = lang === "ar" ? override?.value_ar : override?.value_fr;
+      if (val != null && val.trim() !== "") return val;
+      return (translations[lang][key] ?? translations.fr[key]) as string;
+    },
+    [lang, contentOverrides]
   );
 
   return (

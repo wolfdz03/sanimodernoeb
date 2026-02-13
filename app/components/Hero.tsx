@@ -36,7 +36,7 @@ export function Hero() {
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-6">
             {t("hero_title_image")}
           </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10 font-medium">
+          <p className="text-lg md:text-xl text-white max-w-2xl mx-auto mb-10 font-medium">
             {t("hero_subtitle_image")}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -69,7 +69,7 @@ export function Hero() {
                 <div className="text-2xl md:text-3xl font-bold text-white">
                   {stat.value}
                 </div>
-                <div className="text-white/70 text-sm uppercase tracking-widest font-semibold mt-1">
+                <div className="text-white/90 text-sm uppercase tracking-widest font-semibold mt-1">
                   {t(stat.labelKey)}
                 </div>
               </div>

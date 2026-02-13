@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { trackAddToCart } from "@/lib/facebook-pixel";
 
 export interface CartItem {
   productId: string;
@@ -34,6 +35,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addItem = useCallback(
     (item: Omit<CartItem, "quantity"> & { quantity?: number }) => {
       const qty = item.quantity ?? 1;
+      trackAddToCart({
+        productId: item.productId,
+        name: item.name,
+        price: item.price,
+        quantity: qty,
+      });
       setItems((prev) => {
         const existing = prev.find((i) => i.productId === item.productId);
         if (existing) {

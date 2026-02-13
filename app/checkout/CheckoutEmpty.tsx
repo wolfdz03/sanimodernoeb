@@ -15,7 +15,7 @@ export function CheckoutEmpty() {
           <h1 className="font-bold text-2xl text-[#1E293B] mb-4">
             {t("checkout_cart_empty")}
           </h1>
-          <p className="text-[#64748B] mb-6">
+          <p className="text-[var(--text-muted)] mb-6">
             {t("checkout_direct_desc")}
           </p>
           <Link
