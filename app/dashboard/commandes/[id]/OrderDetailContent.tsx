@@ -21,6 +21,7 @@ interface OrderDetailContentProps {
     product_name: string;
     quantity: number;
     unit_price_dzd: number;
+    variant_label?: string | null;
   }>;
 }
 
@@ -104,6 +105,11 @@ export function OrderDetailContent({ order, items }: OrderDetailContentProps) {
               >
                 <td className="py-3 text-[#1E293B] dark:text-white">
                   {item.product_name}
+                  {item.variant_label && (
+                    <span className="block text-sm text-slate-500 dark:text-slate-400">
+                      {item.variant_label}
+                    </span>
+                  )}
                 </td>
                 <td className="py-3 text-slate-600 dark:text-slate-400">
                   {item.quantity}

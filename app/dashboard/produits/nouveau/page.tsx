@@ -1,5 +1,4 @@
 import { createServiceClient } from "@/lib/supabase/service";
-import Link from "next/link";
 import { ProductForm } from "../ProductForm";
 import { createProduct } from "@/app/actions/products";
 
@@ -11,16 +10,7 @@ export default async function DashboardProduitNouveauPage() {
     .order("sort_order");
 
   return (
-    <div>
-      <Link
-        href="/dashboard/produits"
-        className="text-sm text-[#0ea5a5] hover:underline mb-4 inline-block"
-      >
-        ← Retour aux produits
-      </Link>
-      <h1 className="font-bold text-2xl text-[#1E293B] mb-6">
-        Nouveau produit
-      </h1>
+    <div className="max-w-[1600px] mx-auto w-full">
       <ProductForm
         categories={categories ?? []}
         action={createProduct}

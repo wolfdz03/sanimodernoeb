@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Nav } from "../components/Nav";
+import type { SiteSettings } from "@/lib/site-settings";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { trackPurchase } from "@/lib/facebook-pixel";
@@ -9,9 +10,10 @@ import { trackPurchase } from "@/lib/facebook-pixel";
 interface CheckoutSuccessProps {
   orderId: string;
   totalDzd?: number;
+  settings?: SiteSettings | null;
 }
 
-export function CheckoutSuccess({ orderId, totalDzd }: CheckoutSuccessProps) {
+export function CheckoutSuccess({ orderId, totalDzd, settings }: CheckoutSuccessProps) {
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export function CheckoutSuccess({ orderId, totalDzd }: CheckoutSuccessProps) {
 
   return (
     <>
-      <Nav />
+      <Nav settings={settings} />
       <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
         <div className="max-w-2xl mx-auto px-6 text-center">
           <h1 className="font-bold text-3xl text-[#1E293B] mb-4">

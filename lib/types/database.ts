@@ -25,6 +25,44 @@ export interface Category {
   created_at: string;
 }
 
+export interface ProductOptionType {
+  id: string;
+  product_id: string;
+  name: string;
+  sort_order: number;
+  product_option_values?: ProductOptionValue[];
+}
+
+export interface ProductOptionValue {
+  id: string;
+  option_type_id: string;
+  value: string;
+  sort_order: number;
+}
+
+export interface ProductVariant {
+  id: string;
+  product_id: string;
+  sku: string | null;
+  price_dzd: number | null;
+  stock: number;
+  created_at: string;
+  product_variant_options?: { option_value_id: string; product_option_values?: ProductOptionValue }[];
+}
+
+export interface ProductVariantOption {
+  variant_id: string;
+  option_value_id: string;
+}
+
+export interface ProductAttribute {
+  id: string;
+  product_id: string;
+  name: string;
+  value: string;
+  sort_order: number;
+}
+
 export interface Product {
   id: string;
   category_id: string | null;
@@ -40,7 +78,13 @@ export interface Product {
   badge_color: string | null;
   stock: number;
   created_at: string;
-  categories?: { name: string } | null;
+  categories?: { name: string; slug?: string } | null;
+  /** Option dimensions and values (for variant selector) */
+  product_option_types?: ProductOptionType[];
+  /** Variants with their option links (for PDP and cart) */
+  product_variants?: ProductVariant[];
+  /** Specs/attributes for PDP display */
+  product_attributes?: ProductAttribute[];
 }
 
 export interface Profile {
@@ -72,4 +116,6 @@ export interface OrderItem {
   product_name: string;
   quantity: number;
   unit_price_dzd: number;
+  variant_id?: string | null;
+  variant_label?: string | null;
 }

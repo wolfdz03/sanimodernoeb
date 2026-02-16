@@ -2,8 +2,11 @@
 
 import { createServiceClient } from "@/lib/supabase/service";
 import { revalidatePath } from "next/cache";
+import type { FooterSection } from "@/lib/site-settings";
 
 export async function updateSiteSettings(formData: {
+  site_title?: string;
+  logo_url?: string;
   phone?: string;
   email?: string;
   address?: string;
@@ -18,11 +21,14 @@ export async function updateSiteSettings(formData: {
   mistral_api_key?: string;
   primary_color?: string;
   primary_hover_color?: string;
+  footer_sections?: FooterSection[];
 }) {
   const supabase = createServiceClient();
   const payload: Record<string, unknown> = {
     updated_at: new Date().toISOString(),
   };
+  if (formData.site_title !== undefined) payload.site_title = formData.site_title.trim() || null;
+  if (formData.logo_url !== undefined) payload.logo_url = formData.logo_url.trim() || null;
   if (formData.phone !== undefined) payload.phone = formData.phone.trim() || null;
   if (formData.email !== undefined) payload.email = formData.email.trim() || null;
   if (formData.address !== undefined) payload.address = formData.address.trim() || null;
@@ -47,6 +53,9 @@ export async function updateSiteSettings(formData: {
     const v = formData.primary_hover_color.trim();
     payload.primary_hover_color = v && /^#[0-9A-Fa-f]{6}$/.test(v) ? v : "#B91C1C";
   }
+  if (formData.footer_sections !== undefined) {
+    payload.footer_sections = formData.footer_sections;
+  }
 
   const { error } = await supabase
     .from("site_settings")
@@ -54,6 +63,7 @@ export async function updateSiteSettings(formData: {
     .eq("id", 1);
   if (error) return { error: error.message };
   revalidatePath("/");
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/parametres");
   return {};
 }

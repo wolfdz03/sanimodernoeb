@@ -53,6 +53,8 @@ export async function createOrder(
     product_name: item.name,
     quantity: item.quantity,
     unit_price_dzd: item.price,
+    variant_id: item.variantId ?? null,
+    variant_label: item.variantLabel ?? null,
   }));
 
   const { error: itemsError } = await supabase

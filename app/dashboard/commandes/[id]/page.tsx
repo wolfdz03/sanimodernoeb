@@ -39,6 +39,7 @@ export default async function DashboardOrderDetailPage({ params }: PageProps) {
         product_name: i.product_name,
         quantity: i.quantity,
         unit_price_dzd: i.unit_price_dzd,
+        variant_label: i.variant_label ?? null,
       }))}
     />
   );

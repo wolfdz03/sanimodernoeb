@@ -1,4 +1,4 @@
-import { Nav } from "./components/Nav";
+import { NavWithSettings } from "./components/NavWithSettings";
 import { Hero } from "./components/Hero";
 import { Features } from "./components/Features";
 import { Categories } from "./components/Categories";
@@ -17,7 +17,7 @@ export default async function Home() {
 
   return (
     <>
-      <Nav />
+      <NavWithSettings />
       <main>
         <Hero />
         <Features />

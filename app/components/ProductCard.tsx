@@ -21,7 +21,7 @@ export function ProductCard({ product }: ProductCardProps) {
       : null;
   const imageUrl = getProductPrimaryImage(product) ?? "/placeholder-product.png";
   const badgeColor = product.badge_color ?? "bg-[var(--primary)]";
-  const checkoutUrl = `/checkout?productId=${product.id}&qty=1`;
+  const productUrl = `/produit/${product.id}`;
 
   return (
     <motion.div
@@ -71,18 +71,14 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.push(checkoutUrl);
-            }}
-            className="w-full py-2.5 rounded-xl bg-white text-[var(--text)] font-semibold hover:bg-[var(--primary)] hover:text-white transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+          <Link
+            href={productUrl}
+            onClick={(e) => e.stopPropagation()}
+            className="block w-full py-2.5 rounded-xl bg-white text-[var(--text)] font-semibold hover:bg-[var(--primary)] hover:text-white transition-colors flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
           >
             <ShoppingBag className="w-4 h-4" />
             {t("product_order_now")}
-          </button>
+          </Link>
         </div>
       </div>
 

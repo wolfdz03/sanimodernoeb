@@ -57,3 +57,52 @@ export async function uploadProductImage(
   } = supabase.storage.from(BUCKET).getPublicUrl(data.path);
   return { url: publicUrl };
 }
+
+const SITE_ASSETS_BUCKET = "site-assets";
+const LOGO_MAX_SIZE = 1 * 1024 * 1024; // 1MB
+
+/** Upload site logo to Supabase Storage. Returns the public URL or an error. */
+export async function uploadSiteLogo(
+  formData: FormData
+): Promise<{ url?: string; error?: string }> {
+  const file = formData.get("file") as File | null;
+  if (!file || !(file instanceof File)) {
+    return { error: "Aucun fichier." };
+  }
+  if (file.size > LOGO_MAX_SIZE) {
+    return { error: "Fichier trop volumineux (max 1 Mo)." };
+  }
+  if (!ALLOWED_TYPES.includes(file.type)) {
+    return { error: "Type non autorisé (JPEG, PNG, GIF, WebP uniquement)." };
+  }
+
+  const supabase = createServiceClient();
+
+  const { error: bucketError } = await supabase.storage.createBucket(SITE_ASSETS_BUCKET, {
+    public: true,
+    fileSizeLimit: LOGO_MAX_SIZE,
+    allowedMimeTypes: ALLOWED_TYPES,
+  });
+  if (bucketError && bucketError.message !== "The resource already exists") {
+    // Continue
+  }
+
+  const ext = file.name.split(".").pop() || "png";
+  const path = `logo.${ext}`;
+
+  const { data, error } = await supabase.storage
+    .from(SITE_ASSETS_BUCKET)
+    .upload(path, file, {
+      contentType: file.type,
+      upsert: true,
+    });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(SITE_ASSETS_BUCKET).getPublicUrl(data.path);
+  return { url: publicUrl };
+}

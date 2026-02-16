@@ -19,17 +19,35 @@ export default async function DashboardCommandesPage({
   ];
   let query = supabase
     .from("orders")
-    .select("id, status, total_dzd, shipping_name, shipping_phone, created_at")
+    .select(
+      "id, status, total_dzd, shipping_name, shipping_phone, created_at, order_items(product_name, quantity, variant_label)"
+    )
     .order("created_at", { ascending: false });
-  if (status && validStatuses.includes(status)) {
+  if (status === "pending") {
+    query = query.in("status", ["pending", "paid"]);
+  } else if (status === "shipped") {
+    query = query.in("status", ["shipped", "delivered"]);
+  } else if (status && validStatuses.includes(status)) {
     query = query.eq("status", status);
   }
   const { data: orders, error } = await query;
   if (error) throw error;
 
+  const ordersWithItems = (orders ?? []).map((o) => ({
+    id: o.id,
+    status: o.status,
+    total_dzd: o.total_dzd,
+    shipping_name: o.shipping_name,
+    shipping_phone: o.shipping_phone,
+    created_at: o.created_at,
+    items:
+      (o.order_items as { product_name: string; quantity: number; variant_label?: string | null }[]) ??
+      [],
+  }));
+
   return (
     <CommandesContent
-      orders={orders ?? null}
+      orders={ordersWithItems}
       currentStatus={status}
     />
   );

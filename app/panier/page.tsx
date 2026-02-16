@@ -1,6 +1,6 @@
 "use client";
 
-import { Nav } from "../components/Nav";
+import { NavWithSettings } from "../components/NavWithSettings";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -13,7 +13,7 @@ export default function PanierPage() {
 
   return (
     <>
-      <Nav />
+      <NavWithSettings />
       <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-6">
           <h1 className="font-bold text-3xl text-[#1E293B] mb-8">
@@ -37,7 +37,7 @@ export default function PanierPage() {
               <div className="space-y-4 mb-8">
                 {items.map((item) => (
                   <div
-                    key={item.productId}
+                    key={`${item.productId}-${item.variantId ?? ""}`}
                     className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center"
                   >
                     <div className="w-full sm:w-24 h-24 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
@@ -51,6 +51,11 @@ export default function PanierPage() {
                       <h2 className="font-semibold text-[#1E293B] truncate">
                         {item.name}
                       </h2>
+                      {item.variantLabel && (
+                        <p className="text-sm text-[var(--text-muted)]">
+                          {item.variantLabel}
+                        </p>
+                      )}
                       <p className="font-bold text-[#DC2626]">
                         {item.price.toLocaleString("fr-DZ")} DA
                       </p>
@@ -58,7 +63,7 @@ export default function PanierPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() =>
-                          updateQuantity(item.productId, item.quantity - 1)
+                          updateQuantity(item.productId, item.quantity - 1, item.variantId)
                         }
                         className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-[#1E293B] transition-colors"
                       >
@@ -69,14 +74,14 @@ export default function PanierPage() {
                       </span>
                       <button
                         onClick={() =>
-                          updateQuantity(item.productId, item.quantity + 1)
+                          updateQuantity(item.productId, item.quantity + 1, item.variantId)
                         }
                         className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-[#1E293B] transition-colors"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => removeItem(item.productId)}
+                        onClick={() => removeItem(item.productId, item.variantId)}
                         className="w-10 h-10 rounded-xl bg-red-50 hover:bg-red-100 flex items-center justify-center text-[#DC2626] transition-colors ml-2"
                       >
                         <Trash2 className="w-4 h-4" />

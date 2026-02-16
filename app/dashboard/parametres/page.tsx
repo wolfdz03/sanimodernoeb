@@ -12,10 +12,7 @@ export default async function DashboardSettingsPage() {
     has_mistral_key: !!(settings.mistral_api_key?.trim() || process.env.MISTRAL_API_KEY),
   };
   return (
-    <div>
-      <h1 className="font-bold text-2xl text-[#1E293B] dark:text-white mb-6" title="Ces infos (téléphone, adresse, slogan) s'affichent en bas du site public.">
-        Paramètres du site
-      </h1>
+    <div className="mx-auto max-w-7xl w-full">
       <SettingsForm settings={formSettings} adminEmail={session?.email ?? null} />
     </div>
   );

@@ -160,27 +160,25 @@ export function DashboardNotifications() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="relative p-2 text-slate-600 dark:text-slate-300 hover:text-[#13ecec] hover:bg-[#13ecec]/10 rounded-full transition-colors"
+        className="relative p-2 rounded-lg text-[var(--dash-text-muted)] hover:bg-emerald-50 hover:text-[var(--dash-primary)] transition-colors"
         aria-label={t("dashboard_notifications")}
       >
-        <Bell className="w-5 h-5" />
+        <Bell className="w-6 h-6" />
         {unreadCount > 0 && (
-          <span className="absolute top-2 end-2 min-w-[18px] h-[18px] flex items-center justify-center px-1 bg-red-500 text-white text-xs font-medium rounded-full border-2 border-white dark:border-[#0d1b1b]">
-            {unreadCount > 99 ? "99+" : unreadCount}
-          </span>
+          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[var(--dash-destructive)] ring-2 ring-white" />
         )}
       </button>
       {open && (
-        <div className="absolute top-full end-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] bg-white dark:bg-[#0d1b1b] border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-            <span className="font-semibold text-slate-800 dark:text-slate-100">
+        <div className="absolute top-full end-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] bg-[var(--dash-surface)] border border-[var(--dash-border)] rounded-lg shadow-xl z-50 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--dash-border)]">
+            <span className="font-semibold text-[var(--dash-text-main)]">
               {t("dashboard_notifications")}
             </span>
             {unreadCount > 0 && (
               <button
                 type="button"
                 onClick={markAllRead}
-                className="text-sm text-[#0ea5a5] hover:underline"
+                className="text-sm text-[var(--dash-primary)] hover:underline"
               >
                 {t("dashboard_mark_all_read")}
               </button>
@@ -188,11 +186,11 @@ export function DashboardNotifications() {
           </div>
           <div className="max-h-[320px] overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="px-4 py-6 text-sm text-slate-600 dark:text-slate-400 text-center">
+              <p className="px-4 py-6 text-sm text-[var(--dash-text-muted)] text-center">
                 {t("dashboard_no_notifications")}
               </p>
             ) : (
-              <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+              <ul className="divide-y divide-[var(--dash-border)]">
                 {notifications.map((n) => (
                   <li key={n.id}>
                     <Link
@@ -201,23 +199,23 @@ export function DashboardNotifications() {
                         markRead(n.id);
                         setOpen(false);
                       }}
-                      className={`flex gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${!n.read ? "bg-[#13ecec]/5 dark:bg-[#13ecec]/10" : ""}`}
+                      className={`flex gap-3 px-4 py-3 hover:bg-gray-50 transition-colors ${!n.read ? "bg-emerald-50/50" : ""}`}
                     >
                       <span className="flex-shrink-0 mt-0.5">
                         {!n.read ? (
-                          <span className="w-2 h-2 rounded-full bg-[#13ecec]" />
+                          <span className="w-2 h-2 rounded-full bg-[var(--dash-primary)]" />
                         ) : (
-                          <Check className="w-4 h-4 text-slate-300 dark:text-slate-600" />
+                          <Check className="w-4 h-4 text-gray-300" />
                         )}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="font-medium text-slate-800 dark:text-slate-100 text-sm">
+                        <p className="font-medium text-[var(--dash-text-main)] text-sm">
                           {n.title}
                         </p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 truncate">
+                        <p className="text-xs text-[var(--dash-text-muted)] truncate">
                           {n.message}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-xs text-[var(--dash-text-muted)] mt-0.5">
                           {formatTime(n.createdAt)}
                         </p>
                       </div>

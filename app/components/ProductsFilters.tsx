@@ -1,11 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import type { Category } from "@/lib/types/database";
 import type { ProductSort } from "@/lib/supabase/queries";
+
+const SEARCH_DEBOUNCE_MS = 400;
 
 interface ProductsFiltersProps {
   categories: Category[];
@@ -27,10 +29,14 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
   const [showFilters, setShowFilters] = useState(false);
 
   const categorie = searchParams.get("categorie") ?? "";
+  const searchFromUrl = searchParams.get("search") ?? "";
   const sort = (searchParams.get("sort") as ProductSort) ?? "newest";
   const minPrice = searchParams.get("min_price") ?? "";
   const maxPrice = searchParams.get("max_price") ?? "";
   const inStock = searchParams.get("in_stock") === "1";
+
+  const [searchInput, setSearchInput] = useState(searchFromUrl);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const buildParams = useCallback(
     (overrides: Record<string, string | undefined>) => {
@@ -47,6 +53,24 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
     },
     [searchParams]
   );
+
+  useEffect(() => {
+    setSearchInput(searchFromUrl);
+  }, [searchFromUrl]);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const q = searchInput.trim();
+      if (q !== searchFromUrl) {
+        router.push(`/produits?${buildParams({ search: q || undefined })}`);
+      }
+      debounceRef.current = null;
+    }, SEARCH_DEBOUNCE_MS);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [searchInput, searchFromUrl, buildParams, router]);
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value as ProductSort;
@@ -77,11 +101,36 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
     setShowFilters(false);
   };
 
-  const hasActiveFilters = categorie || minPrice || maxPrice || inStock;
+  const hasActiveFilters = categorie || searchFromUrl || minPrice || maxPrice || inStock;
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const q = searchInput.trim();
+    if (q !== searchFromUrl) {
+      router.push(`/produits?${buildParams({ search: q || undefined })}`);
+    }
+  };
 
   return (
     <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div className="flex flex-wrap items-center gap-3">
+        <form onSubmit={handleSearchSubmit} className="flex items-center gap-1">
+          <input
+            name="search"
+            type="search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder={t("products_search_placeholder")}
+            className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white placeholder:text-[var(--text-muted)] focus:border-[var(--primary)] outline-none transition text-sm w-44 sm:w-52"
+            aria-label="Rechercher"
+          />
+          <button
+            type="submit"
+            className="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-[var(--text)] hover:bg-slate-200 dark:hover:bg-slate-700 transition text-sm font-medium"
+          >
+            {t("products_search")}
+          </button>
+        </form>
         <select
           value={sort}
           onChange={handleSortChange}

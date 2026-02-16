@@ -1,101 +1,137 @@
+import { requireAdmin } from "@/lib/auth";
 import { createServiceClient } from "@/lib/supabase/service";
 import { DashboardOverviewContent } from "./DashboardOverviewContent";
 
-function startOfWeek(d: Date) {
-  const day = d.getDay();
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(d);
-  monday.setDate(diff);
-  monday.setHours(0, 0, 0, 0);
-  return monday.toISOString();
+function getDateRange(d: Date, daysBack: number) {
+  const start = new Date(d);
+  start.setDate(start.getDate() - daysBack);
+  start.setHours(0, 0, 0, 0);
+  return start.toISOString().slice(0, 10);
 }
 
 export default async function DashboardPage() {
+  const user = await requireAdmin();
   const supabase = createServiceClient();
   const today = new Date();
-  const todayStr = today.toISOString().slice(0, 10);
-  const weekStart = startOfWeek(today);
+  const todayStr = getDateRange(today, 0);
+  const yesterdayStr = getDateRange(today, 1);
 
   const [
-    { count: ordersToday },
+    { data: ordersTodayData },
+    { data: ordersYesterdayData },
     { count: pendingOrders },
-    { count: productsCount },
-    { data: ordersForRevenue },
     { count: lowStockCount },
-    { count: ordersThisWeek },
-    { data: recentOrders },
-    { data: categoriesWithCount },
+    { data: recentOrdersWithItems },
+    { data: allOrdersLast7Days },
   ] = await Promise.all([
     supabase
       .from("orders")
-      .select("id", { count: "exact", head: true })
-      .gte("created_at", `${todayStr}T00:00:00Z`),
+      .select("id, total_dzd")
+      .gte("created_at", `${todayStr}T00:00:00Z`)
+      .neq("status", "cancelled"),
+    supabase
+      .from("orders")
+      .select("id, total_dzd")
+      .gte("created_at", `${yesterdayStr}T00:00:00Z`)
+      .lt("created_at", `${todayStr}T00:00:00Z`)
+      .neq("status", "cancelled"),
     supabase
       .from("orders")
       .select("id", { count: "exact", head: true })
       .eq("status", "pending"),
-    supabase.from("products").select("id", { count: "exact", head: true }),
-    supabase
-      .from("orders")
-      .select("total_dzd")
-      .neq("status", "cancelled"),
     supabase
       .from("products")
       .select("id", { count: "exact", head: true })
       .lte("stock", 5),
     supabase
       .from("orders")
-      .select("id", { count: "exact", head: true })
-      .gte("created_at", weekStart),
-    supabase
-      .from("orders")
       .select("id, status, total_dzd, shipping_name, created_at")
       .order("created_at", { ascending: false })
-      .limit(5),
+      .limit(8),
     supabase
-      .from("categories")
-      .select("id, name")
-      .order("sort_order"),
+      .from("orders")
+      .select("id, total_dzd, created_at")
+      .gte("created_at", `${getDateRange(today, 6)}T00:00:00Z`)
+      .neq("status", "cancelled"),
   ]);
 
-  const { data: productCountByCategory } = await supabase
-    .from("products")
-    .select("category_id");
-  const categoryIds = categoriesWithCount ?? [];
-  const countByCategoryId: Record<string, number> = {};
-  (productCountByCategory ?? []).forEach((p: { category_id: string | null }) => {
-    const id = p.category_id ?? "_none";
-    countByCategoryId[id] = (countByCategoryId[id] ?? 0) + 1;
-  });
-  const totalProducts = productsCount ?? 0;
-  const topCategories = categoryIds.map((c: { id: string; name: string }) => ({
-    name: c.name,
-    count: countByCategoryId[c.id] ?? 0,
-    percentage:
-      totalProducts > 0
-        ? Math.round(((countByCategoryId[c.id] ?? 0) / totalProducts) * 100)
-        : 0,
-  }));
+  const orderIds = (recentOrdersWithItems ?? []).map((o) => o.id);
+  const { data: orderItems } =
+    orderIds.length > 0
+      ? await supabase
+          .from("order_items")
+          .select("order_id, product_name, variant_label")
+          .in("order_id", orderIds)
+      : { data: [] };
 
-  const totalRevenue =
-    (ordersForRevenue ?? []).reduce((s, o) => s + (o.total_dzd ?? 0), 0) ?? 0;
+  const itemsByOrderId: Record<string, { product_name: string; variant_label: string | null }[]> = {};
+  (orderItems ?? []).forEach((i: { order_id: string; product_name: string; variant_label: string | null }) => {
+    if (!itemsByOrderId[i.order_id]) itemsByOrderId[i.order_id] = [];
+    itemsByOrderId[i.order_id].push({
+      product_name: i.product_name,
+      variant_label: i.variant_label,
+    });
+  });
+
+  const todayRevenue = (ordersTodayData ?? []).reduce((s, o) => s + (o.total_dzd ?? 0), 0);
+  const yesterdayRevenue = (ordersYesterdayData ?? []).reduce((s, o) => s + (o.total_dzd ?? 0), 0);
+  const ordersToday = ordersTodayData?.length ?? 0;
+  const ordersYesterday = ordersYesterdayData?.length ?? 0;
+
+  const revenueChange =
+    yesterdayRevenue > 0
+      ? Math.round(((todayRevenue - yesterdayRevenue) / yesterdayRevenue) * 100)
+      : todayRevenue > 0 ? 100 : 0;
+  const ordersChange =
+    ordersYesterday > 0
+      ? ordersToday - ordersYesterday
+      : ordersToday > 0 ? ordersToday : 0;
+
+  const dayLabels = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+  const dailyRevenue: { day: string; revenue: number; label: string }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().slice(0, 10);
+    const dayRev =
+      (allOrdersLast7Days ?? []).filter((o) =>
+        o.created_at.startsWith(dateStr)
+      ).reduce((s, o) => s + (o.total_dzd ?? 0), 0) ?? 0;
+    dailyRevenue.push({
+      day: dateStr,
+      revenue: dayRev,
+      label: dayLabels[d.getDay()],
+    });
+  }
+
+  const activityFeed = (recentOrdersWithItems ?? []).map((o) => {
+    const items = itemsByOrderId[o.id] ?? [];
+    const firstItem = items[0];
+    const productLabel = firstItem
+      ? firstItem.variant_label
+        ? `${firstItem.product_name} (${firstItem.variant_label})`
+        : firstItem.product_name
+      : "—";
+    return {
+      id: o.id,
+      customerName: o.shipping_name,
+      productLabel,
+      createdAt: o.created_at,
+      status: o.status,
+    };
+  });
 
   return (
     <DashboardOverviewContent
-      ordersToday={ordersToday ?? 0}
+      adminName={user.full_name}
+      todayRevenue={todayRevenue}
+      revenueChange={revenueChange}
+      ordersToday={ordersToday}
+      ordersChange={ordersChange}
       pendingOrders={pendingOrders ?? 0}
-      productsCount={productsCount ?? 0}
       lowStockCount={lowStockCount ?? 0}
-      ordersThisWeek={ordersThisWeek ?? 0}
-      totalRevenue={totalRevenue}
-      recentOrders={(recentOrders ?? []).map((o) => ({
-        id: o.id,
-        shipping_name: o.shipping_name,
-        created_at: o.created_at,
-        status: o.status,
-        total_dzd: o.total_dzd,
-      }))}
-      topCategories={topCategories}
+      dailyRevenue={dailyRevenue}
+      activityFeed={activityFeed}
     />
   );
 }

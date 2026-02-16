@@ -1,6 +1,6 @@
 import { createServiceClient } from "@/lib/supabase/service";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Product } from "@/lib/types/database";
 import { ProductForm } from "../ProductForm";
 import { updateProduct, deleteProduct } from "@/app/actions/products";
 
@@ -13,7 +13,12 @@ export default async function DashboardProduitEditPage({ params }: PageProps) {
   const supabase = createServiceClient();
   const { data: product, error } = await supabase
     .from("products")
-    .select("*")
+    .select(
+      "*, " +
+        "product_option_types(*, product_option_values(*)), " +
+        "product_variants(*, product_variant_options(*, product_option_values!option_value_id(*, product_option_types!option_type_id(name)))), " +
+        "product_attributes(*)"
+    )
     .eq("id", id)
     .single();
   if (error || !product) notFound();
@@ -24,20 +29,11 @@ export default async function DashboardProduitEditPage({ params }: PageProps) {
     .order("sort_order");
 
   return (
-    <div>
-      <Link
-        href="/dashboard/produits"
-        className="text-sm text-[#0ea5a5] hover:underline mb-4 inline-block"
-      >
-        ← Retour aux produits
-      </Link>
-      <h1 className="font-bold text-2xl text-[#1E293B] mb-6">
-        Modifier le produit
-      </h1>
+    <div className="max-w-[1600px] mx-auto w-full">
       <ProductForm
         categories={categories ?? []}
         action={updateProduct.bind(null, id)}
-        product={product}
+        product={product as unknown as Product}
         deleteAction={deleteProduct.bind(null, id)}
       />
     </div>

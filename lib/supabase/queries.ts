@@ -26,12 +26,18 @@ export async function getProducts(options?: {
   minPrice?: number;
   maxPrice?: number;
   inStockOnly?: boolean;
+  search?: string;
 }): Promise<Product[]> {
   const supabase = await createClient();
   let query = supabase
     .from("products")
     .select("*, categories(name, slug)");
 
+  if (options?.search?.trim()) {
+    const term = options.search.trim().replace(/,/g, " ");
+    const pattern = `%${term}%`;
+    query = query.or(`name.ilike.${pattern},description.ilike.${pattern}`);
+  }
   if (options?.categorySlug) {
     const { data: cat } = await supabase
       .from("categories")
@@ -85,26 +91,105 @@ export async function getProductById(id: string): Promise<Product | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("products")
-    .select("*, categories(name, slug)")
+    .select(
+      "*, categories(name, slug), " +
+        "product_option_types(*, product_option_values(*)), " +
+        "product_variants(*, product_variant_options(*, product_option_values!option_value_id(*))), " +
+        "product_attributes(*)"
+    )
     .eq("id", id)
     .single();
   if (error) {
     if (error.code === "PGRST116") return null;
     throw error;
   }
-  return data;
+  return data as unknown as Product;
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("products")
-    .select("*, categories(name, slug)")
+    .select(
+      "*, categories(name, slug), " +
+        "product_option_types(*, product_option_values(*)), " +
+        "product_variants(*, product_variant_options(*, product_option_values!option_value_id(*))), " +
+        "product_attributes(*)"
+    )
     .eq("slug", slug)
     .single();
   if (error) {
     if (error.code === "PGRST116") return null;
     throw error;
   }
-  return data;
+  return data as unknown as Product;
+}
+
+/** Variant with resolved price (variant or product base) and option labels for display */
+export async function getVariantForCart(variantId: string, productId: string) {
+  const supabase = await createClient();
+  const { data: variant, error: vErr } = await supabase
+    .from("product_variants")
+    .select(
+      "id, product_id, price_dzd, stock, " +
+        "product_variant_options(option_value_id, product_option_values(value, product_option_types(name)))"
+    )
+    .eq("id", variantId)
+    .eq("product_id", productId)
+    .single();
+  if (vErr || !variant) return null;
+  const { data: product } = await supabase
+    .from("products")
+    .select("id, name, price_dzd, image_url, image_urls")
+    .eq("id", productId)
+    .single();
+  if (!product) return null;
+  const v = variant as unknown as {
+    id: string;
+    product_id: string;
+    price_dzd: number | null;
+    stock: number;
+    product_variant_options?: { product_option_values?: { value: string; product_option_types?: { name: string } } }[];
+  };
+  const p = product as unknown as { id: string; name: string; price_dzd: number; image_url: string | null; image_urls?: string[] };
+  const price =
+    v.price_dzd != null && v.price_dzd >= 0
+      ? Number(v.price_dzd)
+      : Number(p.price_dzd);
+  const options = v.product_variant_options ?? [];
+  const variantLabel = options
+    .map((o) => o.product_option_values?.value ?? "")
+    .filter(Boolean)
+    .join(" • ");
+  const imageUrl =
+    Array.isArray(p.image_urls) && p.image_urls.length > 0
+      ? p.image_urls[0]
+      : p.image_url ?? null;
+  return {
+    variantId: v.id,
+    productId: p.id,
+    name: p.name,
+    price,
+    stock: v.stock,
+    variantLabel: variantLabel || null,
+    imageUrl,
+  };
+}
+
+export async function getRelatedProducts(
+  categoryId: string | null,
+  excludeProductId: string,
+  limit: number = 8
+): Promise<Product[]> {
+  if (!categoryId) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("*, categories(name, slug)")
+    .eq("category_id", categoryId)
+    .neq("id", excludeProductId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) return [];
+  return (data ?? []) as Product[];
 }

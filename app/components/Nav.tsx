@@ -3,10 +3,16 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, Search } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { LangToggle } from "./LangToggle";
+import type { SiteSettings } from "@/lib/site-settings";
+
+interface NavProps {
+  settings?: SiteSettings | null;
+}
 
 const navLinkKeys = [
   { key: "nav_products" as const, href: "/produits" },
@@ -16,10 +22,25 @@ const navLinkKeys = [
   { key: "nav_login" as const, href: "/connexion" },
 ];
 
-export function Nav() {
+export function Nav({ settings }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
+  const logoUrl = settings?.logo_url?.trim() || "/logo.png";
+  const siteTitle = settings?.site_title?.trim() || "Sani Modern OEB";
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
   const { t } = useLanguage();
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (q) {
+      router.push(`/produits?search=${encodeURIComponent(q)}`);
+      setMobileOpen(false);
+    } else {
+      router.push("/produits");
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,12 +79,13 @@ export function Nav() {
             <div className="flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3 group">
                 <Image
-                  src="/logo.png"
-                  alt="SaniModern OEB"
+                  src={logoUrl}
+                  alt={siteTitle}
                   width={220}
                   height={70}
                   className="h-12 sm:h-14 w-auto object-contain"
                   priority
+                  unoptimized={logoUrl.startsWith("http")}
                 />
               </Link>
 
@@ -93,10 +115,27 @@ export function Nav() {
               </div>
 
               <div className="flex items-center gap-3">
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="hidden sm:flex items-center rounded-xl overflow-hidden border border-slate-200 bg-slate-50 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/20"
+                >
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Rechercher…"
+                    className="w-36 lg:w-44 px-3 py-2 bg-transparent text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] outline-none"
+                    aria-label="Rechercher des produits"
+                  />
+                  <button
+                    type="submit"
+                    className="p-2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors"
+                    aria-label="Rechercher"
+                  >
+                    <Search className="w-5 h-5" />
+                  </button>
+                </form>
                 <LangToggle />
-                <button className="hidden sm:flex w-10 h-10 rounded-xl bg-[#E2E8F0] hover:bg-[#CBD5E1] items-center justify-center text-[var(--text)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2">
-                  <Search className="w-5 h-5" />
-                </button>
 
                 <button
                   onClick={() => setMobileOpen(!mobileOpen)}

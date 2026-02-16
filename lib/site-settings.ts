@@ -1,6 +1,20 @@
 import { createServiceClient } from "./supabase/service";
 
+export interface FooterLink {
+  label_fr: string;
+  label_ar?: string | null;
+  url: string;
+}
+
+export interface FooterSection {
+  title_fr: string;
+  title_ar?: string | null;
+  links: FooterLink[];
+}
+
 export interface SiteSettings {
+  site_title: string | null;
+  logo_url: string | null;
   phone: string | null;
   email: string | null;
   address: string | null;
@@ -15,9 +29,12 @@ export interface SiteSettings {
   mistral_api_key: string | null;
   primary_color: string | null;
   primary_hover_color: string | null;
+  footer_sections: FooterSection[];
 }
 
 const defaults: SiteSettings = {
+  site_title: "Sani Modern OEB",
+  logo_url: null,
   phone: "+213 (0) 34 56 78 90",
   email: "contact@sanimodern.dz",
   address: "Oum El Bouaghi, Algérie",
@@ -32,7 +49,30 @@ const defaults: SiteSettings = {
   mistral_api_key: null,
   primary_color: "#DC2626",
   primary_hover_color: "#B91C1C",
+  footer_sections: [],
 };
+
+export const defaultFooterSections: FooterSection[] = [
+  {
+    title_fr: "Navigation",
+    title_ar: "تنقل",
+    links: [
+      { label_fr: "Produits", label_ar: "المنتجات", url: "/produits" },
+      { label_fr: "Nos Showrooms", label_ar: "عارضاتنا", url: "#" },
+      { label_fr: "À propos", label_ar: "من نحن", url: "#about" },
+      { label_fr: "Contact", label_ar: "اتصل", url: "#footer" },
+    ],
+  },
+  {
+    title_fr: "Support",
+    title_ar: "الدعم",
+    links: [
+      { label_fr: "Livraison & Retours", label_ar: "التوصيل والمرتجعات", url: "#" },
+      { label_fr: "FAQ", label_ar: "الأسئلة الشائعة", url: "#" },
+      { label_fr: "Garantie", label_ar: "الضمان", url: "#" },
+    ],
+  },
+];
 
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
@@ -44,6 +84,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       .single();
     if (error || !data) return defaults;
     return {
+      site_title: data.site_title ?? defaults.site_title,
+      logo_url: data.logo_url ?? defaults.logo_url,
       phone: data.phone ?? defaults.phone,
       email: data.email ?? defaults.email,
       address: data.address ?? defaults.address,
@@ -58,6 +100,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       mistral_api_key: data.mistral_api_key ?? defaults.mistral_api_key,
       primary_color: data.primary_color ?? defaults.primary_color,
       primary_hover_color: data.primary_hover_color ?? defaults.primary_hover_color,
+      footer_sections: Array.isArray(data.footer_sections)
+        ? (data.footer_sections as FooterSection[])
+        : defaultFooterSections,
     };
   } catch {
     return defaults;

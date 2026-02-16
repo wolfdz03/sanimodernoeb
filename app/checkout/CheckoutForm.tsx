@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Nav } from "../components/Nav";
+import type { SiteSettings } from "@/lib/site-settings";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { createOrder } from "../actions/orders";
@@ -12,9 +13,10 @@ import type { CartItem } from "@/context/CartContext";
 
 interface CheckoutFormProps {
   items: CartItem[];
+  settings?: SiteSettings | null;
 }
 
-export function CheckoutForm({ items }: CheckoutFormProps) {
+export function CheckoutForm({ items, settings }: CheckoutFormProps) {
   const { t } = useLanguage();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -56,7 +58,7 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
 
   return (
     <>
-      <Nav />
+      <Nav settings={settings} />
       <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-6">
           <h1 className="font-bold text-3xl text-[#1E293B] mb-8">
@@ -165,11 +167,12 @@ export function CheckoutForm({ items }: CheckoutFormProps) {
                 <ul className="space-y-3 mb-4">
                   {items.map((item) => (
                     <li
-                      key={item.productId}
+                      key={`${item.productId}-${item.variantId ?? ""}`}
                       className="flex justify-between text-sm"
                     >
                       <span className="text-[#1E293B]">
-                        {item.name} × {item.quantity}
+                        {item.name}
+                        {item.variantLabel ? ` (${item.variantLabel})` : ""} × {item.quantity}
                       </span>
                       <span className="font-medium text-[#1E293B]">
                         {(item.price * item.quantity).toLocaleString("fr-DZ")} DA
