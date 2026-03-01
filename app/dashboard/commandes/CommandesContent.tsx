@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { FileDown, Plus, Inbox, Filter } from "lucide-react";
+import { FileDown, Plus, Inbox, Search, CheckSquare, Square, Trash2, Send, ArrowRight, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import type { OrderStatus } from "@/lib/types/database";
 import { MarkShippedButton } from "./MarkShippedButton";
+import { bulkUpdateOrderStatus } from "@/app/actions/orders";
+import { useRouter } from "next/navigation";
 
 const statusKeys: Record<
   OrderStatus,
@@ -76,12 +78,35 @@ function getItemsPreview(items: OrderItem[], maxLen = 35): string {
   return str.length > maxLen ? str.slice(0, maxLen) + "..." : str;
 }
 
+function getStatusBadge(status: string): string {
+  switch (status) {
+    case "pending": return "dash-badge dash-badge-amber";
+    case "paid": return "dash-badge dash-badge-blue";
+    case "shipped": return "dash-badge dash-badge-emerald";
+    case "delivered": return "dash-badge dash-badge-emerald";
+    case "cancelled": return "dash-badge dash-badge-gray";
+    default: return "dash-badge dash-badge-gray";
+  }
+}
+
+function getStatusDot(status: string): string {
+  switch (status) {
+    case "pending": return "bg-amber-500";
+    case "paid": return "bg-blue-500";
+    case "shipped": case "delivered": return "bg-emerald-500";
+    default: return "bg-gray-400";
+  }
+}
+
 export function CommandesContent({
   orders,
   currentStatus,
 }: CommandesContentProps) {
   const { t, lang } = useLanguage();
+  const router = useRouter();
   const [search, setSearch] = useState("");
+  const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
+  const [isBulkLoading, setIsBulkLoading] = useState(false);
 
   const isPending = (s: string) => s === "pending" || s === "paid";
   const isShipped = (s: string) => s === "shipped" || s === "delivered";
@@ -103,13 +128,48 @@ export function CommandesContent({
   const pendingCount =
     (orders ?? []).filter((o) => isPending(o.status)).length;
 
-  const tabClass = (active: boolean) =>
-    active
-      ? "rounded-full bg-[var(--dash-primary)]/10 border border-transparent px-4 py-1.5 text-sm font-medium text-[var(--dash-primary)] whitespace-nowrap"
-      : "rounded-full bg-transparent border border-transparent px-4 py-1.5 text-sm font-medium text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)] whitespace-nowrap transition-colors";
+  const tabs = [
+    { href: "/dashboard/commandes", label: t("dashboard_orders_filter_all"), active: !currentStatus },
+    { href: "/dashboard/commandes?status=pending", label: t("dashboard_status_pending"), active: currentStatus === "pending", count: pendingCount > 0 ? pendingCount : undefined },
+    { href: "/dashboard/commandes?status=shipped", label: t("dashboard_orders_filter_shipped"), active: currentStatus === "shipped" },
+    { href: "/dashboard/commandes?status=cancelled", label: t("dashboard_status_cancelled"), active: currentStatus === "cancelled" },
+  ];
+
+  const toggleSelectAll = () => {
+    if (selectedOrders.size === filtered.length) {
+      setSelectedOrders(new Set());
+    } else {
+      setSelectedOrders(new Set(filtered.map(o => o.id)));
+    }
+  };
+
+  const toggleOrderSelection = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const newSelected = new Set(selectedOrders);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedOrders(newSelected);
+  };
+
+  const handleBulkAction = async (status: "shipped" | "delivered" | "cancelled") => {
+    if (selectedOrders.size === 0) return;
+    setIsBulkLoading(true);
+    const { error } = await bulkUpdateOrderStatus(Array.from(selectedOrders), status);
+    if (!error) {
+      setSelectedOrders(new Set());
+      router.refresh();
+    } else {
+      alert("Erreur: " + error);
+    }
+    setIsBulkLoading(false);
+  };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-5xl space-y-5">
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -125,100 +185,114 @@ export function CommandesContent({
             href="/api/dashboard/export-orders"
             download
             title={t("hint_export")}
-            className="inline-flex items-center gap-2 rounded-lg border border-[var(--dash-border)] bg-white px-4 py-2 text-sm font-medium text-[var(--dash-text-main)] shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:ring-offset-2"
+            className="dash-btn dash-btn-secondary"
           >
-            <FileDown className="h-5 w-5" />
+            <FileDown className="h-4 w-4" />
             {t("dashboard_export_report")}
           </a>
           <Link
             href="/produits"
-            className="inline-flex items-center gap-2 rounded-lg bg-[var(--dash-primary)] px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-[var(--dash-primary-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:ring-offset-2"
+            className="dash-btn dash-btn-primary"
           >
-            <Plus className="h-5 w-5" />
+            <Plus className="h-4 w-4" />
             {t("dashboard_orders_create")}
           </Link>
         </div>
       </div>
 
-      {/* Filters & Search */}
+      {/* Tabs & Search */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex gap-1 overflow-x-auto pb-1 sm:pb-0">
-          <Link href="/dashboard/commandes" className={tabClass(!currentStatus)}>
-            {t("dashboard_orders_filter_all")}
-          </Link>
-          <Link
-            href="/dashboard/commandes?status=pending"
-            className={tabClass(currentStatus === "pending")}
-          >
-            {t("dashboard_status_pending")}{" "}
-            {pendingCount > 0 && (
-              <span className="ml-1.5 rounded-full bg-[var(--dash-primary)] px-1.5 py-0.5 text-[10px] text-white">
-                {pendingCount}
-              </span>
-            )}
-          </Link>
-          <Link
-            href="/dashboard/commandes?status=shipped"
-            className={tabClass(currentStatus === "shipped")}
-          >
-            {t("dashboard_orders_filter_shipped")}
-          </Link>
-          <Link
-            href="/dashboard/commandes?status=cancelled"
-            className={tabClass(currentStatus === "cancelled")}
-          >
-            {t("dashboard_status_cancelled")}
-          </Link>
+        <div className="flex items-center gap-1 bg-gray-100/80 rounded-lg p-1">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-medium whitespace-nowrap ${tab.active
+                  ? "bg-white text-[var(--dash-text-main)] shadow-sm"
+                  : "text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]"
+                }`}
+            >
+              {tab.label}
+              {tab.count != null && (
+                <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[var(--dash-primary)] px-1 text-[10px] font-bold text-white">
+                  {tab.count}
+                </span>
+              )}
+            </Link>
+          ))}
         </div>
-        <div className="relative w-full sm:w-64">
+        <div className="relative w-full sm:w-60">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[var(--dash-text-muted)]">
-            <Filter className="h-5 w-5" />
+            <Search className="h-4 w-4" />
           </div>
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("dashboard_orders_filter_placeholder")}
-            className="block w-full rounded-lg border border-[var(--dash-border)] bg-white py-2 pl-9 pr-3 text-sm shadow-sm transition-all placeholder:text-[var(--dash-text-muted)] focus:border-[var(--dash-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--dash-primary)]"
+            className="dash-input pl-9 text-[13px] h-9"
           />
         </div>
       </div>
 
+      {/* Bulk Action Bar */}
+      {selectedOrders.size > 0 && (
+        <div className="flex items-center justify-between rounded-lg border border-[var(--dash-primary)]/30 bg-emerald-50/50 p-3">
+          <span className="text-[13px] font-medium text-[var(--dash-primary)]">
+            {selectedOrders.size} {selectedOrders.size === 1 ? 'commande sélectionnée' : 'commandes sélectionnées'}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleBulkAction("shipped")}
+              disabled={isBulkLoading}
+              className="dash-btn dash-btn-secondary text-[13px] py-1.5 px-3 text-[var(--dash-primary)] border-[var(--dash-primary)]/20 hover:bg-emerald-50 disabled:opacity-50"
+            >
+              <Send className="h-3.5 w-3.5" />
+              Expédier
+            </button>
+            <button
+              onClick={() => handleBulkAction("cancelled")}
+              disabled={isBulkLoading}
+              className="dash-btn dash-btn-secondary text-[13px] py-1.5 px-3 text-red-600 border-red-200 hover:bg-red-50 disabled:opacity-50"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Annuler
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Select All Row */}
+      {filtered.length > 0 && (
+        <div className="flex items-center gap-3 px-1 mb-1">
+          <button onClick={toggleSelectAll} className="flex items-center gap-2 text-[13px] text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]">
+            {selectedOrders.size === filtered.length ? <CheckSquare className="h-4 w-4 text-[var(--dash-primary)]" /> : <Square className="h-4 w-4" />}
+            Tout sélectionner
+          </button>
+        </div>
+      )}
+
       {/* Order Cards */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         {/* Pending orders */}
         {pendingOrders.map((order) => (
           <OrderCard
             key={order.id}
             order={order}
-            statusStripColor="var(--dash-warning)"
-            statusKey={order.status === "pending" ? "dashboard_status_pending" : "dashboard_status_paid"}
-            paymentLabel={
-              order.status === "pending"
-                ? t("dashboard_orders_unpaid")
-                : t("dashboard_orders_paid")
-            }
-            paymentClass={
-              order.status === "pending"
-                ? "text-[var(--dash-text-muted)]"
-                : "text-[var(--dash-primary)] font-medium"
-            }
+            isSelected={selectedOrders.has(order.id)}
+            onToggle={(e) => toggleOrderSelection(order.id, e)}
             action={<MarkShippedButton orderId={order.id} variant="shipped" />}
             t={t as (key: string) => string}
             formatTimeAgo={(d) => formatTimeAgo(d, lang)}
-            getOrderDisplayId={getOrderDisplayId}
-            getItemsPreview={getItemsPreview}
           />
         ))}
 
         {/* Divider */}
         {pendingOrders.length > 0 && shippedOrders.length > 0 && (
           <div className="relative py-4">
-            <div aria-hidden className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[var(--dash-border)]" />
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-[var(--dash-bg-light)] px-3 text-xs font-medium uppercase tracking-widest text-[var(--dash-text-muted)]">
+            <div className="dash-divider" />
+            <div className="relative flex justify-center -mt-2.5">
+              <span className="bg-[var(--dash-bg-light)] px-4 text-[11px] font-semibold uppercase tracking-widest text-[var(--dash-text-muted)]">
                 {t("dashboard_orders_processed_today")}
               </span>
             </div>
@@ -230,16 +304,12 @@ export function CommandesContent({
           <OrderCard
             key={order.id}
             order={order}
-            statusStripColor="var(--dash-primary)"
-            statusKey="dashboard_status_shipped"
-            paymentLabel={t("dashboard_orders_paid")}
-            paymentClass="text-[var(--dash-primary)] font-medium"
+            isSelected={selectedOrders.has(order.id)}
+            onToggle={(e) => toggleOrderSelection(order.id, e)}
             action={<MarkShippedButton orderId={order.id} variant="detail" />}
             t={t as (key: string) => string}
             formatTimeAgo={(d) => formatTimeAgo(d, lang)}
-            getOrderDisplayId={getOrderDisplayId}
-            getItemsPreview={getItemsPreview}
-            opacity
+            dimmed
           />
         ))}
 
@@ -248,30 +318,26 @@ export function CommandesContent({
           <OrderCard
             key={order.id}
             order={order}
-            statusStripColor="#9CA3AF"
-            statusKey="dashboard_status_cancelled"
-            paymentLabel="—"
-            paymentClass="text-[var(--dash-text-muted)]"
+            isSelected={selectedOrders.has(order.id)}
+            onToggle={(e) => toggleOrderSelection(order.id, e)}
             action={<MarkShippedButton orderId={order.id} variant="detail" />}
             t={t as (key: string) => string}
             formatTimeAgo={(d) => formatTimeAgo(d, lang)}
-            getOrderDisplayId={getOrderDisplayId}
-            getItemsPreview={getItemsPreview}
-            opacity
+            dimmed
           />
         ))}
       </div>
 
       {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-50">
-            <Inbox className="h-8 w-8 text-[var(--dash-text-muted)]" />
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 border border-gray-100">
+            <Inbox className="h-7 w-7 text-[var(--dash-text-muted)]" />
           </div>
-          <h3 className="font-display text-lg font-medium text-[var(--dash-text-main)]">
+          <h3 className="font-display text-lg font-semibold text-[var(--dash-text-main)]">
             {t("dashboard_orders_all_caught_up")}
           </h3>
-          <p className="mt-1 max-w-sm text-[var(--dash-text-muted)]">
+          <p className="mt-1.5 max-w-sm text-sm text-[var(--dash-text-muted)]">
             {t("dashboard_no_orders_page")}
           </p>
         </div>
@@ -282,83 +348,80 @@ export function CommandesContent({
 
 interface OrderCardProps {
   order: OrderRow;
-  statusStripColor: string;
-  statusKey: string;
-  paymentLabel: string;
-  paymentClass: string;
+  isSelected: boolean;
+  onToggle: (e: React.MouseEvent) => void;
   action: React.ReactNode;
   t: (key: string) => string;
   formatTimeAgo: (d: string) => string;
-  getOrderDisplayId: (id: string) => string;
-  getItemsPreview: (items: OrderItem[]) => string;
-  opacity?: boolean;
+  dimmed?: boolean;
 }
 
 function OrderCard({
   order,
-  statusStripColor,
-  statusKey,
-  paymentLabel,
-  paymentClass,
+  isSelected,
+  onToggle,
   action,
   t,
   formatTimeAgo,
-  getOrderDisplayId,
-  getItemsPreview,
-  opacity,
+  dimmed,
 }: OrderCardProps) {
   const itemCount = order.items.reduce((s, i) => s + i.quantity, 0);
   const itemsLabel = itemCount === 1 ? t("dashboard_orders_item") : t("dashboard_orders_items");
+  const statusBadge = getStatusBadge(order.status);
+  const statusDot = getStatusDot(order.status);
 
   return (
     <Link
       href={`/dashboard/commandes/${order.id}`}
-      className={`group relative flex flex-col gap-4 overflow-hidden rounded-lg border border-[var(--dash-border)] bg-[var(--dash-surface)] p-5 shadow-sm transition-all hover:-translate-y-[2px] hover:border-gray-300 hover:shadow-[var(--dash-shadow-subtle)] sm:flex-row sm:items-center sm:justify-between ${opacity ? "opacity-75 hover:opacity-100" : ""}`}
+      className={`group relative flex flex-col gap-4 overflow-hidden dash-card p-5 sm:flex-row sm:items-center sm:justify-between ${isSelected ? "!border-[var(--dash-primary)] ring-1 ring-[var(--dash-primary)]/20" : ""
+        } ${dimmed ? "opacity-70 hover:opacity-100" : ""}`}
     >
+      {/* Left strip */}
       <div
-        className="absolute bottom-0 left-0 top-0 w-1"
-        style={{ backgroundColor: statusStripColor }}
+        className="absolute bottom-0 left-0 top-0 w-[3px] rounded-l-[var(--dash-radius)]"
+        style={{ backgroundColor: order.status === "pending" || order.status === "paid" ? "var(--dash-warning)" : order.status === "cancelled" ? "#9CA3AF" : "var(--dash-primary)" }}
       />
-      <div className="flex flex-col gap-1 pl-3">
-        <div className="flex items-center gap-3">
-          <span className="font-display text-sm font-medium text-[var(--dash-text-muted)]">
-            {getOrderDisplayId(order.id)}
-          </span>
-          <span className="h-1 w-1 rounded-full bg-gray-300" />
-          <span className="text-xs text-[var(--dash-text-muted)]">
-            {formatTimeAgo(order.created_at)}
-          </span>
-          <span
-            className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium sm:hidden ${
-              statusStripColor === "var(--dash-warning)"
-                ? "bg-[var(--dash-warning)]/10 text-[var(--dash-warning)]"
-                : statusStripColor === "var(--dash-primary)"
-                  ? "bg-[var(--dash-primary)]/10 text-[var(--dash-primary)]"
-                  : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            {t(statusKey)}
-          </span>
-        </div>
-        <h3 className="font-body text-base font-semibold text-[var(--dash-text-main)]">
-          {order.shipping_name}
-        </h3>
-        <div className="flex items-center gap-2 text-sm text-[var(--dash-text-muted)]">
-          <span>
-            {itemCount} {itemsLabel}
-          </span>
-          <span className="text-gray-300">•</span>
-          <span className="truncate">{getItemsPreview(order.items) || "—"}</span>
+
+      <div className="flex items-center gap-4 pl-3">
+        <button onClick={onToggle} className="text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]">
+          {isSelected ? <CheckSquare className="h-4 w-4 text-[var(--dash-primary)]" /> : <Square className="h-4 w-4" />}
+        </button>
+
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className="font-display text-[13px] font-semibold text-[var(--dash-text-muted)] tabular-nums">
+              {getOrderDisplayId(order.id)}
+            </span>
+            <span className="h-1 w-1 rounded-full bg-gray-300" />
+            <span className="text-[11px] text-[var(--dash-text-muted)]">
+              {formatTimeAgo(order.created_at)}
+            </span>
+            <span className={statusBadge}>
+              <span className={`w-1.5 h-1.5 rounded-full ${statusDot} mr-1`} />
+              {t(statusKeys[order.status as OrderStatus] ?? order.status)}
+            </span>
+          </div>
+          <h3 className="font-body text-[15px] font-semibold text-[var(--dash-text-main)]">
+            {order.shipping_name}
+          </h3>
+          <div className="flex items-center gap-2 text-[13px] text-[var(--dash-text-muted)]">
+            <span>{itemCount} {itemsLabel}</span>
+            <span className="text-gray-300">·</span>
+            <span className="truncate max-w-[200px]">{getItemsPreview(order.items) || "—"}</span>
+          </div>
         </div>
       </div>
+
       <div className="flex items-center justify-between gap-6 pl-3 sm:pl-0">
         <div className="flex flex-col items-start sm:items-end">
-          <span className="font-display text-lg font-semibold text-[var(--dash-text-main)]">
+          <span className="font-display text-lg font-semibold text-[var(--dash-text-main)] tabular-nums">
             {order.total_dzd.toLocaleString("fr-DZ")} DA
           </span>
-          <span className={`text-xs ${paymentClass}`}>{paymentLabel}</span>
         </div>
-        <div onClick={(e) => e.stopPropagation()}>{action}</div>
+        <div className="flex items-center gap-2">
+          <div onClick={(e) => e.stopPropagation()}>{action}</div>
+          <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[var(--dash-text-muted)] opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0" />
+        </div>
       </div>
     </Link>
   );

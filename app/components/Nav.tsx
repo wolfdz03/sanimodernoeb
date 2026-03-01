@@ -5,9 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, ShoppingBag } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCart } from "@/context/CartContext";
 import { LangToggle } from "./LangToggle";
+import { CartDrawer } from "./CartDrawer";
 import type { SiteSettings } from "@/lib/site-settings";
 
 interface NavProps {
@@ -27,9 +29,11 @@ export function Nav({ settings }: NavProps) {
   const logoUrl = settings?.logo_url?.trim() || "/logo.png";
   const siteTitle = settings?.site_title?.trim() || "Sani Modern OEB";
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { t } = useLanguage();
+  const { totalItems } = useCart();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +51,14 @@ export function Nav({ settings }: NavProps) {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const handleOpenCart = () => setCartOpen(true);
+    window.addEventListener("open-cart", handleOpenCart);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("open-cart", handleOpenCart);
+    };
   }, []);
 
   const handleNavClick = (href: string) => {
@@ -64,17 +75,15 @@ export function Nav({ settings }: NavProps) {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "py-2" : "py-4"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "py-2" : "py-4"
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6">
           <div
-            className={`px-6 py-3 transition-all duration-500 ${
-              scrolled
-                ? "bg-white/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] rounded-2xl"
-                : "bg-white/80 backdrop-blur-sm rounded-2xl"
-            }`}
+            className={`px-6 py-3 transition-all duration-500 ${scrolled
+              ? "bg-white/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] rounded-2xl"
+              : "bg-white/80 backdrop-blur-sm rounded-2xl"
+              }`}
           >
             <div className="flex items-center justify-between">
               <Link href="/" className="flex items-center gap-3 group">
@@ -135,6 +144,21 @@ export function Nav({ settings }: NavProps) {
                     <Search className="w-5 h-5" />
                   </button>
                 </form>
+
+                <button
+                  type="button"
+                  onClick={() => setCartOpen(true)}
+                  className="relative p-2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-lg"
+                  aria-label="Voir le panier"
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#DC2626] text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                      {totalItems}
+                    </span>
+                  )}
+                </button>
+
                 <LangToggle />
 
                 <button
@@ -196,6 +220,8 @@ export function Nav({ settings }: NavProps) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );
 }

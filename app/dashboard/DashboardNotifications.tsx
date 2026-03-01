@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Bell, Check } from "lucide-react";
+import { Bell, Check, ShoppingBag, RefreshCw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/context/LanguageContext";
 import type { TranslationKey } from "@/lib/translations";
@@ -41,7 +41,7 @@ function saveStored(list: DashboardNotification[]) {
       STORAGE_KEY,
       JSON.stringify(list.slice(0, MAX_NOTIFICATIONS))
     );
-  } catch {}
+  } catch { }
 }
 
 const statusLabelKey: Record<string, string> = {
@@ -160,37 +160,52 @@ export function DashboardNotifications() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="relative p-2 rounded-lg text-[var(--dash-text-muted)] hover:bg-emerald-50 hover:text-[var(--dash-primary)] transition-colors"
+        className="relative p-2 rounded-lg text-[var(--dash-text-muted)] hover:bg-emerald-50 hover:text-[var(--dash-primary)]"
         aria-label={t("dashboard_notifications")}
       >
-        <Bell className="w-6 h-6" />
+        <Bell className="w-[18px] h-[18px]" />
         {unreadCount > 0 && (
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[var(--dash-destructive)] ring-2 ring-white" />
+          <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--dash-destructive)] text-[9px] font-bold text-white px-1 ring-2 ring-white">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
         )}
       </button>
       {open && (
-        <div className="absolute top-full end-0 mt-2 w-[360px] max-w-[calc(100vw-2rem)] bg-[var(--dash-surface)] border border-[var(--dash-border)] rounded-lg shadow-xl z-50 overflow-hidden">
+        <div className="dash-dropdown absolute top-full end-0 mt-2 w-[380px] max-w-[calc(100vw-2rem)] z-50 overflow-hidden">
+          {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--dash-border)]">
-            <span className="font-semibold text-[var(--dash-text-main)]">
-              {t("dashboard_notifications")}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-sm text-[var(--dash-text-main)]">
+                {t("dashboard_notifications")}
+              </span>
+              {unreadCount > 0 && (
+                <span className="dash-badge dash-badge-emerald">
+                  {unreadCount} new
+                </span>
+              )}
+            </div>
             {unreadCount > 0 && (
               <button
                 type="button"
                 onClick={markAllRead}
-                className="text-sm text-[var(--dash-primary)] hover:underline"
+                className="text-xs font-medium text-[var(--dash-primary)] hover:underline"
               >
                 {t("dashboard_mark_all_read")}
               </button>
             )}
           </div>
-          <div className="max-h-[320px] overflow-y-auto">
+
+          {/* List */}
+          <div className="max-h-[360px] overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="px-4 py-6 text-sm text-[var(--dash-text-muted)] text-center">
-                {t("dashboard_no_notifications")}
-              </p>
+              <div className="px-4 py-10 text-center">
+                <Bell className="w-8 h-8 text-gray-200 mx-auto mb-3" />
+                <p className="text-sm text-[var(--dash-text-muted)]">
+                  {t("dashboard_no_notifications")}
+                </p>
+              </div>
             ) : (
-              <ul className="divide-y divide-[var(--dash-border)]">
+              <ul>
                 {notifications.map((n) => (
                   <li key={n.id}>
                     <Link
@@ -199,23 +214,32 @@ export function DashboardNotifications() {
                         markRead(n.id);
                         setOpen(false);
                       }}
-                      className={`flex gap-3 px-4 py-3 hover:bg-gray-50 transition-colors ${!n.read ? "bg-emerald-50/50" : ""}`}
+                      className={`flex gap-3 px-4 py-3 hover:bg-gray-50 ${!n.read ? "bg-emerald-50/40" : ""}`}
                     >
-                      <span className="flex-shrink-0 mt-0.5">
-                        {!n.read ? (
-                          <span className="w-2 h-2 rounded-full bg-[var(--dash-primary)]" />
+                      {/* Icon */}
+                      <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${n.type === "new_order"
+                          ? "bg-emerald-100 text-[var(--dash-primary)]"
+                          : "bg-blue-50 text-blue-500"
+                        }`}>
+                        {n.type === "new_order" ? (
+                          <ShoppingBag className="w-4 h-4" />
                         ) : (
-                          <Check className="w-4 h-4 text-gray-300" />
+                          <RefreshCw className="w-4 h-4" />
                         )}
-                      </span>
+                      </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-medium text-[var(--dash-text-main)] text-sm">
-                          {n.title}
-                        </p>
-                        <p className="text-xs text-[var(--dash-text-muted)] truncate">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-[var(--dash-text-main)] text-[13px]">
+                            {n.title}
+                          </p>
+                          {!n.read && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--dash-primary)] shrink-0 dash-dot-pulse" />
+                          )}
+                        </div>
+                        <p className="text-xs text-[var(--dash-text-muted)] truncate mt-0.5">
                           {n.message}
                         </p>
-                        <p className="text-xs text-[var(--dash-text-muted)] mt-0.5">
+                        <p className="text-[11px] text-[var(--dash-text-muted)] mt-1">
                           {formatTime(n.createdAt)}
                         </p>
                       </div>

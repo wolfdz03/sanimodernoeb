@@ -23,6 +23,7 @@ export default async function DashboardPage() {
     { count: lowStockCount },
     { data: recentOrdersWithItems },
     { data: allOrdersLast7Days },
+    { data: allCompletedOrders },
   ] = await Promise.all([
     supabase
       .from("orders")
@@ -52,6 +53,10 @@ export default async function DashboardPage() {
       .from("orders")
       .select("id, total_dzd, created_at")
       .gte("created_at", `${getDateRange(today, 6)}T00:00:00Z`)
+      .neq("status", "cancelled"),
+    supabase
+      .from("orders")
+      .select("id, total_dzd, shipping_wilaya")
       .neq("status", "cancelled"),
   ]);
 
@@ -121,6 +126,25 @@ export default async function DashboardPage() {
     };
   });
 
+  // Calculate AOV
+  const totalRevenueAllTime = (allCompletedOrders ?? []).reduce((sum, o) => sum + (o.total_dzd ?? 0), 0);
+  const totalOrdersCount = allCompletedOrders?.length || 1; // avoid div by 0
+  const aov = Math.round(totalRevenueAllTime / totalOrdersCount);
+
+  // Top Wilayas
+  const wilayaCounts: Record<string, number> = {};
+  (allCompletedOrders ?? []).forEach(o => {
+    if (o.shipping_wilaya) {
+      if (!wilayaCounts[o.shipping_wilaya]) wilayaCounts[o.shipping_wilaya] = 0;
+      wilayaCounts[o.shipping_wilaya]++;
+    }
+  });
+
+  const topWilayas = Object.entries(wilayaCounts)
+    .map(([wilaya, count]) => ({ wilaya, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
   return (
     <DashboardOverviewContent
       adminName={user.full_name}
@@ -132,6 +156,8 @@ export default async function DashboardPage() {
       lowStockCount={lowStockCount ?? 0}
       dailyRevenue={dailyRevenue}
       activityFeed={activityFeed}
+      aov={aov}
+      topWilayas={topWilayas}
     />
   );
 }

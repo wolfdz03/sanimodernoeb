@@ -99,3 +99,42 @@ export async function updateOrderStatus(
   if (error) return { error: error.message };
   return {};
 }
+
+export async function bulkUpdateOrderStatus(
+  orderIds: string[],
+  status: "pending" | "paid" | "shipped" | "delivered" | "cancelled"
+) {
+  const { createServiceClient } = await import("@/lib/supabase/service");
+  const supabase = createServiceClient();
+  const { error } = await supabase
+    .from("orders")
+    .update({ status })
+    .in("id", orderIds);
+  if (error) return { error: error.message };
+  return {};
+}
+
+export async function trackOrder(orderId: string) {
+  const { createServiceClient } = await import("@/lib/supabase/service");
+  const supabase = createServiceClient();
+  const { data, error } = await supabase
+    .from("orders")
+    .select(`
+      *,
+      order_items (
+        id,
+        product_id,
+        quantity,
+        price_dzd,
+        product_name,
+        variant_label
+      )
+    `)
+    .eq("id", orderId)
+    .single();
+
+  if (error || !data) {
+    return { error: "Commande introuvable. Veuillez vérifier le numéro de commande." };
+  }
+  return { order: data };
+}

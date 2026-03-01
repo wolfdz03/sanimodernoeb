@@ -43,6 +43,19 @@ export async function generateMetadata(): Promise<Metadata> {
     title: `${siteTitle} | Salles de Bain Modernes`,
     description:
       "Solutions de salle de bain premium. Douches, baignoires, lavabos, toilettes et robinetterie. Qualité, innovation et service exceptionnel.",
+    openGraph: {
+      title: `${siteTitle} | Salles de Bain Modernes`,
+      description: "Solutions de salle de bain premium. Douches, baignoires, lavabos, toilettes et robinetterie.",
+      url: "https://sanimodernoeb.com",
+      siteName: siteTitle,
+      locale: "fr_DZ",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${siteTitle} | Salles de Bain Modernes`,
+      description: "Solutions de salle de bain premium en Algérie.",
+    },
   };
 }
 

@@ -1,6 +1,7 @@
 import { getProductById, getVariantForCart } from "@/lib/supabase/queries";
 import { getProductPrimaryImage } from "@/lib/product-images";
 import { getSiteSettings } from "@/lib/site-settings";
+import { getShippingRates } from "@/app/actions/shipping";
 import { CheckoutForm } from "./CheckoutForm";
 import { CheckoutSuccess } from "./CheckoutSuccess";
 import { CheckoutFromCart } from "./CheckoutFromCart";
@@ -18,7 +19,10 @@ interface PageProps {
 export default async function CheckoutPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const { productId, variantId, qty: qtyParam, success, total } = params;
-  const settings = await getSiteSettings();
+  const [settings, shippingRates] = await Promise.all([
+    getSiteSettings(),
+    getShippingRates(),
+  ]);
 
   if (success) {
     const totalDzd = total ? parseInt(total, 10) : undefined;
@@ -26,12 +30,12 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
   }
 
   if (!productId) {
-    return <CheckoutFromCart settings={settings} />;
+    return <CheckoutFromCart settings={settings} shippingRates={shippingRates} />;
   }
 
   const product = await getProductById(productId);
   if (!product) {
-    return <CheckoutFromCart settings={settings} />;
+    return <CheckoutFromCart settings={settings} shippingRates={shippingRates} />;
   }
 
   const quantity = Math.max(1, parseInt(qtyParam ?? "1", 10) || 1);
@@ -51,7 +55,7 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
           variantLabel: variantInfo.variantLabel,
         },
       ];
-      return <CheckoutForm items={items} settings={settings} />;
+      return <CheckoutForm items={items} settings={settings} shippingRates={shippingRates} />;
     }
   }
 
@@ -65,5 +69,5 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
     },
   ];
 
-  return <CheckoutForm items={items} settings={settings} />;
+  return <CheckoutForm items={items} settings={settings} shippingRates={shippingRates} />;
 }

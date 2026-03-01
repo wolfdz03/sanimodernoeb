@@ -10,19 +10,30 @@ import { createOrder } from "../actions/orders";
 import { WILAYAS } from "@/lib/wilayas";
 import { trackInitiateCheckout } from "@/lib/facebook-pixel";
 import type { CartItem } from "@/context/CartContext";
+import { useCart } from "@/context/CartContext";
 
 interface CheckoutFormProps {
   items: CartItem[];
   settings?: SiteSettings | null;
+  shippingRates?: Record<string, number>;
 }
 
-export function CheckoutForm({ items, settings }: CheckoutFormProps) {
+export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormProps) {
   const { t } = useLanguage();
   const router = useRouter();
+  const { clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedWilaya, setSelectedWilaya] = useState<string>("");
 
-  const totalDzd = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
+  // Calculate free delivery logic
+  const freeThreshold = settings?.free_delivery_threshold_dzd;
+  const isFreeDelivery = freeThreshold !== undefined && freeThreshold !== null && freeThreshold > 0 && subtotal >= freeThreshold;
+
+  const shippingCost = isFreeDelivery ? 0 : (shippingRates?.[selectedWilaya] ?? 0);
+  const totalDzd = subtotal + shippingCost;
 
   useEffect(() => {
     trackInitiateCheckout({ value: totalDzd, num_items: items.length });
@@ -39,7 +50,7 @@ export function CheckoutForm({ items, settings }: CheckoutFormProps) {
     const formData = {
       shipping_name: (form.elements.namedItem("shipping_name") as HTMLInputElement).value,
       shipping_phone: (form.elements.namedItem("shipping_phone") as HTMLInputElement).value,
-      shipping_wilaya: (form.elements.namedItem("shipping_wilaya") as HTMLSelectElement).value,
+      shipping_wilaya: selectedWilaya,
       shipping_city: (form.elements.namedItem("shipping_city") as HTMLInputElement).value,
       shipping_address: (form.elements.namedItem("shipping_address") as HTMLTextAreaElement).value,
     };
@@ -114,6 +125,8 @@ export function CheckoutForm({ items, settings }: CheckoutFormProps) {
                     id="shipping_wilaya"
                     name="shipping_wilaya"
                     required
+                    value={selectedWilaya}
+                    onChange={(e) => setSelectedWilaya(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
                   >
                     <option value="">Choisir une wilaya</option>
@@ -180,7 +193,23 @@ export function CheckoutForm({ items, settings }: CheckoutFormProps) {
                     </li>
                   ))}
                 </ul>
-                <div className="border-t border-slate-200 pt-4 flex justify-between font-bold text-[#1E293B]">
+                <div className="border-t border-slate-200 pt-3 pb-3 space-y-2">
+                  <div className="flex justify-between text-sm text-slate-600">
+                    <span>Sous-total</span>
+                    <span>{subtotal.toLocaleString("fr-DZ")} DA</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-slate-600">
+                    <span>Livraison {selectedWilaya ? `(${selectedWilaya})` : ""}</span>
+                    <span>
+                      {selectedWilaya
+                        ? isFreeDelivery
+                          ? <span className="text-emerald-600 font-medium tracking-wide text-xs bg-emerald-50 px-2 py-0.5 rounded uppercase">Gratuite</span>
+                          : `${shippingCost.toLocaleString("fr-DZ")} DA`
+                        : "—"}
+                    </span>
+                  </div>
+                </div>
+                <div className="border-t border-slate-200 pt-4 flex justify-between font-bold text-[#1E293B] text-lg">
                   <span>{t("panier_total")}</span>
                   <span className="text-[#DC2626]">
                     {totalDzd.toLocaleString("fr-DZ")} DA

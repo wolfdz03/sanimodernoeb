@@ -22,6 +22,26 @@ export default async function DashboardOrderDetailPage({ params }: PageProps) {
     .eq("order_id", id)
     .order("id");
 
+  let customerStats = {
+    totalOrders: 1,
+    ltv: order.total_dzd,
+    otherOrderIds: [] as string[]
+  };
+
+  if (order.shipping_phone) {
+    const { data: customerOrders } = await supabase
+      .from("orders")
+      .select("id, total_dzd, status")
+      .eq("shipping_phone", order.shipping_phone)
+      .neq("status", "cancelled");
+
+    if (customerOrders && customerOrders.length > 0) {
+      customerStats.totalOrders = customerOrders.length;
+      customerStats.ltv = customerOrders.reduce((sum, o) => sum + (o.total_dzd ?? 0), 0);
+      customerStats.otherOrderIds = customerOrders.filter((o) => o.id !== id).map(o => o.id);
+    }
+  }
+
   return (
     <OrderDetailContent
       order={{
@@ -41,6 +61,7 @@ export default async function DashboardOrderDetailPage({ params }: PageProps) {
         unit_price_dzd: i.unit_price_dzd,
         variant_label: i.variant_label ?? null,
       }))}
+      customerStats={customerStats}
     />
   );
 }

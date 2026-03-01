@@ -23,9 +23,14 @@ interface OrderDetailContentProps {
     unit_price_dzd: number;
     variant_label?: string | null;
   }>;
+  customerStats?: {
+    totalOrders: number;
+    ltv: number;
+    otherOrderIds: string[];
+  };
 }
 
-export function OrderDetailContent({ order, items }: OrderDetailContentProps) {
+export function OrderDetailContent({ order, items, customerStats }: OrderDetailContentProps) {
   const { t } = useLanguage();
 
   return (
@@ -65,14 +70,43 @@ export function OrderDetailContent({ order, items }: OrderDetailContentProps) {
             {order.shipping_address}
           </p>
         </div>
-        <div className="bg-white dark:bg-[#0d1b1b] rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
-          <h2 className="font-semibold text-[#1E293B] dark:text-white mb-4">
-            {t("dashboard_order_status")}
-          </h2>
-          <UpdateOrderStatus
-            orderId={order.id}
-            currentStatus={order.status as OrderStatus}
-          />
+        <div className="bg-white dark:bg-[#0d1b1b] rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between">
+          <div>
+            <h2 className="font-semibold text-[#1E293B] dark:text-white mb-4">
+              {t("dashboard_order_status")}
+            </h2>
+            <UpdateOrderStatus
+              orderId={order.id}
+              currentStatus={order.status as OrderStatus}
+            />
+          </div>
+
+          {/* Customer CRM Block */}
+          {customerStats && (
+            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+              <h3 className="font-semibold text-sm text-[var(--dash-text-muted)] uppercase tracking-wider mb-4">Profil Client (CRM)</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-100 dark:border-slate-700/50">
+                  <span className="block text-xs text-slate-500 mb-1">Commandes</span>
+                  <span className="font-display font-semibold text-xl text-[#1E293B] dark:text-white">{customerStats.totalOrders}</span>
+                </div>
+                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-100 dark:border-slate-700/50">
+                  <span className="block text-xs text-slate-500 mb-1">Valeur à vie (LTV)</span>
+                  <span className="font-display font-semibold text-xl text-[var(--dash-primary)]">{customerStats.ltv.toLocaleString("fr-DZ")} DA</span>
+                </div>
+              </div>
+              {customerStats.otherOrderIds.length > 0 && (
+                <div className="mt-4 flex gap-2 flex-wrap">
+                  <span className="text-sm text-slate-600 dark:text-slate-400">Autres commandes :</span>
+                  {customerStats.otherOrderIds.map(oid => (
+                    <Link key={oid} href={`/dashboard/commandes/${oid}`} className="text-sm text-[var(--dash-primary)] hover:underline">
+                      #{oid.slice(-4).toUpperCase()}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

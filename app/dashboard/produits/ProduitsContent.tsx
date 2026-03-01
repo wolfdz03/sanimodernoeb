@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Plus, Search, Edit } from "lucide-react";
+import { Plus, Search, Edit, Package } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { getProductPrimaryImage } from "@/lib/product-images";
 
@@ -68,86 +68,73 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
     }
   };
 
-  const statusStyles = {
-    active: "bg-white/90 text-[var(--dash-primary)] border-black/5",
-    low_stock: "bg-white/90 text-orange-600 border-black/5",
-    out_of_stock: "bg-gray-100 text-gray-600 border-gray-200",
+  const statusBadgeClass = {
+    active: "dash-badge dash-badge-emerald",
+    low_stock: "dash-badge dash-badge-amber",
+    out_of_stock: "dash-badge dash-badge-gray",
   };
 
   const dotColors = {
-    active: "bg-[var(--dash-primary)]",
-    low_stock: "bg-orange-500",
+    active: "bg-emerald-500",
+    low_stock: "bg-amber-500",
     out_of_stock: "bg-gray-400",
   };
 
+  const filterTabs = [
+    { key: "all" as FilterType, label: t("dashboard_products_filter_all") },
+    { key: "in_stock" as FilterType, label: t("dashboard_products_filter_in_stock") },
+    { key: "low_stock" as FilterType, label: t("dashboard_products_filter_low_stock") },
+    { key: "out_of_stock" as FilterType, label: t("dashboard_products_filter_out_of_stock") },
+  ];
+
   return (
-    <div className="max-w-[1200px] mx-auto flex flex-col gap-6">
+    <div className="max-w-[1200px] mx-auto flex flex-col gap-5">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h2 className="text-2xl font-bold tracking-tight text-[var(--dash-text-main)] font-display">
+        <h2 className="text-2xl font-semibold tracking-tight text-[var(--dash-text-main)] font-display">
           {t("dashboard_produits_title")}
         </h2>
         <Link
           href="/dashboard/produits/nouveau"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[var(--dash-primary)] hover:bg-[var(--dash-primary-hover)] text-white text-sm font-medium rounded-lg transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--dash-primary)]"
+          className="dash-btn dash-btn-primary"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-4 h-4" />
           {t("dashboard_produits_add")}
         </Link>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 pb-2">
-        <button
-          type="button"
-          onClick={() => setFilter("all")}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-            filter === "all"
-              ? "bg-[var(--dash-text-main)] text-white"
-              : "bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text-muted)] hover:border-gray-300 hover:text-[var(--dash-text-main)]"
-          }`}
-        >
-          {t("dashboard_products_filter_all")}
-        </button>
-        <button
-          type="button"
-          onClick={() => setFilter("in_stock")}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-            filter === "in_stock"
-              ? "bg-[var(--dash-text-main)] text-white"
-              : "bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text-muted)] hover:border-gray-300 hover:text-[var(--dash-text-main)]"
-          }`}
-        >
-          {t("dashboard_products_filter_in_stock")}
-        </button>
-        <button
-          type="button"
-          onClick={() => setFilter("low_stock")}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-            filter === "low_stock"
-              ? "bg-[var(--dash-text-main)] text-white"
-              : "bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text-muted)] hover:border-gray-300 hover:text-[var(--dash-text-main)]"
-          }`}
-        >
-          {t("dashboard_products_filter_low_stock")}
-        </button>
-        <button
-          type="button"
-          onClick={() => setFilter("out_of_stock")}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-            filter === "out_of_stock"
-              ? "bg-[var(--dash-text-main)] text-white"
-              : "bg-[var(--dash-surface)] border border-[var(--dash-border)] text-[var(--dash-text-muted)] hover:border-gray-300 hover:text-[var(--dash-text-main)]"
-          }`}
-        >
-          {t("dashboard_products_filter_out_of_stock")}
-        </button>
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs text-[var(--dash-text-muted)]">
-            {t("dashboard_products_sort_by")}:
-          </span>
+      {/* Filters + Search + Sort */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div className="flex items-center gap-1 bg-gray-100/80 rounded-lg p-1">
+          {filterTabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setFilter(tab.key)}
+              className={`px-3 py-1.5 rounded-md text-[13px] font-medium whitespace-nowrap ${filter === tab.key
+                  ? "bg-white text-[var(--dash-text-main)] shadow-sm"
+                  : "text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]"
+                }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 sm:ml-auto">
+          <div className="relative w-48">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--dash-text-muted)]" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher..."
+              className="dash-input pl-9 text-[13px] h-9"
+            />
+          </div>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortType)}
-            className="text-xs border-none bg-transparent font-medium text-[var(--dash-text-main)] focus:ring-0 p-0 pr-6 cursor-pointer"
+            className="dash-input dash-select text-[13px] h-9 w-auto"
           >
             <option value="newest">{t("dashboard_products_sort_newest")}</option>
             <option value="price_desc">{t("dashboard_products_sort_price_desc")}</option>
@@ -156,82 +143,79 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
         </div>
       </div>
 
+      {/* Products Grid */}
       {filtered.length === 0 ? (
-        <div className="py-16 text-center">
-          <p className="text-[var(--dash-text-muted)] mb-4">{t("dashboard_no_produits")}</p>
+        <div className="py-20 text-center">
+          <div className="mb-4 mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 border border-gray-100">
+            <Package className="w-7 h-7 text-[var(--dash-text-muted)]" />
+          </div>
+          <p className="text-[var(--dash-text-muted)] mb-4 text-sm">{t("dashboard_no_produits")}</p>
           <Link
             href="/dashboard/produits/nouveau"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--dash-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--dash-primary-hover)] transition-colors"
+            className="dash-btn dash-btn-primary"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             {t("dashboard_no_produits_add")}
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {filtered.map((product) => {
             const status = getStatus(product);
             return (
               <Link
                 key={product.id}
                 href={`/dashboard/produits/${product.id}`}
-                className={`group bg-[var(--dash-surface)] rounded-lg border border-[var(--dash-border)] overflow-hidden hover:border-gray-400 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer block ${
-                  status === "out_of_stock" ? "opacity-75 hover:opacity-100" : ""
-                }`}
+                className={`group dash-card dash-card-interactive overflow-hidden block ${status === "out_of_stock" ? "opacity-70 hover:opacity-100" : ""
+                  }`}
               >
-                <div className="relative aspect-square bg-gray-100">
+                <div className="relative aspect-square bg-gray-50">
                   {getProductPrimaryImage(product) ? (
                     <img
                       src={getProductPrimaryImage(product)!}
                       alt=""
-                      className={`w-full h-full object-cover ${
-                        status === "out_of_stock" ? "grayscale" : ""
-                      }`}
+                      className={`w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-150 ${status === "out_of_stock" ? "grayscale" : ""
+                        }`}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[var(--dash-text-muted)] text-4xl">
-                      —
+                    <div className="w-full h-full flex items-center justify-center text-[var(--dash-text-muted)]">
+                      <Package className="w-10 h-10 text-gray-200" />
                     </div>
                   )}
                   {status === "out_of_stock" && (
                     <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]" />
                   )}
                   <div className="absolute top-3 left-3">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-sm border shadow-sm ${
-                        status === "out_of_stock"
-                          ? "bg-gray-100 text-gray-600 border-gray-200"
-                          : statusStyles[status]
-                      }`}
-                    >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full mr-1.5 ${dotColors[status]}`}
-                      />
+                    <span className={statusBadgeClass[status]}>
+                      <span className={`w-1.5 h-1.5 rounded-full mr-1 ${dotColors[status]}`} />
                       {statusLabel(status)}
                     </span>
                   </div>
-                  <span className="absolute top-3 right-3 p-1.5 bg-white/90 rounded-md text-[var(--dash-text-main)] opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:text-[var(--dash-primary)]">
-                    <Edit className="w-4 h-4" />
+                  <span className="absolute top-3 right-3 p-2 bg-white rounded-lg text-[var(--dash-text-muted)] opacity-0 group-hover:opacity-100 shadow-sm hover:text-[var(--dash-primary)]">
+                    <Edit className="w-3.5 h-3.5" />
                   </span>
                 </div>
-                <div className="p-4 flex flex-col gap-1">
-                  <h3 className="font-medium text-[var(--dash-text-main)] text-sm truncate">
+                <div className="p-4 flex flex-col gap-1.5">
+                  {product.categories?.name && (
+                    <span className="text-[11px] font-medium text-[var(--dash-text-muted)] uppercase tracking-wide">{product.categories.name}</span>
+                  )}
+                  <h3 className="font-medium text-[var(--dash-text-main)] text-[13px] truncate leading-snug">
                     {product.name}
                   </h3>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="font-display font-semibold text-[var(--dash-text-main)]">
+                    <span className="font-display font-semibold text-[var(--dash-text-main)] tabular-nums">
                       {product.price_dzd.toLocaleString("fr-DZ")} DZD
                     </span>
                     {status === "out_of_stock" ? (
-                      <span className="text-xs text-red-500 font-medium">
+                      <span className="text-[11px] text-red-500 font-semibold">
                         0 {t("dashboard_products_in_stock")}
                       </span>
                     ) : status === "low_stock" ? (
-                      <span className="text-xs text-orange-600 font-medium">
+                      <span className="text-[11px] text-amber-600 font-semibold">
                         {product.stock} {t("dashboard_products_left")}
                       </span>
                     ) : (
-                      <span className="text-xs text-[var(--dash-text-muted)]">
+                      <span className="text-[11px] text-[var(--dash-text-muted)] font-medium">
                         {product.stock} {t("dashboard_products_in_stock")}
                       </span>
                     )}

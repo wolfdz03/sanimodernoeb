@@ -12,6 +12,8 @@ import {
   Settings,
   HelpCircle,
   LogOut,
+  ExternalLink,
+  BarChart3,
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { useLanguage } from "@/context/LanguageContext";
@@ -37,21 +39,32 @@ export function DashboardSidebar({ adminName, pendingCount, siteTitle = "Sani Mo
     },
     { href: "/dashboard/categories", icon: FolderTree, label: t("dashboard_categories") },
     { href: "/dashboard/contenu", icon: Type, label: t("dashboard_content") },
+    { href: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
   ];
 
   return (
-    <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-[var(--dash-border)] bg-[var(--dash-surface)] self-stretch min-h-0">
-      <div className="flex h-16 items-center gap-3 px-6 border-b border-[var(--dash-border)]">
-        <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--dash-primary)] text-white">
-            <Store className="w-5 h-5" />
+    <aside className="hidden md:flex w-[260px] shrink-0 flex-col bg-[var(--dash-surface)] self-stretch min-h-0 border-r border-[var(--dash-border)]">
+      {/* Logo */}
+      <div className="flex h-16 items-center gap-3 px-5 border-b border-[var(--dash-border)]">
+        <Link href="/dashboard" className="flex items-center gap-3 group">
+          <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-[var(--dash-primary)] to-emerald-600 text-white shadow-sm">
+            <Store className="w-[18px] h-[18px]" />
           </div>
-          <span className="font-display text-base font-semibold tracking-tight text-[var(--dash-text-main)]">
+          <span className="font-display text-[15px] font-semibold tracking-tight text-[var(--dash-text-main)]">
             {siteTitle}
           </span>
         </Link>
       </div>
-      <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
+
+      {/* Nav label */}
+      <div className="px-5 pt-5 pb-2">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--dash-text-muted)]">
+          Menu
+        </span>
+      </div>
+
+      {/* Nav links */}
+      <nav className="flex-1 overflow-y-auto px-3 pb-4 space-y-0.5">
         {navItems.map(({ href, icon: Icon, label, badge }) => {
           const isActive =
             href === "/dashboard"
@@ -61,71 +74,89 @@ export function DashboardSidebar({ adminName, pendingCount, siteTitle = "Sani Mo
             <Link
               key={href}
               href={href}
-              className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors border-l-[3px] ${
-                isActive
-                  ? "bg-[#ECFDF5] text-[#065F46] border-[var(--dash-primary)]"
-                  : "text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)] border-transparent"
-              }`}
+              className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium ${isActive
+                ? "bg-emerald-50 text-emerald-700 shadow-sm"
+                : "text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+                }`}
             >
-              <Icon
-                className={`w-5 h-5 ${isActive ? "text-[var(--dash-primary)]" : ""}`}
-              />
-              {label}
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-lg ${isActive
+                  ? "bg-[var(--dash-primary)]/10"
+                  : "bg-transparent group-hover:bg-gray-100"
+                  }`}
+              >
+                <Icon
+                  className={`w-[18px] h-[18px] ${isActive ? "text-[var(--dash-primary)]" : ""}`}
+                  strokeWidth={isActive ? 2.2 : 1.8}
+                />
+              </div>
+              <span className="flex-1">{label}</span>
               {badge != null && (
-                <span className="ml-auto rounded-full bg-[var(--dash-primary)]/10 px-2 py-0.5 text-xs font-semibold text-[var(--dash-primary)]">
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--dash-primary)] px-1.5 text-[10px] font-bold text-white tabular-nums shadow-sm">
                   {badge}
                 </span>
+              )}
+              {isActive && (
+                <div className="w-1 h-5 rounded-full bg-[var(--dash-primary)] ml-auto" />
               )}
             </Link>
           );
         })}
       </nav>
-      <div className="border-t border-[var(--dash-border)] p-4 space-y-1">
+
+      {/* Bottom section */}
+      <div className="border-t border-[var(--dash-border)] p-3 space-y-0.5">
         <Link
           href="/dashboard/parametres"
-          className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-            pathname.startsWith("/dashboard/parametres")
-              ? "bg-[#ECFDF5] text-[#065F46]"
-              : "text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
-          }`}
+          className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium ${pathname.startsWith("/dashboard/parametres")
+            ? "bg-emerald-50 text-emerald-700"
+            : "text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+            }`}
         >
-          <Settings className="w-5 h-5" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg">
+            <Settings className="w-[18px] h-[18px]" strokeWidth={1.8} />
+          </div>
           {t("dashboard_settings")}
         </Link>
         <Link
           href="/dashboard/aide"
-          className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)] transition-colors"
+          className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
         >
-          <HelpCircle className="w-5 h-5" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg">
+            <HelpCircle className="w-[18px] h-[18px]" strokeWidth={1.8} />
+          </div>
           Aide
         </Link>
-        <div className="pt-2 mt-2 border-t border-[var(--dash-border)]">
-          <div className="flex items-center gap-3 px-2 py-2">
-            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2 border-[var(--dash-border)] text-sm font-bold text-[var(--dash-text-muted)]">
+
+        {/* User card */}
+        <div className="mt-3 pt-3 border-t border-[var(--dash-border)]">
+          <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50">
+            <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center border border-emerald-200/60 text-sm font-bold text-emerald-700 shrink-0">
               {adminName ? adminName.charAt(0).toUpperCase() : "A"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[var(--dash-text-main)] truncate">
+              <p className="text-[13px] font-semibold text-[var(--dash-text-main)] truncate">
                 {adminName ?? t("dashboard_admin_role")}
               </p>
-              <p className="text-xs text-[var(--dash-text-muted)] truncate">
+              <p className="text-[11px] text-[var(--dash-text-muted)] truncate">
                 {t("dashboard_admin_role")}
               </p>
             </div>
             <form action={logout}>
               <button
                 type="submit"
-                className="p-1.5 text-[var(--dash-text-muted)] hover:text-[var(--dash-primary)] rounded-lg hover:bg-emerald-50 transition-colors"
+                className="p-1.5 text-[var(--dash-text-muted)] hover:text-[var(--dash-destructive)] rounded-lg hover:bg-red-50"
                 aria-label={t("dashboard_logout")}
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-4 h-4" />
               </button>
             </form>
           </div>
           <Link
             href="/"
-            className="block mt-2 px-2 py-1.5 text-xs text-[var(--dash-text-muted)] hover:text-[var(--dash-primary)] transition-colors"
+            className="flex items-center gap-2 mt-2 px-3 py-1.5 text-[11px] text-[var(--dash-text-muted)] hover:text-[var(--dash-primary)] rounded-md hover:bg-emerald-50/50"
           >
+            <ExternalLink className="w-3 h-3" />
             {t("dashboard_back_site")}
           </Link>
         </div>

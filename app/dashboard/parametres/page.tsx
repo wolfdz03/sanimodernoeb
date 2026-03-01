@@ -1,9 +1,14 @@
 import { getSession } from "@/lib/session";
 import { getSiteSettings } from "@/lib/site-settings";
+import { getShippingRates } from "@/app/actions/shipping";
 import { SettingsForm } from "./SettingsForm";
 
 export default async function DashboardSettingsPage() {
-  const [session, settings] = await Promise.all([getSession(), getSiteSettings()]);
+  const [session, settings, shippingRates] = await Promise.all([
+    getSession(),
+    getSiteSettings(),
+    getShippingRates()
+  ]);
   const formSettings = {
     ...settings,
     resend_api_key: "",
@@ -13,7 +18,11 @@ export default async function DashboardSettingsPage() {
   };
   return (
     <div className="mx-auto max-w-7xl w-full">
-      <SettingsForm settings={formSettings} adminEmail={session?.email ?? null} />
+      <SettingsForm
+        settings={formSettings}
+        adminEmail={session?.email ?? null}
+        initialShippingRates={shippingRates}
+      />
     </div>
   );
 }
