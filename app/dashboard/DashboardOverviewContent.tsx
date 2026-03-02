@@ -121,7 +121,23 @@ export function DashboardOverviewContent({
     ? `0,${chartHeight} ${linePoints} ${chartWidth},${chartHeight} 0,${chartHeight}`
     : "";
 
-  const statCards = [
+  type StatCard = {
+    label: string;
+    value: string;
+    icon: typeof DollarSign;
+    iconBg: string;
+    iconColor: string;
+    cardAccent: string;
+    href?: string;
+    suffix?: string;
+    change?: number;
+    changeLabel?: string;
+    changeText?: string;
+    isWarning?: boolean;
+    isDestructive?: boolean;
+  };
+
+  const statCards: StatCard[] = [
     {
       label: t("dashboard_todays_revenue"),
       value: todayRevenue.toLocaleString("fr-DZ"),
@@ -132,7 +148,6 @@ export function DashboardOverviewContent({
       iconBg: "bg-emerald-50",
       iconColor: "text-[var(--dash-primary)]",
       cardAccent: "emerald",
-      href: undefined as string | undefined,
     },
     {
       label: t("dashboard_orders"),
@@ -166,7 +181,7 @@ export function DashboardOverviewContent({
       cardAccent: "red",
       isDestructive: true,
     },
-  ] as const;
+  ];
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
