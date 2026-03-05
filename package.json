@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docs:pdf": "md-to-pdf docs/CLIENT_DOCUMENTATION.md --dest docs/CLIENT_DOCUMENTATION.pdf"
   },
   "dependencies": {
     "@mistralai/mistralai": "^1.14.0",
@@ -25,6 +26,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "md-to-pdf": "^5.2.5",
     "@tailwindcss/postcss": "^4",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",

@@ -1,12 +1,11 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Shield, Truck, Award, Headphones, CheckCircle } from "lucide-react";
+import { Shield, Award, Headphones, CheckCircle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 const features = [
   { icon: Shield, titleKey: "feature_quality_title" as const, color: "#DC2626" },
-  { icon: Truck, titleKey: "feature_delivery_title" as const, color: "#2563EB" },
   { icon: Award, titleKey: "feature_certified_title" as const, color: "#F59E0B" },
   { icon: Headphones, titleKey: "feature_support_title" as const, color: "#059669" },
 ];
@@ -22,7 +21,7 @@ export function Features() {
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--primary)]/20 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {features.map((feature, index) => (
             <motion.div
               key={feature.titleKey}

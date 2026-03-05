@@ -21,7 +21,6 @@ const navLinkKeys = [
   { key: "nav_categories" as const, href: "#categories" },
   { key: "nav_about" as const, href: "#about" },
   { key: "nav_contact" as const, href: "#footer" },
-  { key: "nav_login" as const, href: "/connexion" },
 ];
 
 export function Nav({ settings }: NavProps) {
