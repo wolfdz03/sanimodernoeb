@@ -58,7 +58,7 @@ export function AssistantDrawer() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 end-6 z-50 w-14 h-14 rounded-full bg-[#13ecec] text-[#102222] shadow-lg shadow-[#13ecec]/30 flex items-center justify-center hover:bg-[#0ea5a5] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#13ecec] focus:ring-offset-2 focus:ring-offset-[#102222]"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#13ecec] text-[#102222] shadow-lg shadow-[#13ecec]/30 flex items-center justify-center hover:bg-[#0ea5a5] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#13ecec] focus:ring-offset-2 focus:ring-offset-[#102222]"
         aria-label="Ouvrir l'assistant"
       >
         <MessageCircle className="w-7 h-7" />
@@ -73,9 +73,9 @@ export function AssistantDrawer() {
         aria-hidden="true"
       />
 
-      {/* Drawer */}
+      {/* Drawer - use right-0 so it stays on the right in both LTR and RTL (Arabic) */}
       <div
-        className={`fixed top-0 end-0 h-full w-full max-w-md bg-white dark:bg-[#0d1b1b] shadow-2xl z-[70] flex flex-col transition-transform duration-300 ease-out ${
+        className={`fixed top-0 right-0 h-full w-full max-w-md bg-white dark:bg-[#0d1b1b] shadow-2xl z-[70] flex flex-col transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"

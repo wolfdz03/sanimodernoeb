@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { ShoppingBag, Minus, Plus, Package, CheckCircle } from "lucide-react";
-import { trackViewContent } from "@/lib/facebook-pixel";
+import { trackViewProduct } from "@/lib/marketing-events";
 import { getProductPrimaryImage } from "@/lib/product-images";
 import { formatVariantLabel } from "@/lib/variant-label";
 import { createOrder } from "@/app/actions/orders";
@@ -109,14 +109,6 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
   const [orderLoading, setOrderLoading] = useState(false);
   const { addItem } = useCart();
 
-  useEffect(() => {
-    trackViewContent({
-      id: product.id,
-      name: product.name,
-      price_dzd: product.price_dzd,
-    });
-  }, [product.id, product.name, product.price_dzd]);
-
   const resolvedVariant = useMemo(
     () => (hasVariants ? resolveVariant(product, selected) : null),
     [product, selected, hasVariants]
@@ -136,6 +128,16 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
       : null;
   const totalDzd = displayPrice * Math.max(1, quantity);
 
+  useEffect(() => {
+    trackViewProduct({
+      product_id: product.id,
+      product_name: product.name,
+      category: product.categories?.name ?? null,
+      variant: variantLabelDisplay ?? null,
+      price: displayPrice,
+    });
+  }, [product.id, product.name, product.categories?.name, displayPrice, variantLabelDisplay]);
+
   const scrollToOrderForm = () => {
     orderFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -150,6 +152,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
       quantity: Math.max(1, quantity),
       variantId: resolvedVariant?.id ?? null,
       variantLabel: variantLabelDisplay ?? null,
+      category: product.categories?.name ?? null,
     });
     window.dispatchEvent(new Event("open-cart"));
   };

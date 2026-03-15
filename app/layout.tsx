@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Cairo, Inter, Space_Grotesk } from "next/font/google
 import { Toaster } from "sonner";
 import { CartProvider } from "@/context/CartContext";
 import { LanguageProvider } from "@/context/LanguageContext";
-import { FacebookPixel } from "@/app/components/FacebookPixel";
+import { MarketingScripts } from "@/app/components/MarketingScripts";
 import { ThemeStyles } from "@/app/components/ThemeStyles";
 import { getSiteContent } from "@/lib/site-content";
 import { getSiteSettings } from "@/lib/site-settings";
@@ -64,14 +64,22 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const contentOverrides = await getSiteContent();
+  const [contentOverrides, settings] = await Promise.all([
+    getSiteContent(),
+    getSiteSettings(),
+  ]);
   return (
     <html lang="fr" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} ${inter.variable} ${spaceGrotesk.variable} antialiased`}
       >
         <ThemeStyles />
-        <FacebookPixel />
+        <MarketingScripts
+          tracking_enabled={settings.tracking_enabled}
+          meta_pixel_id={settings.meta_pixel_id}
+          ga4_measurement_id={settings.ga4_measurement_id}
+          gtm_container_id={settings.gtm_container_id}
+        />
         <LanguageProvider contentOverrides={contentOverrides}>
           <CartProvider>{children}</CartProvider>
         </LanguageProvider>

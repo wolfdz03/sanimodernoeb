@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { createOrder } from "../actions/orders";
 import { WILAYAS } from "@/lib/wilayas";
-import { trackInitiateCheckout } from "@/lib/facebook-pixel";
+import { trackCheckout } from "@/lib/marketing-events";
 import type { CartItem } from "@/context/CartContext";
 import { useCart } from "@/context/CartContext";
 
@@ -36,8 +36,18 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
   const totalDzd = subtotal + shippingCost;
 
   useEffect(() => {
-    trackInitiateCheckout({ value: totalDzd, num_items: items.length });
-  }, [totalDzd, items.length]);
+    trackCheckout({
+      items: items.map((i) => ({
+        product_id: i.productId,
+        product_name: i.name,
+        category: i.category ?? null,
+        variant: i.variantLabel ?? null,
+        price: i.price,
+        quantity: i.quantity,
+      })),
+      totalDzd,
+    });
+  }, [items, totalDzd]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

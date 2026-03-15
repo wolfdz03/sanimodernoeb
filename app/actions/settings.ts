@@ -22,6 +22,10 @@ export async function updateSiteSettings(formData: {
   primary_color?: string;
   primary_hover_color?: string;
   footer_sections?: FooterSection[];
+  meta_pixel_id?: string;
+  ga4_measurement_id?: string;
+  gtm_container_id?: string;
+  tracking_enabled?: boolean;
 }) {
   const supabase = createServiceClient();
   const payload: Record<string, unknown> = {
@@ -56,6 +60,10 @@ export async function updateSiteSettings(formData: {
   if (formData.footer_sections !== undefined) {
     payload.footer_sections = formData.footer_sections;
   }
+  if (formData.meta_pixel_id !== undefined) payload.meta_pixel_id = formData.meta_pixel_id.trim() || null;
+  if (formData.ga4_measurement_id !== undefined) payload.ga4_measurement_id = formData.ga4_measurement_id.trim() || null;
+  if (formData.gtm_container_id !== undefined) payload.gtm_container_id = formData.gtm_container_id.trim() || null;
+  if (formData.tracking_enabled !== undefined) payload.tracking_enabled = Boolean(formData.tracking_enabled);
 
   const { error } = await supabase
     .from("site_settings")
@@ -65,5 +73,6 @@ export async function updateSiteSettings(formData: {
   revalidatePath("/");
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/parametres");
+  revalidatePath("/dashboard/marketing");
   return {};
 }

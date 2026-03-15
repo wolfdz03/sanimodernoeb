@@ -318,6 +318,48 @@ export const translations = {
     footer_faq: "FAQ",
     footer_guarantee: "Garantie",
     footer_showrooms: "Nos Showrooms",
+
+    // Footer pages
+    page_about_title: "À propos",
+    page_about_meta: "Qui sommes-nous",
+    page_showrooms_title: "Nos Showrooms",
+    page_showrooms_meta: "Visitez nos showrooms",
+    page_livraison_title: "Livraison & Retours",
+    page_livraison_meta: "Conditions de livraison et retours",
+    page_faq_title: "FAQ",
+    page_faq_meta: "Questions fréquentes",
+    page_garantie_title: "Garantie",
+    page_garantie_meta: "Conditions de garantie",
+
+    page_about_intro:
+      "Sani Modern OEB est votre partenaire de confiance pour l'équipement sanitaire et les salles de bain. Découvrez notre histoire et nos engagements.",
+    page_showrooms_intro:
+      "Venez découvrir notre gamme en showroom. Nos équipes vous accueillent pour vous conseiller et vous faire tester nos produits.",
+    page_showrooms_address: "Adresse",
+    page_showrooms_hours: "Horaires",
+    page_showrooms_oeb: "Showroom Oum El Bouaghi",
+    page_showrooms_contact: "Pour une visite sur rendez-vous ou toute question, contactez-nous.",
+    page_livraison_intro: "Nous livrons partout en Algérie. Consultez nos conditions de livraison et de retour.",
+    page_livraison_delivery: "Livraison",
+    page_livraison_delivery_text:
+      "Nous expédions dans toutes les wilayas. La livraison est gratuite pour les commandes au-dessus du seuil indiqué sur le site. Délais indicatifs : 3 à 7 jours ouvrés selon la wilaya. Vous serez contacté pour convenir d'un créneau de livraison.",
+    page_livraison_returns: "Retours",
+    page_livraison_returns_text:
+      "Un produit ne vous convient pas ? Contactez-nous sous 7 jours après réception. Les articles doivent être non utilisés, dans leur emballage d'origine. Les frais de retour sont à la charge du client sauf défaut ou erreur de notre part.",
+    page_livraison_free: "Livraison gratuite",
+    page_livraison_free_text: "Livraison offerte dès un certain montant d'achat (voir page d'accueil ou checkout).",
+    page_faq_intro: "Retrouvez les réponses aux questions les plus posées.",
+    faq_1_q: "Quels sont les délais de livraison ?",
+    faq_1_a: "En général 3 à 7 jours ouvrés selon votre wilaya. Vous serez contacté pour confirmer la date.",
+    faq_2_q: "La livraison est-elle gratuite ?",
+    faq_2_a: "Oui, au-dessus d'un certain montant (affiché sur le site). En dessous, des frais selon la wilaya s'appliquent.",
+    faq_3_q: "Puis-je retourner un produit ?",
+    faq_3_a: "Oui, sous 7 jours après réception, produit non utilisé et dans son emballage. Contactez-nous pour organiser le retour.",
+    faq_4_q: "Comment suivre ma commande ?",
+    faq_4_a: "Utilisez la page Suivi de commande avec le numéro de commande reçu par email ou affiché après validation.",
+    page_garantie_intro: "Tous nos produits bénéficient d'une garantie. Voici les principes généraux.",
+    page_garantie_terms:
+      "Nous garantissons nos produits contre tout défaut de fabrication pour la durée indiquée sur la fiche produit ou l'emballage (généralement 1 à 2 ans). En cas de problème, contactez-nous avec votre numéro de commande et une description du défaut. Les dommages dus à une mauvaise utilisation ou à une installation non conforme ne sont pas couverts.",
   },
   ar: {
     nav_products: "المنتجات",
@@ -623,6 +665,48 @@ export const translations = {
     footer_faq: "الأسئلة الشائعة",
     footer_guarantee: "الضمان",
     footer_showrooms: "معارضنا",
+
+    // Footer pages
+    page_about_title: "من نحن",
+    page_about_meta: "تعرف علينا",
+    page_showrooms_title: "معارضنا",
+    page_showrooms_meta: "زيارة معارضنا",
+    page_livraison_title: "التوصيل والمرتجعات",
+    page_livraison_meta: "شروط التوصيل والمرتجعات",
+    page_faq_title: "الأسئلة الشائعة",
+    page_faq_meta: "أسئلة متكررة",
+    page_garantie_title: "الضمان",
+    page_garantie_meta: "شروط الضمان",
+
+    page_about_intro:
+      "ساني مودرن OEB شريكك الموثوق في المعدات الصحية والحمامات. اكتشف تاريخنا والتزاماتنا.",
+    page_showrooms_intro:
+      "تعرف على مجموعتنا في المعرض. فريقنا في خدمتك للإرشاد وتجربة المنتجات.",
+    page_showrooms_address: "العنوان",
+    page_showrooms_hours: "ساعات العمل",
+    page_showrooms_oeb: "معرض أم البواقي",
+    page_showrooms_contact: "لزيارة بموعد أو أي استفسار، تواصل معنا.",
+    page_livraison_intro: "نوصل إلى جميع أنحاء الجزائر. اطلع على شروط التوصيل والمرتجعات.",
+    page_livraison_delivery: "التوصيل",
+    page_livraison_delivery_text:
+      "نشحن إلى جميع الولايات. التوصيل مجاني للطلبات فوق الحد المعروض على الموقع. مهلة تقديرية: 3 إلى 7 أيام عمل حسب الولاية. سنتواصل معك لاتفاق موعد التسليم.",
+    page_livraison_returns: "المرتجعات",
+    page_livraison_returns_text:
+      "المنتج لا يناسبك؟ تواصل معنا خلال 7 أيام من الاستلام. يجب أن تكون القطع غير مستعملة وفي عبوتها الأصلية. تكاليف الإرجاع على العميل ما لم يكن عيباً أو خطأ من جهتنا.",
+    page_livraison_free: "توصيل مجاني",
+    page_livraison_free_text: "توصيل مجاني من مبلغ شراء معين (انظر الصفحة الرئيسية أو صفحة الدفع).",
+    page_faq_intro: "إجابات على الأسئلة الأكثر شيوعاً.",
+    faq_1_q: "ما مهلة التوصيل؟",
+    faq_1_a: "عادة من 3 إلى 7 أيام عمل حسب ولايتك. سنتواصل معك لتأكيد الموعد.",
+    faq_2_q: "هل التوصيل مجاني؟",
+    faq_2_a: "نعم، فوق مبلغ معين (معروض على الموقع). دون ذلك تُطبق رسوم حسب الولاية.",
+    faq_3_q: "هل يمكنني إرجاع منتج؟",
+    faq_3_a: "نعم، خلال 7 أيام من الاستلام، منتج غير مستعمل وفي عبوتها. تواصل معنا لترتيب الإرجاع.",
+    faq_4_q: "كيف أتابع طلبي؟",
+    faq_4_a: "استخدم صفحة تتبع الطلب باستخدام رقم الطلب الذي استلمته بالبريد أو المعروض بعد التأكيد.",
+    page_garantie_intro: "جميع منتجاتنا مشمولة بالضمان. إليك المبادئ العامة.",
+    page_garantie_terms:
+      "نضمن منتجاتنا ضد أي عيب تصنيع للمدة المذكورة في بطاقة المنتج أو على العبوة (عادة سنة إلى سنتين). في حال وجود مشكلة، تواصل معنا مع رقم الطلب ووصف العيب. الأضرار الناتجة عن سوء الاستخدام أو تركيب غير مطابق غير مغطاة.",
   },
 } as const;
 

@@ -5,7 +5,7 @@ import { Nav } from "../components/Nav";
 import type { SiteSettings } from "@/lib/site-settings";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
-import { trackPurchase } from "@/lib/facebook-pixel";
+import { trackPurchase } from "@/lib/marketing-events";
 
 interface CheckoutSuccessProps {
   orderId: string;
@@ -18,7 +18,7 @@ export function CheckoutSuccess({ orderId, totalDzd, settings }: CheckoutSuccess
 
   useEffect(() => {
     if (totalDzd != null && totalDzd > 0) {
-      trackPurchase({ orderId, value: totalDzd });
+      trackPurchase({ order_id: orderId, order_value: totalDzd });
     }
   }, [orderId, totalDzd]);
 

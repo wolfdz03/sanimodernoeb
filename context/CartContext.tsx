@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { trackAddToCart } from "@/lib/facebook-pixel";
+import { trackAddToCart } from "@/lib/marketing-events";
 
 export interface CartItem {
   productId: string;
@@ -17,6 +17,7 @@ export interface CartItem {
   quantity: number;
   variantId?: string | null;
   variantLabel?: string | null;
+  category?: string | null;
 }
 
 function cartLineKey(item: CartItem): string {
@@ -43,8 +44,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const qty = item.quantity ?? 1;
       const line = { ...item, quantity: qty };
       trackAddToCart({
-        productId: item.productId,
-        name: item.name,
+        product_id: item.productId,
+        product_name: item.name,
+        category: item.category ?? null,
+        variant: item.variantLabel ?? null,
         price: item.price,
         quantity: qty,
       });

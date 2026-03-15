@@ -30,6 +30,10 @@ export interface SiteSettings {
   primary_color: string | null;
   primary_hover_color: string | null;
   footer_sections: FooterSection[];
+  meta_pixel_id: string | null;
+  ga4_measurement_id: string | null;
+  gtm_container_id: string | null;
+  tracking_enabled: boolean;
 }
 
 const defaults: SiteSettings = {
@@ -50,6 +54,10 @@ const defaults: SiteSettings = {
   primary_color: "#DC2626",
   primary_hover_color: "#B91C1C",
   footer_sections: [],
+  meta_pixel_id: null,
+  ga4_measurement_id: null,
+  gtm_container_id: null,
+  tracking_enabled: true,
 };
 
 export const defaultFooterSections: FooterSection[] = [
@@ -58,8 +66,8 @@ export const defaultFooterSections: FooterSection[] = [
     title_ar: "تنقل",
     links: [
       { label_fr: "Produits", label_ar: "المنتجات", url: "/produits" },
-      { label_fr: "Nos Showrooms", label_ar: "عارضاتنا", url: "#" },
-      { label_fr: "À propos", label_ar: "من نحن", url: "#about" },
+      { label_fr: "Nos Showrooms", label_ar: "عارضاتنا", url: "/showrooms" },
+      { label_fr: "À propos", label_ar: "من نحن", url: "/a-propos" },
       { label_fr: "Contact", label_ar: "اتصل", url: "#footer" },
     ],
   },
@@ -67,9 +75,9 @@ export const defaultFooterSections: FooterSection[] = [
     title_fr: "Support",
     title_ar: "الدعم",
     links: [
-      { label_fr: "Livraison & Retours", label_ar: "التوصيل والمرتجعات", url: "#" },
-      { label_fr: "FAQ", label_ar: "الأسئلة الشائعة", url: "#" },
-      { label_fr: "Garantie", label_ar: "الضمان", url: "#" },
+      { label_fr: "Livraison & Retours", label_ar: "التوصيل والمرتجعات", url: "/livraison-retours" },
+      { label_fr: "FAQ", label_ar: "الأسئلة الشائعة", url: "/faq" },
+      { label_fr: "Garantie", label_ar: "الضمان", url: "/garantie" },
     ],
   },
 ];
@@ -100,9 +108,14 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       mistral_api_key: data.mistral_api_key ?? defaults.mistral_api_key,
       primary_color: data.primary_color ?? defaults.primary_color,
       primary_hover_color: data.primary_hover_color ?? defaults.primary_hover_color,
-      footer_sections: Array.isArray(data.footer_sections)
-        ? (data.footer_sections as FooterSection[])
-        : defaultFooterSections,
+      footer_sections:
+        Array.isArray(data.footer_sections) && (data.footer_sections as FooterSection[]).length > 0
+          ? (data.footer_sections as FooterSection[])
+          : defaultFooterSections,
+      meta_pixel_id: data.meta_pixel_id ?? defaults.meta_pixel_id,
+      ga4_measurement_id: data.ga4_measurement_id ?? defaults.ga4_measurement_id,
+      gtm_container_id: data.gtm_container_id ?? defaults.gtm_container_id,
+      tracking_enabled: data.tracking_enabled ?? defaults.tracking_enabled,
     };
   } catch {
     return defaults;

@@ -14,6 +14,7 @@ import {
   LogOut,
   ExternalLink,
   BarChart3,
+  Megaphone,
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { useLanguage } from "@/context/LanguageContext";
@@ -106,6 +107,18 @@ export function DashboardSidebar({ adminName, pendingCount, siteTitle = "Sani Mo
 
       {/* Bottom section */}
       <div className="border-t border-[var(--dash-border)] p-3 space-y-0.5">
+        <Link
+          href="/dashboard/marketing"
+          className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium ${pathname.startsWith("/dashboard/marketing")
+            ? "bg-emerald-50 text-emerald-700"
+            : "text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+            }`}
+        >
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg">
+            <Megaphone className="w-[18px] h-[18px]" strokeWidth={1.8} />
+          </div>
+          Marketing
+        </Link>
         <Link
           href="/dashboard/parametres"
           className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium ${pathname.startsWith("/dashboard/parametres")
