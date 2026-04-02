@@ -84,3 +84,6 @@ where p.id in (
 );
 
 create unique index if not exists products_slug_unique on public.products (slug);
+
+alter table public.products
+  alter column category_sequence set not null;
