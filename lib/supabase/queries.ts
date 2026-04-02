@@ -1,4 +1,5 @@
 import type { Category, Product } from "@/lib/types/database";
+import { isProductPathUuid } from "@/lib/product-public-slug";
 import { createClient } from "./server";
 
 export async function getCategories(): Promise<Category[]> {
@@ -123,6 +124,16 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     throw error;
   }
   return data as unknown as Product;
+}
+
+/** Public PDP path: `/produit/{slug}` or legacy `/produit/{uuid}`. */
+export async function getProductByPublicPath(param: string): Promise<Product | null> {
+  const trimmed = param.trim();
+  if (!trimmed) return null;
+  if (isProductPathUuid(trimmed)) {
+    return getProductById(trimmed);
+  }
+  return getProductBySlug(decodeURIComponent(trimmed));
 }
 
 /** Variant with resolved price (variant or product base) and option labels for display */

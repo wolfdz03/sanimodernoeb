@@ -58,7 +58,7 @@ export function AssistantDrawer() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#13ecec] text-[#102222] shadow-lg shadow-[#13ecec]/30 flex items-center justify-center hover:bg-[#0ea5a5] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#13ecec] focus:ring-offset-2 focus:ring-offset-[#102222]"
+        className="fixed z-50 w-14 h-14 rounded-full bg-[#13ecec] text-[#102222] shadow-lg shadow-[#13ecec]/30 flex items-center justify-center hover:bg-[#0ea5a5] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#13ecec] focus:ring-offset-2 focus:ring-offset-[#102222] bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] end-[max(1.25rem,env(safe-area-inset-right,0px))]"
         aria-label="Ouvrir l'assistant"
       >
         <MessageCircle className="w-7 h-7" />

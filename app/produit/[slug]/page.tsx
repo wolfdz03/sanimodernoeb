@@ -1,7 +1,8 @@
 import { NavWithSettings } from "../../components/NavWithSettings";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getProductById, getRelatedProducts } from "@/lib/supabase/queries";
+import { notFound, redirect } from "next/navigation";
+import { getProductByPublicPath, getRelatedProducts } from "@/lib/supabase/queries";
+import { isProductPathUuid } from "@/lib/product-public-slug";
 
 export const dynamic = "force-dynamic";
 import { ProductDetailClient } from "../../components/ProductDetailClient";
@@ -9,13 +10,18 @@ import { ProductGallery } from "../../components/ProductGallery";
 import { ProductCard } from "../../components/ProductCard";
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export default async function ProductPage({ params }: PageProps) {
-  const { id } = await params;
-  const product = await getProductById(id);
+  const { slug: raw } = await params;
+  const decoded = decodeURIComponent(raw.trim());
+  const product = await getProductByPublicPath(decoded);
   if (!product) notFound();
+
+  if (isProductPathUuid(decoded) && product.slug && decoded !== product.slug) {
+    redirect(`/produit/${product.slug}`);
+  }
 
   const related = await getRelatedProducts(product.category_id, product.id, 8);
 

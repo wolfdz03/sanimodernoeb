@@ -66,6 +66,8 @@ export interface ProductAttribute {
 export interface Product {
   id: string;
   category_id: string | null;
+  /** 1-based index within the same category (URL segment 0001, 0002, …). */
+  category_sequence?: number | null;
   name: string;
   slug: string;
   description: string | null;

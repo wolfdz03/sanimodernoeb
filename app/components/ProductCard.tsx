@@ -22,7 +22,9 @@ export function ProductCard({ product }: ProductCardProps) {
       : null;
   const imageUrl = getProductPrimaryImage(product) ?? "/placeholder-product.png";
   const badgeColor = product.badge_color ?? "bg-[var(--primary)]";
-  const productUrl = `/produit/${product.id}`;
+  const productUrl = product.slug
+    ? `/produit/${encodeURIComponent(product.slug)}`
+    : `/produit/${product.id}`;
 
   const hasDiscount = product.price_old_dzd != null && product.price_old_dzd > 0;
   const discountPercent = hasDiscount
@@ -40,7 +42,7 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Image container */}
       <div className="relative aspect-[4/5] overflow-hidden bg-slate-50 cursor-pointer">
         <Link
-          href={`/produit/${product.id}`}
+          href={productUrl}
           className="block w-full h-full"
         >
           <Image
@@ -86,7 +88,7 @@ export function ProductCard({ product }: ProductCardProps) {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              router.push(`/produit/${product.id}`);
+              router.push(productUrl);
             }}
             className="w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center text-slate-500 hover:bg-[var(--primary)] hover:text-white transition-all duration-300 shadow-lg opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
             style={{ transitionDelay: "75ms" }}
@@ -109,7 +111,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Card info */}
-      <Link href={`/produit/${product.id}`}>
+      <Link href={productUrl}>
         <div className="p-5 cursor-pointer">
           {categoryName && (
             <div className="inline-block text-[11px] text-[var(--primary)] font-bold uppercase tracking-[0.1em] mb-2 bg-[var(--primary-muted)]/60 px-2.5 py-0.5 rounded-md">

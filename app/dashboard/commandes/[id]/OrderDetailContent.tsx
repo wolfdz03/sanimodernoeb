@@ -114,7 +114,8 @@ export function OrderDetailContent({ order, items, customerStats }: OrderDetailC
         <h2 className="font-semibold text-[#1E293B] dark:text-white mb-4">
           {t("dashboard_order_items")}
         </h2>
-        <table className="w-full text-start">
+        <div className="overflow-x-auto -mx-1">
+        <table className="w-full min-w-[480px] text-start">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-700">
               <th className="pb-3 font-semibold text-[#1E293B] dark:text-white">
@@ -159,6 +160,7 @@ export function OrderDetailContent({ order, items, customerStats }: OrderDetailC
             ))}
           </tbody>
         </table>
+        </div>
         <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
           <span className="font-bold text-slate-800 dark:text-slate-100">
             {t("dashboard_total_label")} :{" "}

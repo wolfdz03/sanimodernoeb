@@ -45,7 +45,8 @@ export default function DashboardAideMarketingPage() {
           <p className="text-sm text-[var(--dash-text-main)]">
             Le site envoie automatiquement les événements e-commerce suivants vers Meta et GA4 (et dans le dataLayer pour GTM)&nbsp;:
           </p>
-          <table className="w-full text-sm text-[var(--dash-text-main)] border border-[var(--dash-border)] rounded-lg overflow-hidden mt-2">
+          <div className="overflow-x-auto mt-2 rounded-lg border border-[var(--dash-border)]">
+          <table className="w-full min-w-[520px] text-sm text-[var(--dash-text-main)]">
             <thead>
               <tr className="bg-[var(--dash-surface)]">
                 <th className="text-left p-2 border-b border-[var(--dash-border)] font-semibold">Événement</th>
@@ -59,7 +60,7 @@ export default function DashboardAideMarketingPage() {
                 <td className="p-2 border-b border-[var(--dash-border)]">Vue produit</td>
                 <td className="p-2 border-b border-[var(--dash-border)]">ViewContent</td>
                 <td className="p-2 border-b border-[var(--dash-border)]">view_item</td>
-                <td className="p-2 border-b border-[var(--dash-border)]">Page produit (/produit/[id])</td>
+                <td className="p-2 border-b border-[var(--dash-border)]">Page produit (/produit/[slug])</td>
               </tr>
               <tr>
                 <td className="p-2 border-b border-[var(--dash-border)]">Ajout au panier</td>
@@ -81,6 +82,7 @@ export default function DashboardAideMarketingPage() {
               </tr>
             </tbody>
           </table>
+          </div>
           <p className="mt-2 text-sm text-[var(--dash-text-main)]">
             Chaque événement envoie notamment : product_id, product_name, category, variant, price, currency (DZD), quantity, order_value selon le cas.
           </p>

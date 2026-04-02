@@ -20,8 +20,8 @@ export function CategoriesContent({ categories }: CategoriesContentProps) {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
+        <div className="min-w-0">
           <h1 className="font-display text-2xl font-semibold tracking-tight text-[var(--dash-text-main)]">
             {t("dashboard_categories_title")}
           </h1>
@@ -31,7 +31,7 @@ export function CategoriesContent({ categories }: CategoriesContentProps) {
         </div>
         <Link
           href="/dashboard/categories/nouveau"
-          className="dash-btn dash-btn-primary"
+          className="dash-btn dash-btn-primary shrink-0 self-start"
         >
           <Plus className="w-4 h-4" />
           {t("dashboard_categories_add")}
@@ -39,7 +39,8 @@ export function CategoriesContent({ categories }: CategoriesContentProps) {
       </div>
 
       <div className="dash-card overflow-hidden">
-        <table className="dash-table">
+        <div className="overflow-x-auto -mx-px">
+        <table className="dash-table min-w-[520px]">
           <thead>
             <tr>
               <th style={{ width: 60 }}>{t("dashboard_sort_order")}</th>
@@ -76,6 +77,7 @@ export function CategoriesContent({ categories }: CategoriesContentProps) {
             ))}
           </tbody>
         </table>
+        </div>
         {(!categories || categories.length === 0) && (
           <div className="px-6 py-16 text-center">
             <div className="mb-4 mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 border border-gray-100">

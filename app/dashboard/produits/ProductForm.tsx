@@ -95,6 +95,7 @@ interface Product {
   id: string;
   name: string;
   slug: string;
+  category_sequence?: number | null;
   category_id: string | null;
   description: string | null;
   price_dzd: number;
@@ -113,7 +114,6 @@ interface ProductFormProps {
   categories: Category[];
   action: (formData: {
     name: string;
-    slug: string;
     category_id: string | null;
     description: string | null;
     price_dzd: number;
@@ -219,7 +219,6 @@ export function ProductForm({
     const form = e.currentTarget;
     const formData = {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      slug: (form.elements.namedItem("slug") as HTMLInputElement).value,
       category_id:
         (form.elements.namedItem("category_id") as HTMLSelectElement).value || null,
       description: description || null,
@@ -385,14 +384,28 @@ export function ProductForm({
             {/* Tab Content - all tabs in DOM, hide non-active to preserve form state */}
             <div className={activeTab === "general" ? "space-y-4" : "hidden"}>
                 <div>
-                  <label className={labelBase}>Slug (URL)</label>
-                  <input
-                    name="slug"
-                    type="text"
-                    defaultValue={product?.slug}
-                    placeholder="nom-du-produit"
-                    className={`w-full ${inputBase}`}
-                  />
+                  <label className={labelBase}>Lien public</label>
+                  <div
+                    className={`w-full ${inputBase} bg-[var(--dash-bg-light)] text-[var(--dash-text-muted)]`}
+                  >
+                    {product?.slug ? (
+                      <span className="text-[var(--dash-text-main)] font-mono text-[13px] break-all">
+                        /produit/{product.slug}
+                      </span>
+                    ) : (
+                      <span>
+                        Généré à l&apos;enregistrement :{" "}
+                        <span className="text-[var(--dash-text-main)]">
+                          {"{slug-catégorie}-0001-nom-du-produit"}
+                        </span>
+                      </span>
+                    )}
+                  </div>
+                  {product?.category_sequence != null && (
+                    <p className="text-[11px] text-[var(--dash-text-muted)] mt-1">
+                      N° dans la catégorie : {String(product.category_sequence).padStart(4, "0")}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className={labelBase}>Description</label>
@@ -640,8 +653,8 @@ export function ProductForm({
                       {variants.length} variante{variants.length !== 1 ? "s" : ""}
                     </span>
                   </div>
-                  <div className="overflow-hidden border border-[var(--dash-border)] rounded-md">
-                    <table className="min-w-full divide-y divide-[var(--dash-border)]">
+                  <div className="overflow-x-auto border border-[var(--dash-border)] rounded-md">
+                    <table className="min-w-[640px] w-full divide-y divide-[var(--dash-border)]">
                       <thead className="bg-[var(--dash-bg-light)]">
                         <tr>
                           <th

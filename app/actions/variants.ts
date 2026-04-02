@@ -2,6 +2,7 @@
 
 import { createServiceClient } from "@/lib/supabase/service";
 import { revalidatePath } from "next/cache";
+import { revalidateProductStorefrontPaths } from "@/lib/revalidate-product-paths";
 
 export type OptionTypeInput = {
   id?: string;
@@ -69,7 +70,7 @@ export async function saveProductOptionTypes(
   revalidatePath("/");
   revalidatePath("/produits");
   revalidatePath("/dashboard/produits");
-  if (productId) revalidatePath(`/produit/${productId}`);
+  if (productId) await revalidateProductStorefrontPaths(productId);
   return {};
 }
 
@@ -83,6 +84,7 @@ export async function saveProductVariants(
     revalidatePath("/");
     revalidatePath("/produits");
     revalidatePath("/dashboard/produits");
+    await revalidateProductStorefrontPaths(productId);
     return {};
   }
   const { data: optionTypes } = await supabase
@@ -138,7 +140,7 @@ export async function saveProductVariants(
   revalidatePath("/");
   revalidatePath("/produits");
   revalidatePath("/dashboard/produits");
-  if (productId) revalidatePath(`/produit/${productId}`);
+  if (productId) await revalidateProductStorefrontPaths(productId);
   return {};
 }
 

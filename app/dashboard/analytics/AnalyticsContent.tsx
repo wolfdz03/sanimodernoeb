@@ -543,8 +543,8 @@ export function AnalyticsContent({
                         </h3>
                         <span className="dash-badge dash-badge-amber ml-2">{lowStockProducts.length} produits</span>
                     </div>
-                    <div className="overflow-hidden rounded-lg border border-[var(--dash-border)]">
-                        <table className="dash-table">
+                    <div className="overflow-x-auto rounded-lg border border-[var(--dash-border)]">
+                        <table className="dash-table min-w-[480px]">
                             <thead>
                                 <tr>
                                     <th>Produit</th>
