@@ -106,36 +106,38 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
 
       {/* Filters + Search + Sort */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-        <div className="flex items-center gap-1 bg-gray-100/80 rounded-lg p-1">
-          {filterTabs.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setFilter(tab.key)}
-              className={`px-3 py-1.5 rounded-md text-[13px] font-medium whitespace-nowrap ${filter === tab.key
-                  ? "bg-white text-[var(--dash-text-main)] shadow-sm"
-                  : "text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]"
-                }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="w-full overflow-x-auto pb-1 sm:w-auto sm:pb-0">
+          <div className="flex w-max items-center gap-1 rounded-lg bg-gray-100/80 p-1">
+            {filterTabs.map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setFilter(tab.key)}
+                className={`min-h-10 whitespace-nowrap rounded-md px-3 text-[13px] font-medium ${filter === tab.key
+                    ? "bg-white text-[var(--dash-text-main)] shadow-sm"
+                    : "text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]"
+                  }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex items-center gap-2 sm:ml-auto">
-          <div className="relative w-48">
+        <div className="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] items-center gap-2 sm:ml-auto sm:flex sm:w-auto">
+          <div className="relative sm:w-48">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--dash-text-muted)]" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher..."
-              className="dash-input pl-9 text-[13px] h-9"
+              className="dash-input h-11 !pl-9 text-base sm:h-9 sm:text-[13px]"
             />
           </div>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortType)}
-            className="dash-input dash-select text-[13px] h-9 w-auto"
+            className="dash-input dash-select h-11 min-w-0 text-[13px] sm:h-9 sm:w-auto"
           >
             <option value="newest">{t("dashboard_products_sort_newest")}</option>
             <option value="price_desc">{t("dashboard_products_sort_price_desc")}</option>
@@ -170,7 +172,7 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
                 className={`group dash-card dash-card-interactive overflow-hidden block ${status === "out_of_stock" ? "opacity-70 hover:opacity-100" : ""
                   }`}
               >
-                <div className="relative aspect-square bg-gray-50">
+                <div className="relative aspect-[4/3] bg-gray-50 sm:aspect-square">
                   {getProductPrimaryImage(product) ? (
                     <Image
                       src={getProductPrimaryImage(product)!}
@@ -194,7 +196,7 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
                       {statusLabel(status)}
                     </span>
                   </div>
-                  <span className="absolute top-3 right-3 p-2 bg-white rounded-lg text-[var(--dash-text-muted)] opacity-0 group-hover:opacity-100 shadow-sm hover:text-[var(--dash-primary)]">
+                  <span className="absolute right-3 top-3 flex min-h-10 min-w-10 items-center justify-center rounded-lg bg-white p-2 text-[var(--dash-text-muted)] shadow-sm hover:text-[var(--dash-primary)] sm:opacity-0 sm:group-hover:opacity-100">
                     <Edit className="w-3.5 h-3.5" />
                   </span>
                 </div>

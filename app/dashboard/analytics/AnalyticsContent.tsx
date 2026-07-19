@@ -336,15 +336,15 @@ export function AnalyticsContent({
                         Analyse détaillée de vos performances
                     </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="grid w-full grid-cols-1 gap-2 min-[430px]:grid-cols-[minmax(0,1fr)_auto] sm:flex sm:w-auto sm:items-center">
                     {/* Date range toggle */}
-                    <div className="flex items-center gap-1 bg-gray-100/80 rounded-lg p-1">
+                    <div className="grid grid-cols-3 items-center gap-1 rounded-lg bg-gray-100/80 p-1">
                         {rangeOptions.map((opt) => (
                             <button
                                 key={opt.value}
                                 type="button"
                                 onClick={() => setRange(opt.value)}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[13px] font-medium whitespace-nowrap ${range === opt.value
+                                className={`flex min-h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-2 text-[13px] font-medium sm:min-h-10 sm:px-3 ${range === opt.value
                                         ? "bg-white text-[var(--dash-text-main)] shadow-sm"
                                         : "text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]"
                                     }`}
@@ -358,7 +358,7 @@ export function AnalyticsContent({
                     <button
                         type="button"
                         onClick={() => exportCSV(dailyData, range)}
-                        className="dash-btn dash-btn-secondary gap-1.5"
+                        className="dash-btn dash-btn-secondary min-h-11 gap-1.5"
                     >
                         <Download className="w-4 h-4" />
                         Exporter CSV
@@ -367,7 +367,7 @@ export function AnalyticsContent({
             </div>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                 <KPICard
                     label="Revenu total"
                     value={`${fmt(rangeRevenue)} DZD`}
@@ -407,7 +407,7 @@ export function AnalyticsContent({
 
             {/* Revenue Chart */}
             <div className="dash-card">
-                <div className="flex items-center justify-between border-b border-[var(--dash-border)] px-6 py-4">
+                <div className="flex items-center justify-between border-b border-[var(--dash-border)] px-4 py-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <BarChart3 className="w-4 h-4 text-[var(--dash-text-muted)]" />
                         <h3 className="font-display text-[15px] font-semibold text-[var(--dash-text-main)]">
@@ -421,7 +421,7 @@ export function AnalyticsContent({
                         </span>
                     </div>
                 </div>
-                <div className="p-6 h-72">
+                <div className="h-64 p-4 sm:h-72 sm:p-6">
                     <AreaChart
                         data={filteredDaily.map((d, i) => ({
                             value: d.revenue,
@@ -434,7 +434,7 @@ export function AnalyticsContent({
 
             {/* Orders Chart */}
             <div className="dash-card">
-                <div className="flex items-center justify-between border-b border-[var(--dash-border)] px-6 py-4">
+                <div className="flex items-center justify-between border-b border-[var(--dash-border)] px-4 py-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <ShoppingBag className="w-4 h-4 text-[var(--dash-text-muted)]" />
                         <h3 className="font-display text-[15px] font-semibold text-[var(--dash-text-main)]">
@@ -442,7 +442,7 @@ export function AnalyticsContent({
                         </h3>
                     </div>
                 </div>
-                <div className="p-6 h-64">
+                <div className="h-60 p-4 sm:h-64 sm:p-6">
                     <AreaChart
                         data={filteredDaily.map((d, i) => ({
                             value: d.orders,
@@ -615,8 +615,8 @@ function KPICard({
     const isPositive = change !== undefined ? (invertTrend ? change <= 0 : change >= 0) : true;
 
     return (
-        <div className={`dash-card dash-stat-card ${accent} p-5`}>
-            <div className="flex items-center justify-between mb-4">
+        <div className={`dash-card dash-stat-card ${accent} min-w-0 p-4 sm:p-5`}>
+            <div className="mb-4 flex min-h-8 items-start justify-between gap-2">
                 <h3 className="font-body text-[11px] font-semibold uppercase tracking-wider text-[var(--dash-text-muted)]">
                     {label}
                 </h3>
@@ -624,7 +624,7 @@ function KPICard({
                     <Icon className="h-4 w-4" strokeWidth={2} />
                 </div>
             </div>
-            <p className="font-display text-2xl font-semibold text-[var(--dash-text-main)] tabular-nums leading-none">
+            <p className="break-words font-display text-xl font-semibold leading-none text-[var(--dash-text-main)] tabular-nums sm:text-2xl">
                 {value}
             </p>
             {change !== undefined && (
@@ -636,7 +636,7 @@ function KPICard({
                         {change >= 0 ? "+" : ""}
                         {change}%
                     </span>
-                    <span className="ml-2 text-[var(--dash-text-muted)]">vs période préc.</span>
+                    <span className="ml-2 hidden text-[var(--dash-text-muted)] min-[520px]:inline">vs période préc.</span>
                 </div>
             )}
         </div>

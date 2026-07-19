@@ -131,14 +131,15 @@ export function OrderDetailContent({ order, items, customerStats }: OrderDetailC
               })}
             </span>
             <span className="text-[#d3c7ca]">•</span>
-            <button type="button" onClick={copyReference} className="inline-flex items-center gap-1.5 hover:text-[var(--dash-primary)]">
+            <button type="button" onClick={copyReference} className="inline-flex min-h-11 max-w-full items-center gap-1.5 rounded-lg hover:text-[var(--dash-primary)]">
               <Hash className="h-4 w-4" />
-              {order.id}
+              <span className="sm:hidden">{order.id.slice(-10).toUpperCase()}</span>
+              <span className="hidden truncate sm:inline">{order.id}</span>
               <Copy className="h-3.5 w-3.5" />
             </button>
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:flex">
           <button type="button" onClick={() => window.print()} className="dash-btn dash-btn-secondary">
             <Printer className="h-4 w-4" /> Imprimer
           </button>
@@ -148,7 +149,7 @@ export function OrderDetailContent({ order, items, customerStats }: OrderDetailC
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <SummaryCard icon={ReceiptText} label="Total commande" value={`${order.total_dzd.toLocaleString("fr-DZ")} DA`} accent />
         <SummaryCard icon={ShoppingBag} label="Articles" value={`${itemCount}`} detail={`${items.length} ligne${items.length > 1 ? "s" : ""}`} />
         <SummaryCard icon={Truck} label="Frais de livraison" value={`${order.shipping_cost_dzd.toLocaleString("fr-DZ")} DA`} />
@@ -156,7 +157,7 @@ export function OrderDetailContent({ order, items, customerStats }: OrderDetailC
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.55fr)_minmax(330px,.75fr)]">
-        <div className="space-y-6">
+        <div className="order-2 space-y-6 xl:order-none">
           <section className="dash-card overflow-hidden">
             <div className="flex items-center justify-between border-b border-[var(--dash-border)] px-5 py-4 sm:px-6">
               <div>
@@ -225,7 +226,7 @@ export function OrderDetailContent({ order, items, customerStats }: OrderDetailC
           </section>
         </div>
 
-        <aside className="space-y-6">
+        <aside className="order-1 space-y-6 xl:order-none">
           <section className="dash-card p-5 sm:p-6">
             <div className="mb-5 flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-[var(--dash-primary)]"><Truck className="h-5 w-5" /></span>
@@ -278,9 +279,9 @@ export function OrderDetailContent({ order, items, customerStats }: OrderDetailC
 
 function SummaryCard({ icon: Icon, label, value, detail, accent = false }: { icon: typeof ReceiptText; label: string; value: string; detail?: string; accent?: boolean }) {
   return (
-    <div className={`dash-card flex items-center gap-4 p-4 sm:p-5 ${accent ? "border-l-4 !border-l-[var(--dash-primary)]" : ""}`}>
+    <div className={`dash-card flex min-w-0 items-center gap-3 p-3.5 sm:gap-4 sm:p-5 ${accent ? "border-l-4 !border-l-[var(--dash-primary)]" : ""}`}>
       <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${accent ? "bg-[var(--dash-primary)] text-white" : "bg-[#faf4f5] text-[var(--dash-primary)]"}`}><Icon className="h-5 w-5" /></span>
-      <span className="min-w-0"><span className="block text-xs font-medium text-[var(--dash-text-muted)]">{label}</span><strong className="mt-1 block truncate font-display text-lg font-semibold text-[var(--dash-text-main)]">{value}</strong>{detail && <span className="block text-[11px] text-[var(--dash-text-muted)]">{detail}</span>}</span>
+      <span className="min-w-0"><span className="block text-[11px] font-medium leading-4 text-[var(--dash-text-muted)] sm:text-xs">{label}</span><strong className="mt-1 block truncate font-display text-base font-semibold text-[var(--dash-text-main)] sm:text-lg">{value}</strong>{detail && <span className="block truncate text-[10px] text-[var(--dash-text-muted)] sm:text-[11px]">{detail}</span>}</span>
     </div>
   );
 }

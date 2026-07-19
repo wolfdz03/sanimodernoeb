@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Search, Menu, ChevronRight } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Search, Menu, ChevronRight, ArrowUpRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { LangToggle } from "@/app/components/LangToggle";
 import { DashboardNotifications } from "./DashboardNotifications";
@@ -22,6 +22,18 @@ const breadcrumbLabels: Record<string, string> = {
   "/dashboard/marketing": "Marketing",
   "/dashboard/aide/marketing": "Marketing",
 };
+
+const dashboardSearchItems = [
+  { label: "Vue d'ensemble", detail: "Résumé de la boutique", href: "/dashboard", keywords: "accueil dashboard performance" },
+  { label: "Commandes", detail: "Suivi et livraison", href: "/dashboard/commandes", keywords: "clients ventes livraison" },
+  { label: "Produits", detail: "Catalogue et stock", href: "/dashboard/produits", keywords: "catalogue stock articles" },
+  { label: "Catégories", detail: "Organisation du catalogue", href: "/dashboard/categories", keywords: "collections classement" },
+  { label: "Contenu", detail: "Textes de la boutique", href: "/dashboard/contenu", keywords: "hero collection textes" },
+  { label: "Analytics", detail: "Revenus et performances", href: "/dashboard/analytics", keywords: "statistiques revenus commandes" },
+  { label: "Marketing", detail: "Pixels et suivi", href: "/dashboard/marketing", keywords: "meta google pixel" },
+  { label: "Paramètres", detail: "Configuration générale", href: "/dashboard/parametres", keywords: "réglages boutique livraison" },
+  { label: "Aide", detail: "Guides du tableau de bord", href: "/dashboard/aide", keywords: "support documentation" },
+];
 
 function getBreadcrumbs(pathname: string): { href: string; labelKey: string; isLast: boolean }[] {
   if (pathname === "/dashboard") {
@@ -69,6 +81,7 @@ export function DashboardTopBar({ adminName, onOpenMobileNav, mobileNavOpen = fa
   const { t } = useLanguage();
   const initial = adminName ? adminName.charAt(0).toUpperCase() : "A";
   const pathname = usePathname();
+  const router = useRouter();
   const breadcrumbs = getBreadcrumbs(pathname);
   const mobileTitleCrumb = breadcrumbs[breadcrumbs.length - 1];
   const mobileTitle =
@@ -77,18 +90,63 @@ export function DashboardTopBar({ adminName, onOpenMobileNav, mobileNavOpen = fa
       : mobileTitleCrumb.labelKey;
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [desktopSearchOpen, setDesktopSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const searchPopoverRef = useRef<HTMLDivElement>(null);
+  const desktopSearchRef = useRef<HTMLDivElement>(null);
+
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase("fr");
+  const searchResults = dashboardSearchItems.filter((item) =>
+    `${item.label} ${item.detail} ${item.keywords}`.toLocaleLowerCase("fr").includes(normalizedQuery)
+  ).slice(0, 6);
+
+  const navigateToResult = (href: string) => {
+    setSearchOpen(false);
+    setDesktopSearchOpen(false);
+    setSearchQuery("");
+    router.push(href);
+  };
 
   useEffect(() => {
-    if (!searchOpen) return;
+    if (!searchOpen && !desktopSearchOpen) return;
     const close = (e: MouseEvent) => {
       if (searchPopoverRef.current && !searchPopoverRef.current.contains(e.target as Node)) {
         setSearchOpen(false);
       }
+      if (desktopSearchRef.current && !desktopSearchRef.current.contains(e.target as Node)) {
+        setDesktopSearchOpen(false);
+      }
     };
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
-  }, [searchOpen]);
+  }, [searchOpen, desktopSearchOpen]);
+
+  const searchPanel = (
+    <div className="dash-dropdown mt-2 overflow-hidden p-1.5">
+      <p className="px-2.5 pb-1.5 pt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--dash-text-muted)]">
+        Accès rapide
+      </p>
+      {searchResults.length > 0 ? searchResults.map((item) => (
+        <button
+          key={item.href}
+          type="button"
+          onClick={() => navigateToResult(item.href)}
+          className="group flex min-h-12 w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left hover:bg-red-50 focus-visible:bg-red-50 focus-visible:outline-none"
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#f7f3f4] text-[var(--dash-primary)] group-hover:bg-white">
+            <Search className="h-3.5 w-3.5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <strong className="block truncate text-[13px] font-semibold text-[var(--dash-text-main)]">{item.label}</strong>
+            <span className="block truncate text-[11px] text-[var(--dash-text-muted)]">{item.detail}</span>
+          </span>
+          <ArrowUpRight className="h-4 w-4 shrink-0 text-gray-300 group-hover:text-[var(--dash-primary)]" />
+        </button>
+      )) : (
+        <p className="px-3 py-5 text-center text-sm text-[var(--dash-text-muted)]">Aucun résultat</p>
+      )}
+    </div>
+  );
 
   return (
     <header className="z-10 flex h-[68px] shrink-0 items-center justify-between border-b border-[var(--dash-border)] bg-white/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8 pt-[env(safe-area-inset-top,0px)]">
@@ -129,15 +187,29 @@ export function DashboardTopBar({ adminName, onOpenMobileNav, mobileNavOpen = fa
         </nav>
       </div>
       <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-        <div className="relative hidden sm:block w-56 lg:w-72">
+        <div className="relative hidden w-56 sm:block lg:w-72" ref={desktopSearchRef}>
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--dash-text-muted)] pointer-events-none">
             <Search className="w-4 h-4" />
           </span>
           <input
-            type="text"
+            type="search"
+            value={searchQuery}
+            onChange={(event) => {
+              setSearchQuery(event.target.value);
+              setDesktopSearchOpen(true);
+            }}
+            onFocus={() => setDesktopSearchOpen(true)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && searchResults[0]) {
+                event.preventDefault();
+                navigateToResult(searchResults[0].href);
+              }
+              if (event.key === "Escape") setDesktopSearchOpen(false);
+            }}
             placeholder={t("dashboard_search_placeholder")}
             className="dash-input h-10 w-full rounded-xl bg-[#faf8f9] pl-9 pr-4 text-[13px]"
           />
+          {desktopSearchOpen && <div className="absolute left-0 right-0 top-full z-50">{searchPanel}</div>}
         </div>
 
         <div className="relative sm:hidden" ref={searchPopoverRef}>
@@ -159,10 +231,20 @@ export function DashboardTopBar({ adminName, onOpenMobileNav, mobileNavOpen = fa
                 <input
                   type="search"
                   autoFocus
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" && searchResults[0]) {
+                      event.preventDefault();
+                      navigateToResult(searchResults[0].href);
+                    }
+                    if (event.key === "Escape") setSearchOpen(false);
+                  }}
                   placeholder={t("dashboard_search_placeholder")}
-                  className="dash-input pl-9 pr-3 h-10 text-[13px] rounded-lg bg-[var(--dash-bg-light)] w-full"
+                  className="dash-input h-11 w-full rounded-lg bg-[var(--dash-bg-light)] pl-9 pr-3 text-base"
                 />
               </div>
+              {searchPanel}
             </div>
           )}
         </div>
@@ -173,7 +255,7 @@ export function DashboardTopBar({ adminName, onOpenMobileNav, mobileNavOpen = fa
         </div>
         <button
           type="button"
-          className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-red-200 bg-gradient-to-br from-red-50 to-white text-xs font-bold text-[var(--dash-primary)] hover:border-[var(--dash-primary)] hover:ring-2 hover:ring-[var(--dash-primary)]/10"
+          className="hidden h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-red-200 bg-gradient-to-br from-red-50 to-white text-xs font-bold text-[var(--dash-primary)] hover:border-[var(--dash-primary)] hover:ring-2 hover:ring-[var(--dash-primary)]/10 sm:flex"
           aria-label="Admin profile"
         >
           {initial}

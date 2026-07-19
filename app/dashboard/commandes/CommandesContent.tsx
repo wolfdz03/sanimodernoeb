@@ -190,7 +190,7 @@ export function CommandesContent({
             {t("dashboard_orders_subtitle")}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
           <a
             href="/api/dashboard/export-orders"
             download
@@ -218,24 +218,26 @@ export function CommandesContent({
 
       {/* Tabs & Search */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-1 bg-gray-100/80 rounded-lg p-1">
-          {tabs.map((tab) => (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-medium whitespace-nowrap ${tab.active
-                  ? "bg-white text-[var(--dash-text-main)] shadow-sm"
-                  : "text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]"
-                }`}
-            >
-              {tab.label}
-              {tab.count != null && (
-                <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[var(--dash-primary)] px-1 text-[10px] font-bold text-white">
-                  {tab.count}
-                </span>
-              )}
-            </Link>
-          ))}
+        <div className="w-full overflow-x-auto pb-1 sm:w-auto sm:pb-0">
+          <div className="flex w-max items-center gap-1 rounded-lg bg-gray-100/80 p-1">
+            {tabs.map((tab) => (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={`flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-md px-3 text-[13px] font-medium ${tab.active
+                    ? "bg-white text-[var(--dash-text-main)] shadow-sm"
+                    : "text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]"
+                  }`}
+              >
+                {tab.label}
+                {tab.count != null && (
+                  <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[var(--dash-primary)] px-1 text-[10px] font-bold text-white">
+                    {tab.count}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
         </div>
         <div className="relative w-full sm:w-60">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[var(--dash-text-muted)]">
@@ -246,7 +248,7 @@ export function CommandesContent({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("dashboard_orders_filter_placeholder")}
-            className="dash-input pl-9 text-[13px] h-9"
+            className="dash-input h-11 !pl-9 text-base sm:h-9 sm:text-[13px]"
           />
         </div>
       </div>
@@ -281,7 +283,7 @@ export function CommandesContent({
       {/* Select All Row */}
       {filtered.length > 0 && (
         <div className="flex items-center gap-3 px-1 mb-1">
-          <button onClick={toggleSelectAll} className="flex items-center gap-2 text-[13px] text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]">
+          <button onClick={toggleSelectAll} className="flex min-h-11 items-center gap-2 rounded-lg px-1 text-[13px] text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]">
             {selectedOrders.size === filtered.length ? <CheckSquare className="h-4 w-4 text-[var(--dash-primary)]" /> : <Square className="h-4 w-4" />}
             Tout sélectionner
           </button>
@@ -387,9 +389,8 @@ function OrderCard({
   const statusDot = getStatusDot(order.status);
 
   return (
-    <Link
-      href={`/dashboard/commandes/${order.id}`}
-      className={`group relative flex flex-col gap-4 overflow-hidden dash-card p-5 sm:flex-row sm:items-center sm:justify-between ${isSelected ? "!border-[var(--dash-primary)] ring-1 ring-[var(--dash-primary)]/20" : ""
+    <article
+      className={`group relative flex flex-col gap-3 overflow-hidden dash-card p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5 ${isSelected ? "!border-[var(--dash-primary)] ring-1 ring-[var(--dash-primary)]/20" : ""
         } ${dimmed ? "opacity-70 hover:opacity-100" : ""}`}
     >
       {/* Left strip */}
@@ -398,12 +399,18 @@ function OrderCard({
         style={{ backgroundColor: order.status === "pending" || order.status === "paid" ? "var(--dash-warning)" : order.status === "cancelled" ? "#9CA3AF" : "var(--dash-primary)" }}
       />
 
-      <div className="flex items-center gap-4 pl-3">
-        <button onClick={onToggle} className="text-[var(--dash-text-muted)] hover:text-[var(--dash-text-main)]">
+      <div className="flex min-w-0 items-start gap-2 pl-2 sm:items-center sm:gap-4 sm:pl-3">
+        <button
+          type="button"
+          onClick={onToggle}
+          className="relative z-10 flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+          aria-label={isSelected ? "Désélectionner la commande" : "Sélectionner la commande"}
+        >
           {isSelected ? <CheckSquare className="h-4 w-4 text-[var(--dash-primary)]" /> : <Square className="h-4 w-4" />}
         </button>
 
-        <div className="flex flex-col gap-1.5">
+        <Link href={`/dashboard/commandes/${order.id}`} className="min-w-0 flex-1 rounded-lg py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dash-primary)]">
+        <div className="flex min-w-0 flex-col gap-1.5">
           <div className="flex items-center gap-2.5 flex-wrap">
             <span className="font-display text-[13px] font-semibold text-[var(--dash-text-muted)] tabular-nums">
               {getOrderDisplayId(order.id)}
@@ -427,20 +434,23 @@ function OrderCard({
             {(order.shipping_city || order.shipping_wilaya) && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{[order.shipping_city, order.shipping_wilaya].filter(Boolean).join(", ")}</span>}
           </div>
         </div>
+        </Link>
       </div>
 
-      <div className="flex items-center justify-between gap-6 pl-3 sm:pl-0">
+      <div className="flex items-center justify-between gap-3 pl-[54px] sm:gap-6 sm:pl-0">
+        <Link href={`/dashboard/commandes/${order.id}`} className="flex min-w-0 flex-1 items-center justify-between gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dash-primary)] sm:flex-none">
         <div className="flex flex-col items-start sm:items-end">
           <span className="font-display text-lg font-semibold text-[var(--dash-text-main)] tabular-nums">
             {order.total_dzd.toLocaleString("fr-DZ")} DA
           </span>
           <span className="text-[11px] text-[var(--dash-text-muted)]">Livraison: {order.shipping_cost_dzd.toLocaleString("fr-DZ")} DA</span>
         </div>
+        <ChevronRight className="h-4 w-4 shrink-0 text-gray-300 group-hover:translate-x-0.5 group-hover:text-[var(--dash-text-muted)]" />
+        </Link>
         <div className="flex items-center gap-2">
-          <div onClick={(e) => e.stopPropagation()}>{action}</div>
-          <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[var(--dash-text-muted)] opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0" />
+          {action}
         </div>
       </div>
-    </Link>
+    </article>
   );
 }

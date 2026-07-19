@@ -302,7 +302,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
             <form
               id="settings-main-form"
               onSubmit={handleSubmit}
-              className="p-6 lg:p-8 space-y-6"
+              className="space-y-6 p-3 sm:p-6 lg:p-8"
             >
               {(activeTab === "contact" || activeTab === "apparence" || activeTab === "general") && (
                 <>
@@ -321,7 +321,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
 
               {/* Contact - Store Profile card style */}
               <div className={activeTab !== "contact" ? "hidden" : ""}>
-                <section className="rounded-xl border border-[var(--dash-border)]/50 p-6 lg:p-8 mb-6 bg-[var(--dash-surface)]">
+                <section className="mb-6 rounded-xl border border-[var(--dash-border)]/50 bg-[var(--dash-surface)] p-4 sm:p-6 lg:p-8">
                   <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--dash-border)]">
                     <div className="p-2 bg-[var(--dash-primary)]/10 rounded-lg text-[var(--dash-primary)]">
                       <Store className="w-5 h-5" />
@@ -353,7 +353,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                       <label htmlFor="logo_url" className="block text-xs font-semibold uppercase tracking-wide text-[var(--dash-text-muted)] mb-2">
                         Logo (URL)
                       </label>
-                      <div className="flex gap-2">
+                      <div className="flex min-w-0 flex-col gap-2 sm:flex-row">
                         <input
                           id="logo_url"
                           name="logo_url"
@@ -361,9 +361,9 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                           value={logoUrl}
                           onChange={(e) => setLogoUrl(e.target.value)}
                           placeholder="/logo.png ou https://..."
-                          className="block flex-1 rounded-lg border-[var(--dash-border)] bg-gray-50 py-2.5 pl-4 text-[var(--dash-text-main)] focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)] text-sm transition-colors"
+                          className="block min-w-0 flex-1 rounded-lg border-[var(--dash-border)] bg-gray-50 py-2.5 pl-4 text-[var(--dash-text-main)] focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)] text-sm transition-colors"
                         />
-                        <label className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[var(--dash-border)] bg-gray-50 hover:bg-gray-100 cursor-pointer text-sm font-medium text-[var(--dash-text-main)]">
+                        <label className="flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[var(--dash-border)] bg-gray-50 px-4 py-2.5 text-sm font-medium text-[var(--dash-text-main)] hover:bg-gray-100 cursor-pointer">
                           <ImageIcon className="w-4 h-4" />
                           {logoUploading ? "…" : "Importer"}
                           <input
@@ -463,7 +463,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
 
               {/* Apparence - Branding card style */}
               <div className={activeTab !== "apparence" ? "hidden" : ""}>
-                <section className="rounded-xl border border-[var(--dash-border)]/50 p-6 lg:p-8 mb-6 bg-[var(--dash-surface)]">
+                <section className="mb-6 rounded-xl border border-[var(--dash-border)]/50 bg-[var(--dash-surface)] p-4 sm:p-6 lg:p-8">
                   <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--dash-border)]">
                     <div className="p-2 bg-[var(--dash-primary)]/10 rounded-lg text-[var(--dash-primary)]">
                       <Palette className="w-5 h-5" />
@@ -559,7 +559,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
 
               {/* General - card style */}
               <div className={activeTab !== "general" ? "hidden" : ""}>
-                <section className="rounded-xl border border-[var(--dash-border)]/50 p-6 lg:p-8 mb-6 bg-[var(--dash-surface)]">
+                <section className="mb-6 rounded-xl border border-[var(--dash-border)]/50 bg-[var(--dash-surface)] p-4 sm:p-6 lg:p-8">
                   <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--dash-border)]">
                     <div className="p-2 bg-[var(--dash-primary)]/10 rounded-lg text-[var(--dash-primary)]">
                       <FileText className="w-5 h-5" />
@@ -619,7 +619,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
 
               {/* Livraison - Shipping Settings */}
               <div className={activeTab !== "shipping" ? "hidden" : ""}>
-                <section className="rounded-xl border border-[var(--dash-border)]/50 p-6 lg:p-8 mb-6 bg-[var(--dash-surface)]">
+                <section className="mb-6 rounded-xl border border-[var(--dash-border)]/50 bg-[var(--dash-surface)] p-4 sm:p-6 lg:p-8">
                   <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--dash-border)]">
                     <div className="p-2 bg-[var(--dash-primary)]/10 rounded-lg text-[var(--dash-primary)]">
                       <Store className="w-5 h-5" />
@@ -711,7 +711,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
 
             {/* Footer - visible when tab footer */}
             {activeTab === "footer" && (
-              <div className="p-6 lg:p-8 space-y-6">
+              <div className="space-y-6 p-3 sm:p-6 lg:p-8">
                 <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--dash-border)]">
                   <div className="p-2 bg-[var(--dash-primary)]/10 rounded-lg text-[var(--dash-primary)]">
                     <Link2 className="w-5 h-5" />
@@ -800,7 +800,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
 
             {/* Security - visible when tab security */}
             {activeTab === "security" && (
-              <div className="p-6 lg:p-8 space-y-8">
+              <div className="space-y-8 p-3 sm:p-6 lg:p-8">
                 <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--dash-border)]">
                   <div className="p-2 bg-[var(--dash-primary)]/10 rounded-lg text-[var(--dash-primary)]">
                     <Lock className="w-5 h-5" />
