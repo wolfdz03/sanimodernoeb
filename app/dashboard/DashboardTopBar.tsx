@@ -90,12 +90,8 @@ export function DashboardTopBar({ adminName, onOpenMobileNav, mobileNavOpen = fa
     return () => document.removeEventListener("mousedown", close);
   }, [searchOpen]);
 
-  useEffect(() => {
-    setSearchOpen(false);
-  }, [pathname]);
-
   return (
-    <header className="flex h-[60px] shrink-0 items-center justify-between border-b border-[var(--dash-border)] bg-[var(--dash-surface)] px-4 sm:px-6 z-10 pt-[env(safe-area-inset-top,0px)]">
+    <header className="z-10 flex h-[68px] shrink-0 items-center justify-between border-b border-[var(--dash-border)] bg-white/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8 pt-[env(safe-area-inset-top,0px)]">
       <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
         <button
           type="button"
@@ -140,7 +136,7 @@ export function DashboardTopBar({ adminName, onOpenMobileNav, mobileNavOpen = fa
           <input
             type="text"
             placeholder={t("dashboard_search_placeholder")}
-            className="dash-input pl-9 pr-4 h-9 text-[13px] rounded-lg bg-[var(--dash-bg-light)] w-full"
+            className="dash-input h-10 w-full rounded-xl bg-[#faf8f9] pl-9 pr-4 text-[13px]"
           />
         </div>
 
@@ -177,7 +173,7 @@ export function DashboardTopBar({ adminName, onOpenMobileNav, mobileNavOpen = fa
         </div>
         <button
           type="button"
-          className="h-9 w-9 sm:h-8 sm:w-8 overflow-hidden rounded-[8px] border border-[var(--dash-border)] hover:border-[var(--dash-primary)] hover:ring-2 hover:ring-[var(--dash-primary)]/10 flex items-center justify-center bg-gradient-to-br from-emerald-50 to-white text-emerald-700 font-semibold text-xs shrink-0"
+          className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-red-200 bg-gradient-to-br from-red-50 to-white text-xs font-bold text-[var(--dash-primary)] hover:border-[var(--dash-primary)] hover:ring-2 hover:ring-[var(--dash-primary)]/10"
           aria-label="Admin profile"
         >
           {initial}

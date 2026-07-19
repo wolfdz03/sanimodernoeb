@@ -2,10 +2,11 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { uploadProductImage } from "@/app/actions/upload";
 import { getProductImageUrls } from "@/lib/product-images";
-import { X, Plus, ChevronUp, ChevronDown, Check, Upload } from "lucide-react";
+import { X, Plus, ChevronUp, Check, Upload } from "lucide-react";
 import {
   saveProductOptionTypes,
   saveProductVariants,
@@ -59,12 +60,6 @@ interface Category {
   id: string;
   name: string;
   slug: string;
-}
-
-interface ProductOptionValue {
-  id?: string;
-  value: string;
-  sort_order: number;
 }
 
 interface ProductOptionType {
@@ -198,6 +193,25 @@ export function ProductForm({
 
   const [newOptionValueByIndex, setNewOptionValueByIndex] = useState<Record<number, string>>({});
 
+  function addOptionValue(optionIndex: number) {
+    const value = (newOptionValueByIndex[optionIndex] ?? "").trim();
+    if (!value) return;
+    setOptionTypes((prev) =>
+      prev.map((type, index) => {
+        if (index !== optionIndex) return type;
+        const values = type.values ?? [];
+        if (values.some((item) => item.value.trim().toLocaleLowerCase() === value.toLocaleLowerCase())) {
+          return type;
+        }
+        return {
+          ...type,
+          values: [...values, { value, sort_order: values.length }],
+        };
+      })
+    );
+    setNewOptionValueByIndex((prev) => ({ ...prev, [optionIndex]: "" }));
+  }
+
   const [priceDzd, setPriceDzd] = useState<number>(product?.price_dzd ?? 0);
   const [description, setDescription] = useState<string>(product?.description ?? "");
   const [status, setStatus] = useState<"active" | "draft">("active");
@@ -214,6 +228,21 @@ export function ProductForm({
         return;
       }
       seen.add(sig);
+    }
+    const configuredOptionTypes = optionTypes.filter((type) =>
+      type.name.trim() && type.values.some((value) => value.value.trim())
+    );
+    const optionNames = configuredOptionTypes.map((type) => type.name.trim().toLocaleLowerCase());
+    if (new Set(optionNames).size !== optionNames.length) {
+      setError("Chaque option doit avoir un nom différent (par exemple Taille et Couleur).");
+      return;
+    }
+    if (
+      configuredOptionTypes.length > 0 &&
+      optionTypes.some((type) => type.name.trim() && !type.values.some((value) => value.value.trim()))
+    ) {
+      setError("Ajoutez au moins une valeur à chaque option, puis générez les variantes.");
+      return;
     }
     setLoading(true);
     const form = e.currentTarget;
@@ -240,9 +269,19 @@ export function ProductForm({
     }
     const productId = result.productId ?? product?.id;
     if (productId) {
-      const otFiltered = optionTypes.filter((t) => t.name?.trim());
-      await saveProductOptionTypes(productId, otFiltered);
-      await saveProductVariants(productId, variants);
+      const otFiltered = configuredOptionTypes;
+      const optionResult = await saveProductOptionTypes(productId, otFiltered);
+      if (optionResult.error) {
+        setLoading(false);
+        setError(optionResult.error);
+        return;
+      }
+      const variantResult = await saveProductVariants(productId, variants);
+      if (variantResult.error) {
+        setLoading(false);
+        setError(variantResult.error);
+        return;
+      }
       const attrsFiltered = attributes.filter((a) => a.name?.trim());
       await saveProductAttributes(productId, attrsFiltered);
     }
@@ -493,7 +532,7 @@ export function ProductForm({
                     <div key={ti} className="mb-4 last:mb-0">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="md:col-span-1">
-                          <label className={labelBase}>Nom de l'option</label>
+                           <label className={labelBase}>Nom de l&apos;option</label>
                           <div className="flex gap-2">
                             <select
                               value={ot.name}
@@ -527,6 +566,7 @@ export function ProductForm({
                                   if (variants.length > 0 && !confirm("Supprimer cette option supprimera toutes les variantes. Continuer ?"))
                                     return;
                                   setOptionTypes((prev) => prev.filter((_, i) => i !== ti));
+                                  setVariants([]);
                                 }}
                                 className="p-2 text-red-600 hover:bg-red-50 rounded"
                                 aria-label="Supprimer"
@@ -542,7 +582,7 @@ export function ProductForm({
                             {(ot.values ?? []).map((val, vi) => (
                               <span
                                 key={vi}
-                                className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-[var(--dash-primary)] border border-[var(--dash-primary)]/20"
+                                className="inline-flex items-center rounded border border-[var(--dash-primary)]/20 bg-red-50 px-2 py-0.5 text-xs font-medium text-[var(--dash-primary)]"
                               >
                                 {val.value}
                                 <button
@@ -576,27 +616,18 @@ export function ProductForm({
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                   e.preventDefault();
-                                  const v = (newOptionValueByIndex[ti] ?? "").trim();
-                                  if (v) {
-                                    setOptionTypes((prev) =>
-                                      prev.map((t, i) =>
-                                        i === ti
-                                          ? {
-                                              ...t,
-                                              values: [
-                                                ...(t.values ?? []),
-                                                { value: v, sort_order: (t.values?.length ?? 0) },
-                                              ],
-                                            }
-                                          : t
-                                      )
-                                    );
-                                    setNewOptionValueByIndex((prev) => ({ ...prev, [ti]: "" }));
-                                  }
+                                  addOptionValue(ti);
                                 }
                               }}
                               className="flex-1 border-none bg-transparent p-0 text-sm focus:ring-0 placeholder-gray-400 min-w-[80px]"
                             />
+                            <button
+                              type="button"
+                              onClick={() => addOptionValue(ti)}
+                              className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-[var(--dash-primary)] hover:bg-red-50"
+                            >
+                              <Plus className="h-3.5 w-3.5" /> Ajouter
+                            </button>
                           </div>
                           <p className="mt-1 text-xs text-[var(--dash-text-muted)]">
                             Appuyez sur Entrée pour ajouter une valeur.
@@ -610,7 +641,11 @@ export function ProductForm({
                     onClick={() =>
                       setOptionTypes((prev) => [
                         ...prev,
-                        { name: "Couleur", sort_order: prev.length, values: [] },
+                        {
+                          name: OPTION_NAMES.find((name) => !prev.some((type) => type.name === name)) ?? "Option",
+                          sort_order: prev.length,
+                          values: [],
+                        },
                       ])
                     }
                     className="mt-2 text-sm text-[var(--dash-primary)] hover:underline flex items-center gap-1"
@@ -1014,10 +1049,12 @@ export function ProductForm({
                   key={`${url}-${index}`}
                   className="relative group aspect-square rounded-md overflow-hidden border border-[var(--dash-border)]"
                 >
-                  <img
-                    src={url}
-                    alt=""
-                    className="w-full h-full object-cover"
+                   <Image
+                     src={url}
+                     alt=""
+                     fill
+                     sizes="240px"
+                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                     <button
@@ -1060,7 +1097,7 @@ export function ProductForm({
 
           {/* Need Help */}
           <div className="bg-[var(--dash-bg-light)] rounded-md p-4 border border-[var(--dash-border)]">
-            <h4 className="font-display text-sm font-semibold mb-1">Besoin d'aide ?</h4>
+             <h4 className="font-display text-sm font-semibold mb-1">Besoin d&apos;aide ?</h4>
             <p className="text-xs text-[var(--dash-text-muted)] mb-3">
               Consultez la documentation pour gérer les variantes.
             </p>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { FileDown, Plus, Inbox, Search, CheckSquare, Square, Trash2, Send, ArrowRight, ChevronRight } from "lucide-react";
+import { FileDown, Plus, Inbox, Search, CheckSquare, Square, Trash2, Send, ChevronRight, MapPin, Phone, ReceiptText, Clock3, Truck } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import type { OrderStatus } from "@/lib/types/database";
 import { MarkShippedButton } from "./MarkShippedButton";
@@ -31,6 +31,10 @@ interface OrderRow {
   status: string;
   total_dzd: number;
   shipping_name: string;
+  shipping_phone: string;
+  shipping_wilaya?: string | null;
+  shipping_city?: string | null;
+  shipping_cost_dzd: number;
   created_at: string;
   items: OrderItem[];
 }
@@ -117,6 +121,8 @@ export function CommandesContent({
     return (
       o.id.toLowerCase().includes(q) ||
       o.shipping_name.toLowerCase().includes(q) ||
+      o.shipping_phone.toLowerCase().includes(q) ||
+      (o.shipping_wilaya ?? "").toLowerCase().includes(q) ||
       getItemsPreview(o.items).toLowerCase().includes(q)
     );
   });
@@ -127,6 +133,10 @@ export function CommandesContent({
 
   const pendingCount =
     (orders ?? []).filter((o) => isPending(o.status)).length;
+  const visibleRevenue = filtered
+    .filter((o) => o.status !== "cancelled")
+    .reduce((sum, order) => sum + order.total_dzd, 0);
+  const shippedCount = (orders ?? []).filter((o) => isShipped(o.status)).length;
 
   const tabs = [
     { href: "/dashboard/commandes", label: t("dashboard_orders_filter_all"), active: !currentStatus },
@@ -169,7 +179,7 @@ export function CommandesContent({
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-5">
+    <div className="mx-auto max-w-[1400px] space-y-6">
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -198,6 +208,12 @@ export function CommandesContent({
             {t("dashboard_orders_create")}
           </Link>
         </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="dash-card flex items-center gap-3 p-4"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-[var(--dash-primary)]"><ReceiptText className="h-5 w-5" /></span><span><span className="block text-xs text-[var(--dash-text-muted)]">Commandes affichées</span><strong className="font-display text-xl">{filtered.length}</strong></span></div>
+        <div className="dash-card flex items-center gap-3 p-4"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600"><Clock3 className="h-5 w-5" /></span><span><span className="block text-xs text-[var(--dash-text-muted)]">À traiter</span><strong className="font-display text-xl">{pendingCount}</strong></span></div>
+        <div className="dash-card flex items-center gap-3 p-4"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-violet-600"><Truck className="h-5 w-5" /></span><span><span className="block text-xs text-[var(--dash-text-muted)]">Traitées</span><strong className="font-display text-xl">{shippedCount}</strong><span className="ml-2 text-xs text-[var(--dash-text-muted)]">{visibleRevenue.toLocaleString("fr-DZ")} DA</span></span></div>
       </div>
 
       {/* Tabs & Search */}
@@ -237,7 +253,7 @@ export function CommandesContent({
 
       {/* Bulk Action Bar */}
       {selectedOrders.size > 0 && (
-        <div className="flex items-center justify-between rounded-lg border border-[var(--dash-primary)]/30 bg-emerald-50/50 p-3">
+        <div className="flex items-center justify-between rounded-xl border border-[var(--dash-primary)]/30 bg-red-50/60 p-3">
           <span className="text-[13px] font-medium text-[var(--dash-primary)]">
             {selectedOrders.size} {selectedOrders.size === 1 ? 'commande sélectionnée' : 'commandes sélectionnées'}
           </span>
@@ -245,7 +261,7 @@ export function CommandesContent({
             <button
               onClick={() => handleBulkAction("shipped")}
               disabled={isBulkLoading}
-              className="dash-btn dash-btn-secondary text-[13px] py-1.5 px-3 text-[var(--dash-primary)] border-[var(--dash-primary)]/20 hover:bg-emerald-50 disabled:opacity-50"
+              className="dash-btn dash-btn-secondary border-[var(--dash-primary)]/20 px-3 py-1.5 text-[13px] text-[var(--dash-primary)] hover:bg-red-50 disabled:opacity-50"
             >
               <Send className="h-3.5 w-3.5" />
               Expédier
@@ -404,10 +420,11 @@ function OrderCard({
           <h3 className="font-body text-[15px] font-semibold text-[var(--dash-text-main)]">
             {order.shipping_name}
           </h3>
-          <div className="flex items-center gap-2 text-[13px] text-[var(--dash-text-muted)]">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-[var(--dash-text-muted)]">
             <span>{itemCount} {itemsLabel}</span>
-            <span className="text-gray-300">·</span>
-            <span className="truncate max-w-[200px]">{getItemsPreview(order.items) || "—"}</span>
+            <span className="max-w-[220px] truncate">{getItemsPreview(order.items) || "-"}</span>
+            <span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" />{order.shipping_phone}</span>
+            {(order.shipping_city || order.shipping_wilaya) && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{[order.shipping_city, order.shipping_wilaya].filter(Boolean).join(", ")}</span>}
           </div>
         </div>
       </div>
@@ -417,6 +434,7 @@ function OrderCard({
           <span className="font-display text-lg font-semibold text-[var(--dash-text-main)] tabular-nums">
             {order.total_dzd.toLocaleString("fr-DZ")} DA
           </span>
+          <span className="text-[11px] text-[var(--dash-text-muted)]">Livraison: {order.shipping_cost_dzd.toLocaleString("fr-DZ")} DA</span>
         </div>
         <div className="flex items-center gap-2">
           <div onClick={(e) => e.stopPropagation()}>{action}</div>

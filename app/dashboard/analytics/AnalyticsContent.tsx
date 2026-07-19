@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import {
     DollarSign,
     ShoppingBag,
@@ -192,13 +193,18 @@ function DonutChart({
     const total = segments.reduce((s, seg) => s + seg.value, 0) || 1;
     const r = 42;
     const circumference = 2 * Math.PI * r;
-    let offset = 0;
+    const offsets = segments.map((_, index) =>
+        segments.slice(0, index).reduce(
+            (sum, segment) => sum + (segment.value / total) * circumference,
+            0
+        )
+    );
 
     return (
         <div className="flex items-center gap-6">
             <div className="relative w-28 h-28 shrink-0">
                 <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                    {segments.map((seg) => {
+                    {segments.map((seg, index) => {
                         const dashLen = (seg.value / total) * circumference;
                         const dashGap = circumference - dashLen;
                         const el = (
@@ -211,11 +217,10 @@ function DonutChart({
                                 stroke={seg.color}
                                 strokeWidth={10}
                                 strokeDasharray={`${dashLen} ${dashGap}`}
-                                strokeDashoffset={-offset}
+                                strokeDashoffset={-offsets[index]}
                                 strokeLinecap="round"
                             />
                         );
-                        offset += dashLen;
                         return el;
                     })}
                 </svg>
@@ -272,9 +277,6 @@ export function AnalyticsContent({
     topWilayas,
     topProducts,
     hourlyDistribution,
-    totalRevenue,
-    totalOrders,
-    aov,
     cancelRate,
     lowStockProducts,
 }: AnalyticsContentProps) {
@@ -371,7 +373,7 @@ export function AnalyticsContent({
                     value={`${fmt(rangeRevenue)} DZD`}
                     change={revChangePercent}
                     icon={DollarSign}
-                    iconBg="bg-emerald-50"
+                    iconBg="bg-red-50"
                     iconColor="text-[var(--dash-primary)]"
                     accent="emerald"
                 />
@@ -559,7 +561,7 @@ export function AnalyticsContent({
                                         <td>
                                             <div className="flex items-center gap-3">
                                                 {p.image ? (
-                                                    <img src={p.image} alt="" className="w-9 h-9 rounded-lg object-cover bg-gray-50" />
+                                                    <span className="relative h-9 w-9 overflow-hidden rounded-lg bg-gray-50"><Image src={p.image} alt="" fill sizes="36px" className="object-cover" /></span>
                                                 ) : (
                                                     <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
                                                         <Package className="w-4 h-4 text-gray-300" />
@@ -628,7 +630,7 @@ function KPICard({
             {change !== undefined && (
                 <div className="mt-3 flex items-center text-xs font-medium">
                     <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${isPositive ? "bg-emerald-50 text-[var(--dash-primary)]" : "bg-red-50 text-red-600"
+                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${isPositive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-600"
                             }`}
                     >
                         {change >= 0 ? "+" : ""}

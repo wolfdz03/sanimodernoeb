@@ -55,17 +55,17 @@ export function DashboardNavPanel({
   ];
 
   return (
-    <div className="flex flex-col h-full min-h-0 bg-[var(--dash-surface)]">
-      <div className="flex h-16 items-center gap-2 px-4 sm:px-5 border-b border-[var(--dash-border)] shrink-0 min-w-0">
+    <div className="flex h-full min-h-0 flex-col bg-transparent text-white">
+      <div className="flex h-[68px] min-w-0 shrink-0 items-center gap-2 border-b border-white/10 px-4 sm:px-5">
         <Link
           href="/dashboard"
           className="flex items-center gap-3 group min-w-0 flex-1"
           onClick={onNavigate}
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-[var(--dash-primary)] to-emerald-600 text-white shadow-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--dash-primary)] text-white shadow-[0_10px_24px_-12px_rgba(220,38,38,0.9)]">
             <Store className="w-[18px] h-[18px]" />
           </div>
-          <span className="font-display text-[15px] font-semibold tracking-tight text-[var(--dash-text-main)] truncate">
+          <span className="truncate font-display text-[15px] font-semibold tracking-tight text-white">
             {siteTitle}
           </span>
         </Link>
@@ -73,7 +73,7 @@ export function DashboardNavPanel({
       </div>
 
       <div className="px-5 pt-5 pb-2 shrink-0">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--dash-text-muted)]">
+        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">
           Menu
         </span>
       </div>
@@ -89,17 +89,17 @@ export function DashboardNavPanel({
               onClick={onNavigate}
               className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium min-h-11 ${
                 isActive
-                  ? "bg-emerald-50 text-emerald-700 shadow-sm"
-                  : "text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+                  ? "bg-white/10 text-white shadow-sm"
+                  : "text-white/58 hover:bg-white/[0.06] hover:text-white"
               }`}
             >
               <div
                 className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${
-                  isActive ? "bg-[var(--dash-primary)]/10" : "bg-transparent group-hover:bg-gray-100"
+                  isActive ? "bg-[var(--dash-primary)] text-white" : "bg-transparent group-hover:bg-white/[0.06]"
                 }`}
               >
                 <Icon
-                  className={`w-[18px] h-[18px] ${isActive ? "text-[var(--dash-primary)]" : ""}`}
+                  className={`h-[18px] w-[18px] ${isActive ? "text-white" : ""}`}
                   strokeWidth={isActive ? 2.2 : 1.8}
                 />
               </div>
@@ -109,20 +109,20 @@ export function DashboardNavPanel({
                   {badge}
                 </span>
               )}
-              {isActive && <div className="w-1 h-5 rounded-full bg-[var(--dash-primary)] ml-auto shrink-0" />}
+              {isActive && <div className="ml-auto h-5 w-1 shrink-0 rounded-full bg-[var(--dash-primary)]" />}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t border-[var(--dash-border)] p-3 space-y-0.5 shrink-0">
+      <div className="shrink-0 space-y-0.5 border-t border-white/10 p-3">
         <Link
           href="/dashboard/marketing"
           onClick={onNavigate}
           className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium min-h-11 ${
             pathname.startsWith("/dashboard/marketing")
-              ? "bg-emerald-50 text-emerald-700"
-              : "text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+              ? "bg-white/10 text-white"
+              : "text-white/58 hover:bg-white/[0.06] hover:text-white"
           }`}
         >
           <div className="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
@@ -135,8 +135,8 @@ export function DashboardNavPanel({
           onClick={onNavigate}
           className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium min-h-11 ${
             pathname.startsWith("/dashboard/parametres")
-              ? "bg-emerald-50 text-emerald-700"
-              : "text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+              ? "bg-white/10 text-white"
+              : "text-white/58 hover:bg-white/[0.06] hover:text-white"
           }`}
         >
           <div className="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
@@ -147,7 +147,7 @@ export function DashboardNavPanel({
         <Link
           href="/dashboard/aide"
           onClick={onNavigate}
-          className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium min-h-11 text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+          className="group flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-white/58 hover:bg-white/[0.06] hover:text-white"
         >
           <div className="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
             <HelpCircle className="w-[18px] h-[18px]" strokeWidth={1.8} />
@@ -155,21 +155,21 @@ export function DashboardNavPanel({
           Aide
         </Link>
 
-        <div className="mt-3 pt-3 border-t border-[var(--dash-border)]">
-          <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50">
-            <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center border border-emerald-200/60 text-sm font-bold text-emerald-700 shrink-0">
+        <div className="mt-3 border-t border-white/10 pt-3">
+          <div className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-white/[0.05]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-sm font-bold text-white">
               {adminName ? adminName.charAt(0).toUpperCase() : "A"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-semibold text-[var(--dash-text-main)] truncate">
+              <p className="truncate text-[13px] font-semibold text-white">
                 {adminName ?? t("dashboard_admin_role")}
               </p>
-              <p className="text-[11px] text-[var(--dash-text-muted)] truncate">{t("dashboard_admin_role")}</p>
+              <p className="truncate text-[11px] text-white/38">{t("dashboard_admin_role")}</p>
             </div>
             <form action={logout}>
               <button
                 type="submit"
-                className="p-2.5 min-w-11 min-h-11 flex items-center justify-center text-[var(--dash-text-muted)] hover:text-[var(--dash-destructive)] rounded-lg hover:bg-red-50"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-white/40 hover:bg-white/[0.06] hover:text-red-300"
                 aria-label={t("dashboard_logout")}
               >
                 <LogOut className="w-4 h-4" />
@@ -179,7 +179,7 @@ export function DashboardNavPanel({
           <Link
             href="/"
             onClick={onNavigate}
-            className="flex items-center gap-2 mt-2 px-3 py-2 min-h-10 text-[11px] text-[var(--dash-text-muted)] hover:text-[var(--dash-primary)] rounded-md hover:bg-emerald-50/50"
+            className="mt-2 flex min-h-10 items-center gap-2 rounded-md px-3 py-2 text-[11px] text-white/45 hover:bg-white/[0.06] hover:text-white"
           >
             <ExternalLink className="w-3 h-3 shrink-0" />
             {t("dashboard_back_site")}

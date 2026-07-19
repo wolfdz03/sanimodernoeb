@@ -1,144 +1,67 @@
 "use client";
 
-import { motion } from "motion/react";
-import { ShoppingBag, Heart, Eye, Star } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import type { Product } from "@/lib/types/database";
 import { getProductPrimaryImage } from "@/lib/product-images";
 import { useLanguage } from "@/context/LanguageContext";
 
-interface ProductCardProps {
-  product: Product;
-}
-
-export function ProductCard({ product }: ProductCardProps) {
-  const router = useRouter();
+export function ProductCard({ product }: { product: Product }) {
   const { t } = useLanguage();
-  const categoryName =
-    product.categories && "name" in product.categories
-      ? (product.categories as { name: string }).name
-      : null;
+  const categoryName = product.categories?.name ?? null;
   const imageUrl = getProductPrimaryImage(product) ?? "/placeholder-product.png";
-  const badgeColor = product.badge_color ?? "bg-[var(--primary)]";
   const productUrl = product.slug
     ? `/produit/${encodeURIComponent(product.slug)}`
     : `/produit/${product.id}`;
-
-  const hasDiscount = product.price_old_dzd != null && product.price_old_dzd > 0;
-  const discountPercent = hasDiscount
-    ? Math.round(((product.price_old_dzd! - product.price_dzd) / product.price_old_dzd!) * 100)
-    : 0;
+  const hasDiscount = product.price_old_dzd != null && product.price_old_dzd > product.price_dzd;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5 }}
-      className="group relative bg-white rounded-2xl overflow-hidden border border-[var(--border)] hover:border-[var(--primary)]/20 transition-all duration-500 hover-lift"
-    >
-      {/* Image container */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-slate-50 cursor-pointer">
-        <Link
-          href={productUrl}
-          className="block w-full h-full"
-        >
-          <Image
-            src={imageUrl}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="w-full h-full object-cover product-image-zoom"
-          />
-          {/* Hover gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        </Link>
+    <article className="group">
+      <Link
+        href={productUrl}
+        className="relative block aspect-[4/5] overflow-hidden rounded-2xl border border-[#f0e2e4] bg-[#fff1f1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-4"
+      >
+        <Image
+          src={imageUrl}
+          alt={product.name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-cover transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#15191d]/45 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+        <span className="absolute bottom-4 right-4 inline-flex h-11 w-11 translate-y-2 items-center justify-center rounded-xl bg-white text-[#15191d] opacity-0 shadow-[0_12px_30px_rgba(30,41,59,0.16)] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 rtl:left-4 rtl:right-auto">
+          <ArrowUpRight className="h-4 w-4 rtl:-rotate-90" />
+          <span className="sr-only">{t("product_order_now")}</span>
+        </span>
+      </Link>
 
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
+      <div className="pt-4">
+        <div className="mb-2 flex min-h-5 flex-wrap items-center gap-2 text-xs font-medium text-[#717981]">
+          {categoryName && <span>{categoryName}</span>}
           {product.badge && (
-            <div
-              className={`px-3 py-1.5 rounded-lg ${badgeColor} text-white text-xs font-bold tracking-wide shadow-lg`}
-            >
-              {product.badge}
-            </div>
-          )}
-          {hasDiscount && discountPercent > 0 && (
-            <div className="px-2.5 py-1 rounded-lg bg-emerald-500 text-white text-xs font-bold shadow-lg">
-              -{discountPercent}%
-            </div>
+            <>
+              {categoryName && <span aria-hidden="true">/</span>}
+              <span className="text-[var(--primary)]">{product.badge}</span>
+            </>
           )}
         </div>
-
-        {/* Quick action buttons */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2">
-          <motion.button
-            type="button"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            className="w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center text-slate-500 hover:bg-[var(--primary)] hover:text-white transition-all duration-300 shadow-lg opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
-            style={{ transitionDelay: "0ms" }}
-          >
-            <Heart className="w-4.5 h-4.5" />
-          </motion.button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.push(productUrl);
-            }}
-            className="w-10 h-10 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center text-slate-500 hover:bg-[var(--primary)] hover:text-white transition-all duration-300 shadow-lg opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
-            style={{ transitionDelay: "75ms" }}
-          >
-            <Eye className="w-4.5 h-4.5" />
-          </button>
-        </div>
-
-        {/* Bottom CTA overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">
-          <Link
-            href={productUrl}
-            onClick={(e) => e.stopPropagation()}
-            className="block w-full py-3 rounded-xl bg-white/95 backdrop-blur-sm text-[var(--text)] font-semibold hover:bg-[var(--primary)] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            {t("product_order_now")}
-          </Link>
-        </div>
-      </div>
-
-      {/* Card info */}
-      <Link href={productUrl}>
-        <div className="p-5 cursor-pointer">
-          {categoryName && (
-            <div className="inline-block text-[11px] text-[var(--primary)] font-bold uppercase tracking-[0.1em] mb-2 bg-[var(--primary-muted)]/60 px-2.5 py-0.5 rounded-md">
-              {categoryName}
-            </div>
-          )}
-          <h3 className="font-bold text-[var(--text)] mb-3 line-clamp-2 min-h-[3rem] group-hover:text-[var(--primary)] transition-colors duration-300 leading-snug">
+        <Link href={productUrl} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]">
+          <h3 className="line-clamp-2 min-h-12 text-base font-semibold leading-6 tracking-[-0.015em] text-[#252a30] transition-colors group-hover:text-[var(--primary)]">
             {product.name}
           </h3>
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col gap-0.5">
-              {hasDiscount && (
-                <span className="text-sm text-slate-400 line-through font-medium">
-                  {product.price_old_dzd!.toLocaleString("fr-DZ")} DA
-                </span>
-              )}
-              <span className="font-extrabold text-xl text-[var(--primary)] tracking-tight">
-                {product.price_dzd.toLocaleString("fr-DZ")} DA
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-xs bg-amber-50 px-2.5 py-1 rounded-lg">
-              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-              <span className="font-bold text-amber-700">4.8</span>
-            </div>
-          </div>
+        </Link>
+        <div className="mt-3 flex flex-wrap items-baseline gap-2">
+          <span className="text-lg font-semibold tracking-[-0.025em] text-[#15191d]">
+            {product.price_dzd.toLocaleString("fr-DZ")} DA
+          </span>
+          {hasDiscount && (
+            <span className="text-sm text-[#8b9299] line-through">
+              {product.price_old_dzd!.toLocaleString("fr-DZ")} DA
+            </span>
+          )}
         </div>
-      </Link>
-    </motion.div>
+      </div>
+    </article>
   );
 }

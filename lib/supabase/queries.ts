@@ -95,7 +95,7 @@ export async function getProductById(id: string): Promise<Product | null> {
     .select(
       "*, categories(name, slug), " +
         "product_option_types(*, product_option_values(*)), " +
-        "product_variants(*, product_variant_options(*, product_option_values!option_value_id(*))), " +
+        "product_variants(*, product_variant_options(*, product_option_values!option_value_id(*, product_option_types(name)))), " +
         "product_attributes(*)"
     )
     .eq("id", id)
@@ -114,7 +114,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     .select(
       "*, categories(name, slug), " +
         "product_option_types(*, product_option_values(*)), " +
-        "product_variants(*, product_variant_options(*, product_option_values!option_value_id(*))), " +
+        "product_variants(*, product_variant_options(*, product_option_values!option_value_id(*, product_option_types(name)))), " +
         "product_attributes(*)"
     )
     .eq("slug", slug)

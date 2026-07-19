@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffdfc;
+  --foreground: #1f1a1b;
   --radius: 0.75rem;
   /* Sani Modern OEB – red-dominant palette */
   --primary: #DC2626;
   --primary-hover: #B91C1C;
   --primary-muted: #FEE2E2;
   --primary-subtle: #FEF2F2;
-  --text: #1E293B;
-  --text-muted: #475569;
-  --border: #E2E8F0;
+  --text: #261f21;
+  --text-muted: #6f6265;
+  --border: #eadfe1;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
@@ -39,6 +39,20 @@
 /* Site always light theme (no dark mode) */
 html {
   scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 body {
@@ -348,24 +362,24 @@ label {
 
 /* Dashboard – Structured Clarity Admin theme */
 .dashboard-theme {
-  --dash-primary: #059669;
-  --dash-primary-hover: #047857;
-  --dash-primary-light: #D1FAE5;
-  --dash-bg-light: #F9FAFB;
-  --dash-bg-dark: #10221c;
+  --dash-primary: #DC2626;
+  --dash-primary-hover: #B91C1C;
+  --dash-primary-light: #FEE2E2;
+  --dash-bg-light: #F8F6F7;
+  --dash-bg-dark: #201A1C;
   --dash-surface: #FFFFFF;
-  --dash-border: #E5E7EB;
-  --dash-border-hover: #D1D5DB;
-  --dash-text-main: #111827;
-  --dash-text-muted: #6B7280;
+  --dash-border: #EAE3E5;
+  --dash-border-hover: #DCCFD2;
+  --dash-text-main: #241F21;
+  --dash-text-muted: #746A6D;
   --dash-warning: #F59E0B;
   --dash-destructive: #EF4444;
   --dash-info: #3B82F6;
   --dash-shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-  --dash-shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
-  --dash-shadow-elevated: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --dash-shadow-dropdown: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  --dash-radius: 10px;
+  --dash-shadow-card: 0 1px 2px rgba(62, 35, 41, 0.035), 0 10px 35px -28px rgba(91, 33, 44, 0.28);
+  --dash-shadow-elevated: 0 16px 40px -28px rgba(91, 33, 44, 0.34);
+  --dash-shadow-dropdown: 0 24px 60px -26px rgba(62, 35, 41, 0.35);
+  --dash-radius: 14px;
   --dash-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -375,6 +389,21 @@ label {
 
 .dashboard-theme .font-body {
   font-family: var(--font-inter), sans-serif;
+}
+
+.dashboard-theme {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(220, 38, 38, 0.055), transparent 26rem),
+    var(--dash-bg-light);
+}
+
+.dash-page-enter {
+  animation: dash-page-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes dash-page-enter {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Global dashboard transitions — snappy 150ms */
@@ -566,12 +595,12 @@ label {
 .dash-btn-primary {
   background: var(--dash-primary);
   color: white;
-  box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
+  box-shadow: 0 6px 18px -10px rgba(220, 38, 38, 0.75);
 }
 
 .dash-btn-primary:hover {
   background: var(--dash-primary-hover);
-  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.3);
+  box-shadow: 0 10px 24px -12px rgba(220, 38, 38, 0.8);
 }
 
 .dash-btn-secondary {
@@ -605,7 +634,7 @@ label {
 
 .dash-input:focus {
   border-color: var(--dash-primary);
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .dash-input::placeholder {
@@ -748,4 +777,52 @@ label {
 
 .dash-order-strip:hover {
   box-shadow: inset 3px 0 0 0 var(--dash-primary);
+}
+
+/* Public storefront: bright porcelain surfaces with a restrained red pulse. */
+.public-page {
+  min-height: 100dvh;
+  padding-block: 7rem 6rem;
+  background:
+    radial-gradient(circle at 8% 6%, rgba(220, 38, 38, 0.09), transparent 25rem),
+    radial-gradient(circle at 92% 38%, rgba(248, 113, 113, 0.08), transparent 22rem),
+    linear-gradient(180deg, #fffdfc 0%, #ffffff 48%, #fff7f7 100%);
+}
+
+.public-panel {
+  border: 1px solid #f0e2e4;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 55px -38px rgba(127, 29, 29, 0.38);
+}
+
+.public-interactive {
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 180ms ease, background-color 180ms ease, color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.public-interactive:hover {
+  transform: translateY(-2px);
+}
+
+.public-enter {
+  animation: public-enter 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes public-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .public-page {
+    padding-block: 6rem 4rem;
+  }
 }

@@ -1,162 +1,79 @@
 "use client";
 
-import { motion } from "motion/react";
-import { ArrowRight, Sparkles } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
+import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?q=80&w=2072&auto=format&fit=crop";
 
 export function Hero() {
   const { t } = useLanguage();
-  const scrollToProducts = () => {
-    const element = document.querySelector("#products");
-    if (element) element.scrollIntoView({ behavior: "smooth" });
-  };
-  const scrollToCategories = () => {
-    const element = document.querySelector("#categories");
-    if (element) element.scrollIntoView({ behavior: "smooth" });
-  };
+  const reduceMotion = useReducedMotion();
 
   return (
-    <header className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
-      {/* Background image */}
-      <img
-        src={HERO_IMAGE}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover scale-105"
-        style={{ animation: "float-slow 20s ease-in-out infinite alternate", animationName: "none" }}
-      />
-
-      {/* Premium gradient overlay */}
-      <div className="absolute inset-0 hero-gradient-overlay" />
-
-      {/* Animated decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Floating orbs */}
-        <div className="absolute top-1/4 left-[10%] w-72 h-72 rounded-full bg-red-500/8 blur-3xl animate-float" />
-        <div className="absolute bottom-1/3 right-[15%] w-96 h-96 rounded-full bg-amber-500/6 blur-3xl animate-float-slow" />
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 rounded-full bg-white/5 blur-2xl animate-float" style={{ animationDelay: "2s" }} />
-
-        {/* Subtle grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px"
-          }}
-        />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center items-center text-center pt-32 sm:pt-40 md:pt-48 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-4xl"
-        >
-          {/* Premium badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass-dark text-white/90 text-sm font-medium mb-8"
-          >
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>Qualité Premium • Livraison Nationale</span>
-          </motion.div>
-
-          <h1 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white leading-[1.05] mb-6 tracking-tight">
-            {t("hero_title_image")}
-          </h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-12 font-medium leading-relaxed"
-          >
-            {t("hero_subtitle_image")}
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
-          >
-            <button
-              onClick={scrollToProducts}
-              className="group relative px-10 py-4.5 rounded-2xl bg-[var(--primary)] text-white font-bold hover:bg-[var(--primary-hover)] transition-all shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 animate-pulse-glow"
-            >
-              <span className="relative z-10">{t("hero_btn_products")}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300 relative z-10" />
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 rounded-2xl overflow-hidden">
-                <div className="absolute inset-0 animate-shimmer" />
-              </div>
-            </button>
-            <button
-              onClick={scrollToCategories}
-              className="px-10 py-4.5 rounded-2xl border-2 border-white/30 text-white font-bold hover:bg-white/10 hover:border-white/50 backdrop-blur-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-            >
-              {t("hero_btn_categories")}
-            </button>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="grid grid-cols-3 gap-6 md:gap-12"
-          >
-            {[
-              { value: "500+", labelKey: "hero_stat_products" as const },
-              { value: "50K+", labelKey: "hero_stat_clients" as const },
-              { value: "4.9/5", labelKey: "hero_stat_rating" as const },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 + index * 0.15 }}
-                className="relative group"
-              >
-                {/* Glassmorphism stat card */}
-                <div className="glass-dark rounded-2xl py-5 px-4 md:px-8 transition-all duration-500 group-hover:bg-white/10">
-                  <div className="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">
-                    {stat.value}
-                  </div>
-                  <div className="text-white/60 text-xs uppercase tracking-[0.2em] font-semibold">
-                    {t(stat.labelKey)}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
-
-      {/* Scroll indicator */}
+    <header className="relative isolate min-h-[100dvh] overflow-hidden bg-[#191516]">
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+        initial={reduceMotion ? false : { opacity: 0, scale: 1.035 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute inset-0 -z-20"
       >
+        <Image
+          src="/home-hero-bathroom.webp"
+          alt="Salle de bain contemporaine avec baignoire îlot et robinetterie chromée"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[63%_center]"
+        />
+      </motion.div>
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(18,14,15,0.88)_0%,rgba(18,14,15,0.72)_37%,rgba(18,14,15,0.20)_72%,rgba(18,14,15,0.08)_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(18,14,15,0.46)_0%,transparent_42%,rgba(18,14,15,0.18)_100%)]" />
+
+      <div className="mx-auto flex min-h-[100dvh] max-w-[1500px] items-end px-5 pb-16 pt-32 sm:px-10 sm:pb-20 lg:items-center lg:px-14 lg:pb-8 xl:px-20">
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2"
+          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-[760px]"
         >
-          <div className="w-1.5 h-3 bg-white/60 rounded-full" />
+          <div>
+            <p className="mb-6 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-white/80">
+              <span className="h-0.5 w-9 bg-[var(--primary)]" />
+              {t("hero_badge")}
+            </p>
+            <h1 className="max-w-[11ch] text-[clamp(3.1rem,7.2vw,7.4rem)] font-semibold leading-[0.88] tracking-[-0.07em] text-white [text-wrap:balance]">
+              {t("hero_title")}
+            </h1>
+            <p className="mt-8 max-w-[46ch] text-base leading-7 text-white/75 sm:text-lg">
+              {t("hero_subtitle_image")}
+            </p>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/produits"
+                className="group inline-flex min-h-13 items-center justify-center gap-3 rounded-xl bg-[var(--primary)] px-7 py-3.5 text-sm font-bold text-white shadow-[0_16px_45px_-18px_rgba(220,38,38,0.9)] transition duration-200 hover:-translate-y-0.5 hover:bg-[var(--primary-hover)] active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+              >
+                {t("hero_btn_products")}
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
+              </Link>
+              <a
+                href="#categories"
+                className="inline-flex min-h-13 items-center justify-center rounded-xl border border-white/35 bg-white/10 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/18 active:translate-y-0 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+              >
+                {t("hero_btn_categories")}
+              </a>
+            </div>
+          </div>
         </motion.div>
+      </div>
+
+      <motion.div
+        initial={reduceMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.35, duration: 0.3 }}
+        className="absolute bottom-7 right-6 hidden items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-white/60 lg:flex xl:right-20"
+      >
+        <span>Explorez</span><span className="h-px w-12 bg-white/40" />
       </motion.div>
     </header>
   );

@@ -19,7 +19,7 @@ export function CategoriesContent({ categories }: CategoriesContentProps) {
   const { t } = useLanguage();
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="mx-auto max-w-5xl">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
         <div className="min-w-0">
           <h1 className="font-display text-2xl font-semibold tracking-tight text-[var(--dash-text-main)]">

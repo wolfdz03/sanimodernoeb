@@ -108,6 +108,9 @@ export interface Order {
   shipping_phone: string;
   shipping_address: string;
   shipping_email: string | null;
+  shipping_wilaya?: string | null;
+  shipping_city?: string | null;
+  shipping_cost_dzd?: number;
   created_at: string;
 }
 

@@ -34,6 +34,7 @@ export interface SiteSettings {
   ga4_measurement_id: string | null;
   gtm_container_id: string | null;
   tracking_enabled: boolean;
+  shipping_rates: Record<string, number>;
 }
 
 const defaults: SiteSettings = {
@@ -58,6 +59,7 @@ const defaults: SiteSettings = {
   ga4_measurement_id: null,
   gtm_container_id: null,
   tracking_enabled: true,
+  shipping_rates: {},
 };
 
 export const defaultFooterSections: FooterSection[] = [
@@ -116,6 +118,14 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       ga4_measurement_id: data.ga4_measurement_id ?? defaults.ga4_measurement_id,
       gtm_container_id: data.gtm_container_id ?? defaults.gtm_container_id,
       tracking_enabled: data.tracking_enabled ?? defaults.tracking_enabled,
+      shipping_rates:
+        data.shipping_rates && typeof data.shipping_rates === "object" && !Array.isArray(data.shipping_rates)
+          ? Object.fromEntries(
+              Object.entries(data.shipping_rates as Record<string, unknown>)
+                .filter(([, value]) => Number.isFinite(Number(value)) && Number(value) >= 0)
+                .map(([wilaya, value]) => [wilaya, Number(value)])
+            )
+          : defaults.shipping_rates,
     };
   } catch {
     return defaults;

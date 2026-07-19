@@ -1,27 +1,28 @@
 "use client";
 
-import { NavWithSettings } from "../components/NavWithSettings";
+import { Nav } from "../components/Nav";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
 export default function PanierPage() {
-  const { items, updateQuantity, removeItem, totalDzd, totalItems } =
+  const { items, updateQuantity, removeItem, totalDzd } =
     useCart();
   const { t } = useLanguage();
 
   return (
     <>
-      <NavWithSettings />
-      <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <h1 className="font-bold text-3xl text-[#1E293B] mb-8">
+      <Nav />
+      <main className="public-page">
+        <div className="public-enter mx-auto max-w-5xl px-5 sm:px-8">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">Sani Moderne</p>
+          <h1 className="mb-10 text-4xl font-bold tracking-[-0.04em] text-[var(--text)] sm:text-5xl">
             {t("panier_title")}
           </h1>
 
           {items.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+            <div className="public-panel p-12 text-center">
               <p className="text-[var(--text-muted)] mb-6">
                 {t("panier_empty")}
               </p>
@@ -38,9 +39,9 @@ export default function PanierPage() {
                 {items.map((item) => (
                   <div
                     key={`${item.productId}-${item.variantId ?? ""}`}
-                    className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center"
+                    className="public-panel public-interactive flex flex-col items-start gap-4 p-4 sm:flex-row sm:items-center sm:p-6"
                   >
-                    <div className="w-full sm:w-24 h-24 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+                    <div className="h-28 w-full flex-shrink-0 overflow-hidden rounded-xl bg-[#fff1f1] sm:h-24 sm:w-24">
                       <img
                         src={item.image}
                         alt={item.name}
@@ -65,7 +66,7 @@ export default function PanierPage() {
                         onClick={() =>
                           updateQuantity(item.productId, item.quantity - 1, item.variantId)
                         }
-                        className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-[#1E293B] transition-colors"
+                        className="public-interactive flex h-10 w-10 items-center justify-center rounded-xl border border-[#eadfe1] bg-[#fff7f7] text-[var(--text)] hover:border-[var(--primary)]"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
@@ -76,7 +77,7 @@ export default function PanierPage() {
                         onClick={() =>
                           updateQuantity(item.productId, item.quantity + 1, item.variantId)
                         }
-                        className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-[#1E293B] transition-colors"
+                        className="public-interactive flex h-10 w-10 items-center justify-center rounded-xl border border-[#eadfe1] bg-[#fff7f7] text-[var(--text)] hover:border-[var(--primary)]"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -94,7 +95,7 @@ export default function PanierPage() {
                 ))}
               </div>
 
-              <div className="bg-white rounded-2xl border border-slate-200 p-6">
+              <div className="public-panel border-t-4 border-t-[var(--primary)] p-6 sm:p-8">
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-[var(--text-muted)] font-medium">{t("panier_total")}</span>
                   <span className="font-bold text-2xl text-[#DC2626]">

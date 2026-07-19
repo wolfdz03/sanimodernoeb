@@ -13,30 +13,30 @@ const FAQ_ITEMS = [
 export function FAQPageContent() {
   const { t } = useLanguage();
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6">
-      <div className="mb-12">
-        <p className="text-sm font-medium text-[var(--primary)] uppercase tracking-widest mb-2">
+    <div className="mx-auto max-w-5xl px-5 sm:px-8">
+      <div className="mb-12 max-w-3xl">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">
           {t("page_faq_meta")}
         </p>
-        <h1 className="text-3xl sm:text-4xl font-bold text-[var(--text)] mb-4">
+        <h1 className="mb-4 text-4xl font-bold tracking-[-0.04em] text-[var(--text)] sm:text-6xl">
           {t("page_faq_title")}
         </h1>
-        <p className="text-lg text-[var(--text-muted)] leading-relaxed">
+        <p className="text-lg leading-8 text-[var(--text-muted)]">
           {t("page_faq_intro")}
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {FAQ_ITEMS.map((item, idx) => (
           <details
             key={idx}
-            className="group bg-white rounded-2xl border border-slate-100 overflow-hidden"
+            className="public-panel group overflow-hidden border-l-4 border-l-transparent open:border-l-[var(--primary)]"
           >
-            <summary className="flex items-center justify-between gap-4 list-none cursor-pointer p-5 sm:p-6 font-semibold text-[var(--text)] hover:bg-slate-50 transition-colors">
+            <summary className="public-interactive flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-semibold text-[var(--text)] hover:bg-[#fff5f5] sm:p-6">
               <span>{t(item.q)}</span>
-              <ChevronDown className="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" />
+              <ChevronDown className="h-5 w-5 flex-shrink-0 text-[var(--primary)] transition-transform duration-200 group-open:rotate-180" />
             </summary>
-            <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-0 text-[var(--text-muted)] leading-relaxed border-t border-slate-100">
+            <div className="border-t border-[#f2e3e5] px-5 pb-5 pt-4 leading-relaxed text-[var(--text-muted)] sm:px-6 sm:pb-6">
               {t(item.a)}
             </div>
           </details>

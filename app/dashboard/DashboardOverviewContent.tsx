@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { ElementType } from "react";
 import {
   DollarSign,
   ShoppingBag,
@@ -10,6 +11,8 @@ import {
   TrendingDown,
   ArrowRight,
   BarChart3,
+  CalendarDays,
+  ChevronDown,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import type { OrderStatus } from "@/lib/types/database";
@@ -145,7 +148,7 @@ export function DashboardOverviewContent({
       change: revenueChange,
       changeLabel: t("dashboard_vs_yesterday"),
       icon: DollarSign,
-      iconBg: "bg-emerald-50",
+      iconBg: "bg-red-50",
       iconColor: "text-[var(--dash-primary)]",
       cardAccent: "emerald",
     },
@@ -200,7 +203,7 @@ export function DashboardOverviewContent({
             type="button"
             className="dash-btn dash-btn-secondary text-[13px] gap-2"
           >
-            <span className="text-base">📅</span>
+            <CalendarDays className="h-4 w-4 text-[var(--dash-primary)]" />
             {new Date().toLocaleDateString("fr-FR", {
               weekday: "short",
               day: "numeric",
@@ -213,12 +216,12 @@ export function DashboardOverviewContent({
       {/* Stat cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((card) => {
-          const Wrapper = card.href ? Link : "div";
+          const Wrapper: ElementType = card.href ? Link : "div";
           const wrapperProps = card.href ? { href: card.href } : {};
           return (
             <Wrapper
               key={card.label}
-              {...(wrapperProps as any)}
+              {...wrapperProps}
               className={`dash-card dash-stat-card ${card.cardAccent} p-5 group cursor-pointer`}
             >
               <div className="flex items-center justify-between mb-4">
@@ -246,7 +249,7 @@ export function DashboardOverviewContent({
                 {"change" in card && card.change !== undefined ? (
                   <>
                     <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 ${card.change >= 0
-                        ? "bg-emerald-50 text-[var(--dash-primary)]"
+                        ? "bg-emerald-50 text-emerald-700"
                         : "bg-red-50 text-red-600"
                       }`}>
                       {card.change >= 0 ? (
@@ -298,7 +301,7 @@ export function DashboardOverviewContent({
               className="dash-btn dash-btn-secondary text-xs py-1.5 px-3"
             >
               {t("dashboard_last_7_days")}
-              <svg className="w-3.5 h-3.5 text-gray-400 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="m6 9 6 6 6-6" /></svg>
+              <ChevronDown className="ml-1 h-3.5 w-3.5 text-gray-400" />
             </button>
           </div>
           <div className="relative h-80 w-full p-6">
@@ -468,7 +471,7 @@ export function DashboardOverviewContent({
                     <span className="w-28 text-[13px] font-medium text-[var(--dash-text-main)] truncate">{w.wilaya}</span>
                     <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-[var(--dash-primary)] to-emerald-400 rounded-full"
+                        className="h-full rounded-full bg-gradient-to-r from-[var(--dash-primary)] to-red-400"
                         style={{ width }}
                       />
                     </div>

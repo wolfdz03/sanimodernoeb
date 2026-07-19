@@ -39,12 +39,12 @@ export default async function ProduitsPage({ searchParams }: PageProps) {
   return (
     <>
       <NavWithSettings />
-      <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
-        <div className="max-w-7xl mx-auto px-6">
+      <main className="public-page">
+        <div className="public-enter mx-auto max-w-[92rem] px-5 sm:px-8">
           <ProductsPageHeader />
           <ProductsFilters categories={categories} />
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

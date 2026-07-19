@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, Search, ShoppingBag } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { Menu, X, ShoppingBag } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { LangToggle } from "./LangToggle";
 import { CartDrawer } from "./CartDrawer";
+import { SearchAutocomplete } from "./SearchAutocomplete";
 import type { SiteSettings } from "@/lib/site-settings";
 
 interface NavProps {
@@ -24,38 +24,19 @@ const navLinkKeys = [
 ];
 
 export function Nav({ settings }: NavProps) {
-  const [scrolled, setScrolled] = useState(false);
   const logoUrl = settings?.logo_url?.trim() || "/logo.png";
   const siteTitle = settings?.site_title?.trim() || "Sani Modern OEB";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
   const { t } = useLanguage();
   const { totalItems } = useCart();
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const q = searchQuery.trim();
-    if (q) {
-      router.push(`/produits?search=${encodeURIComponent(q)}`);
-      setMobileOpen(false);
-    } else {
-      router.push("/produits");
-    }
-  };
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-
     const handleOpenCart = () => setCartOpen(true);
     window.addEventListener("open-cart", handleOpenCart);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("open-cart", handleOpenCart);
     };
   }, []);
@@ -71,83 +52,57 @@ export function Nav({ settings }: NavProps) {
   return (
     <>
       <motion.nav
-        initial={{ y: -100, opacity: 0 }}
+        initial={reduceMotion ? false : { y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "py-2" : "py-4"
-          }`}
+        transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed inset-x-3 top-3 z-50 h-16 rounded-2xl border border-white/65 bg-white/88 shadow-[0_14px_50px_-28px_rgba(70,22,27,0.45)] backdrop-blur-2xl sm:inset-x-5 lg:inset-x-7"
       >
-        <div className="max-w-7xl mx-auto px-6">
-          <div
-            className={`px-6 py-3 transition-all duration-500 ${scrolled
-              ? "bg-white/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] rounded-2xl"
-              : "bg-white/80 backdrop-blur-sm rounded-2xl"
-              }`}
-          >
-            <div className="flex items-center justify-between">
+        <div className="mx-auto flex h-full max-w-[1500px] items-center px-4 sm:px-6 lg:px-8">
+            <div className="flex w-full items-center justify-between gap-6">
               <Link href="/" className="flex items-center gap-3 group">
                 <Image
                   src={logoUrl}
                   alt={siteTitle}
                   width={220}
                   height={70}
-                  className="h-12 sm:h-14 w-auto object-contain"
+                  className="h-9 w-auto object-contain sm:h-10"
                   priority
                   unoptimized={logoUrl.startsWith("http")}
                 />
               </Link>
 
-              <div className="hidden md:flex items-center gap-8">
+              <div className="hidden items-center gap-7 lg:flex">
                 {navLinkKeys.map((link) =>
                   link.href.startsWith("#") ? (
                     <button
                       key={link.key}
                       onClick={() => handleNavClick(link.href)}
-                      className="text-[var(--text-muted)] hover:text-[var(--primary)] font-medium text-sm transition-colors duration-300 relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded-md"
+                      className="group relative text-sm font-semibold text-[#514649] transition-colors duration-200 hover:text-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                     >
                       {t(link.key)}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--primary)] group-hover:w-full transition-all duration-300" />
+                      <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-[var(--primary)] transition-all duration-200 group-hover:w-full" />
                     </button>
                   ) : (
                     <Link
                       key={link.key}
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="text-[var(--text-muted)] hover:text-[var(--primary)] font-medium text-sm transition-colors duration-300 relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded-md"
+                      className="group relative text-sm font-semibold text-[#514649] transition-colors duration-200 hover:text-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                     >
                       {t(link.key)}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[var(--primary)] group-hover:w-full transition-all duration-300" />
+                      <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-[var(--primary)] transition-all duration-200 group-hover:w-full" />
                     </Link>
                   )
                 )}
               </div>
 
-              <div className="flex items-center gap-3">
-                <form
-                  onSubmit={handleSearchSubmit}
-                  className="hidden sm:flex items-center rounded-xl overflow-hidden border border-slate-200 bg-slate-50 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]/20"
-                >
-                  <input
-                    type="search"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Rechercher…"
-                    className="w-36 lg:w-44 px-3 py-2 bg-transparent text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] outline-none"
-                    aria-label="Rechercher des produits"
-                  />
-                  <button
-                    type="submit"
-                    className="p-2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors"
-                    aria-label="Rechercher"
-                  >
-                    <Search className="w-5 h-5" />
-                  </button>
-                </form>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <SearchAutocomplete />
 
                 <button
                   type="button"
                   onClick={() => setCartOpen(true)}
-                  className="relative p-2 text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] rounded-lg"
+                  className="relative rounded-xl p-2 text-[var(--text-muted)] transition duration-200 hover:bg-[#fff0f0] hover:text-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
                   aria-label="Voir le panier"
                 >
                   <ShoppingBag className="w-5 h-5" />
@@ -162,7 +117,9 @@ export function Nav({ settings }: NavProps) {
 
                 <button
                   onClick={() => setMobileOpen(!mobileOpen)}
-                  className="md:hidden w-10 h-10 rounded-xl bg-[#E2E8F0] flex items-center justify-center text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#fff0f0] text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 lg:hidden"
+                  aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                  aria-expanded={mobileOpen}
                 >
                   {mobileOpen ? (
                     <X className="w-5 h-5" />
@@ -172,25 +129,27 @@ export function Nav({ settings }: NavProps) {
                 </button>
               </div>
             </div>
-          </div>
         </div>
       </motion.nav>
 
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={reduceMotion ? false : { opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden"
+            className="fixed inset-0 z-40 bg-[#fff8f7] px-6 pt-28 lg:hidden"
           >
+            <div className="mb-10">
+              <SearchAutocomplete mobile onNavigate={() => setMobileOpen(false)} />
+            </div>
             <div className="flex flex-col gap-6">
               {navLinkKeys.map((link, index) =>
                 link.href.startsWith("#") ? (
                   <motion.button
                     key={link.key}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={reduceMotion ? false : { opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => handleNavClick(link.href)}
@@ -205,7 +164,7 @@ export function Nav({ settings }: NavProps) {
                     onClick={() => setMobileOpen(false)}
                   >
                     <motion.span
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={reduceMotion ? false : { opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                       className="text-[var(--text)] font-bold text-2xl block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 rounded-lg"

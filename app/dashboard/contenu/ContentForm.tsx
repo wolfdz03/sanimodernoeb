@@ -17,7 +17,6 @@ import {
   Info,
 } from "lucide-react";
 import { updateSiteContent } from "@/app/actions/content";
-import { useLanguage } from "@/context/LanguageContext";
 
 interface ContentItem {
   key: string;
@@ -49,7 +48,6 @@ const sectionIcons: Record<string, typeof Type> = {
 
 export function ContentForm({ items, sections }: ContentFormProps) {
   const router = useRouter();
-  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [activeSection, setActiveSection] = useState(sections[0]?.id ?? "hero");
   const [values, setValues] = useState<Record<string, { fr: string; ar: string }>>(() => {

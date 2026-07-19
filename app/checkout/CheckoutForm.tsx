@@ -10,7 +10,6 @@ import { createOrder } from "../actions/orders";
 import { WILAYAS } from "@/lib/wilayas";
 import { trackCheckout } from "@/lib/marketing-events";
 import type { CartItem } from "@/context/CartContext";
-import { useCart } from "@/context/CartContext";
 
 interface CheckoutFormProps {
   items: CartItem[];
@@ -21,7 +20,6 @@ interface CheckoutFormProps {
 export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormProps) {
   const { t } = useLanguage();
   const router = useRouter();
-  const { clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedWilaya, setSelectedWilaya] = useState<string>("");
@@ -72,7 +70,7 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
       return;
     }
     if (result.orderId) {
-      router.push(`/checkout?success=${result.orderId}&total=${totalDzd}`);
+      router.push(`/checkout?success=${result.orderId}&total=${result.totalDzd}`);
       return;
     }
   }
@@ -80,14 +78,15 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
   return (
     <>
       <Nav settings={settings} />
-      <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <h1 className="font-bold text-3xl text-[#1E293B] mb-8">
+      <main className="public-page">
+        <div className="public-enter mx-auto max-w-5xl px-5 sm:px-8">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">Finaliser la commande</p>
+          <h1 className="mb-10 text-4xl font-bold tracking-[-0.04em] text-[var(--text)] sm:text-5xl">
             {t("checkout_title")}
           </h1>
 
           <form onSubmit={handleSubmit} className="grid lg:grid-cols-2 gap-8">
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
+            <div className="public-panel p-6 sm:p-8">
               <h2 className="font-bold text-lg text-[#1E293B] mb-4">
                 {t("checkout_shipping")}
               </h2>
@@ -104,7 +103,7 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
                     name="shipping_name"
                     type="text"
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                    className="w-full rounded-xl border border-[#eadfe1] bg-white px-4 py-3 text-[var(--text)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10"
                   />
                 </div>
                 <div>
@@ -121,7 +120,7 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
                     required
                     placeholder="0XXX XX XX XX ou +213 XXX XX XX XX"
                     title="Ex: 0550123456, 0550 12 34 56 ou +213 550 123 456"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                    className="w-full rounded-xl border border-[#eadfe1] bg-white px-4 py-3 text-[var(--text)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10"
                   />
                 </div>
                 <div>
@@ -137,7 +136,7 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
                     required
                     value={selectedWilaya}
                     onChange={(e) => setSelectedWilaya(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                    className="w-full rounded-xl border border-[#eadfe1] bg-white px-4 py-3 text-[var(--text)] outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10"
                   >
                     <option value="">Choisir une wilaya</option>
                     {WILAYAS.map((w) => (
@@ -160,7 +159,7 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
                     type="text"
                     required
                     placeholder="Ex: Alger Centre, Bab Ezzouar..."
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition"
+                    className="w-full rounded-xl border border-[#eadfe1] bg-white px-4 py-3 text-[var(--text)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10"
                   />
                 </div>
                 <div>
@@ -176,14 +175,14 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
                     required
                     rows={3}
                     placeholder="Rue, numéro, bâtiment, étage..."
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-[#1E293B] placeholder:text-[var(--text-muted)] focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 outline-none transition resize-none"
+                    className="w-full resize-none rounded-xl border border-[#eadfe1] bg-white px-4 py-3 text-[var(--text)] outline-none transition placeholder:text-[var(--text-muted)] focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+              <div className="public-panel mb-6 border-t-4 border-t-[var(--primary)] p-6">
                 <h2 className="font-bold text-lg text-[#1E293B] mb-4">
                   {t("checkout_order_summary")}
                 </h2>
@@ -241,7 +240,7 @@ export function CheckoutForm({ items, settings, shippingRates }: CheckoutFormPro
               </button>
               <Link
                 href="/produits"
-                className="block text-center text-[#2563EB] font-medium mt-3 hover:underline"
+                className="mt-3 block text-center font-medium text-[var(--primary)] hover:underline"
               >
                 {t("panier_continue")}
               </Link>

@@ -18,7 +18,7 @@ export function DashboardChrome({ adminName, pendingCount, siteTitle, children }
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <div className="dashboard-theme min-h-screen h-screen bg-[var(--dash-bg-light)] text-[var(--dash-text-main)] font-body flex overflow-hidden">
+    <div className="dashboard-theme flex h-screen min-h-screen overflow-hidden font-body text-[var(--dash-text-main)]">
       <DashboardSidebar adminName={adminName} pendingCount={pendingCount} siteTitle={siteTitle} />
       <main className="flex-1 flex flex-col min-h-0 overflow-hidden relative min-w-0">
         <DashboardTopBar
@@ -32,8 +32,10 @@ export function DashboardChrome({ adminName, pendingCount, siteTitle, children }
         >
           Aller au contenu principal
         </a>
-        <div id="dashboard-main" className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-          <DashboardErrorBoundary>{children}</DashboardErrorBoundary>
+        <div id="dashboard-main" className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 xl:p-10">
+          <div className="dash-page-enter mx-auto w-full max-w-[1600px]">
+            <DashboardErrorBoundary>{children}</DashboardErrorBoundary>
+          </div>
         </div>
       </main>
       <DashboardMobileDrawer

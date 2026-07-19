@@ -2,17 +2,16 @@
 
 import { useLanguage } from "@/context/LanguageContext";
 import { MapPin, Phone, Mail } from "lucide-react";
-import Link from "next/link";
 
 export function ShowroomsPageContent() {
   const { t, lang } = useLanguage();
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6">
-      <div className="mb-12">
+    <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="mb-12 max-w-3xl">
         <p className="text-sm font-medium text-[var(--primary)] uppercase tracking-widest mb-2">
           {t("footer_showrooms")}
         </p>
-        <h1 className="text-3xl sm:text-4xl font-bold text-[var(--text)] mb-4">
+        <h1 className="mb-4 text-4xl font-bold tracking-[-0.04em] text-[var(--text)] sm:text-6xl">
           {t("page_showrooms_title")}
         </h1>
         <p className="text-lg text-[var(--text-muted)] leading-relaxed">
@@ -20,7 +19,7 @@ export function ShowroomsPageContent() {
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-lg shadow-slate-200/50 border border-slate-100 overflow-hidden">
+      <div className="public-panel overflow-hidden border-t-4 border-t-[var(--primary)]">
         <div className="p-6 sm:p-8">
           <h2 className="text-xl font-bold text-[var(--text)] mb-6 flex items-center gap-2">
             <MapPin className="w-5 h-5 text-[var(--primary)]" />

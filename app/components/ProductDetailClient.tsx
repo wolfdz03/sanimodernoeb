@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useLanguage } from "@/context/LanguageContext";
 import { useCart } from "@/context/CartContext";
 import { ShoppingBag, Minus, Plus, Package, CheckCircle } from "lucide-react";
 import { trackViewProduct } from "@/lib/marketing-events";
@@ -10,7 +9,7 @@ import { getProductPrimaryImage } from "@/lib/product-images";
 import { formatVariantLabel } from "@/lib/variant-label";
 import { createOrder } from "@/app/actions/orders";
 import { WILAYAS } from "@/lib/wilayas";
-import type { Product, ProductVariant, ProductOptionType } from "@/lib/types/database";
+import type { Product, ProductVariant } from "@/lib/types/database";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -93,7 +92,6 @@ function isColorOption(optionTypeName: string): boolean {
 }
 
 export function ProductDetailClient({ product, children }: ProductDetailClientProps) {
-  const { t } = useLanguage();
   const router = useRouter();
   const orderFormRef = useRef<HTMLDivElement>(null);
   const hasVariants = (product.product_variants?.length ?? 0) > 0;
@@ -187,7 +185,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
       return;
     }
     if (result.orderId) {
-      router.push(`/checkout?success=${result.orderId}&total=${totalDzd}`);
+      router.push(`/checkout?success=${result.orderId}&total=${result.totalDzd}`);
     }
   }
 
@@ -208,7 +206,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
                     {optType.name}
                     {selected[optType.name] && (
                       <span className="ml-2 text-[var(--text-muted)] font-medium normal-case tracking-normal">
-                        — {selected[optType.name]}
+                        : {selected[optType.name]}
                       </span>
                     )}
                   </label>
@@ -234,7 +232,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
                             disabled={outOfStock}
                             className={`w-11 h-11 rounded-xl border-2 transition-all flex items-center justify-center shrink-0 ${isSelected
                               ? "border-[#DC2626] ring-2 ring-[#DC2626]/30 scale-110"
-                              : "border-slate-200 hover:border-slate-400"
+                              : "border-[#eadfe1] hover:border-[var(--primary)]"
                               } ${outOfStock ? "opacity-40 cursor-not-allowed" : ""}`}
                             style={{ backgroundColor: swatchColor }}
                           >
@@ -267,7 +265,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
                             disabled={outOfStock}
                             className={`px-5 py-2.5 rounded-xl border-2 text-sm font-bold transition-all ${isSelected
                               ? "border-[#DC2626] bg-[#DC2626] text-white shadow-md shadow-red-500/20"
-                              : "border-slate-200 bg-white text-[var(--text)] hover:border-slate-300"
+                              : "border-[#eadfe1] bg-white text-[var(--text)] hover:border-[var(--primary)]"
                               } ${outOfStock ? "opacity-40 cursor-not-allowed line-through" : ""}`}
                           >
                             {ov.value}
@@ -291,21 +289,21 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
             {displayPrice.toLocaleString("fr-DZ")} DA
           </span>
           {displayStock <= 0 && (
-            <span className="text-sm font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">Rupture de stock</span>
+            <span className="rounded-lg bg-red-50 px-3 py-1 text-sm font-semibold text-[var(--primary)]">Rupture de stock</span>
           )}
           {displayStock > 0 && (
-            <span className="text-sm text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg font-semibold">{displayStock} en stock</span>
+            <span className="rounded-lg border border-[#eadfe1] bg-[#fff7f7] px-3 py-1 text-sm font-semibold text-[var(--text-muted)]">{displayStock} en stock</span>
           )}
         </div>
 
         {/* Quantity selector */}
         <div className="flex items-center gap-4">
           <label className="text-sm font-bold text-[var(--text)]">Quantité</label>
-          <div className="flex items-center border-2 border-slate-200 rounded-xl overflow-hidden">
+          <div className="flex items-center overflow-hidden rounded-xl border-2 border-[#eadfe1]">
             <button
               type="button"
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-[var(--primary)] transition-colors"
+              className="px-3 py-2.5 text-[var(--text-muted)] transition-colors hover:bg-[#fff3f3] hover:text-[var(--primary)]"
             >
               <Minus className="w-4 h-4" />
             </button>
@@ -319,12 +317,12 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
                   Math.max(1, Math.min(displayStock, parseInt(e.target.value, 10) || 1))
                 )
               }
-              className="w-14 text-center py-2.5 border-x-2 border-slate-200 font-bold text-[var(--text)] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-14 border-x-2 border-[#eadfe1] py-2.5 text-center font-bold text-[var(--text)] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
             <button
               type="button"
               onClick={() => setQuantity(Math.min(displayStock, quantity + 1))}
-              className="px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-[var(--primary)] transition-colors"
+              className="px-3 py-2.5 text-[var(--text-muted)] transition-colors hover:bg-[#fff3f3] hover:text-[var(--primary)]"
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -347,7 +345,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
             type="button"
             onClick={scrollToOrderForm}
             disabled={ctaDisabled}
-            className="flex-[1.5] px-8 py-4 rounded-2xl bg-[#16a34a] text-white font-bold text-base hover:bg-[#15803d] hover:shadow-lg hover:shadow-green-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+            className="public-interactive flex-[1.5] rounded-2xl bg-[var(--primary)] px-8 py-4 text-base font-bold text-white shadow-md shadow-red-500/20 hover:bg-[var(--primary-hover)] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
           >
             Commander : {totalDzd.toLocaleString("fr-DZ")} DZD
           </button>
@@ -358,7 +356,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
 
       {/* Order form */}
       <div id="order-form" ref={orderFormRef} className="mt-14 scroll-mt-24">
-        <div className="bg-gradient-to-br from-slate-50 to-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+        <div className="public-panel border-t-4 border-t-[var(--primary)] p-6 sm:p-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-[var(--primary-muted)] flex items-center justify-center">
               <Package className="w-5 h-5 text-[var(--primary)]" />
@@ -367,7 +365,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
           </div>
 
           {/* Order summary */}
-          <div className="mb-8 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div className="mb-8 rounded-2xl border border-[#f0e2e4] bg-[#fff8f7] p-5">
             <p className="font-bold text-[var(--text)]">{product.name}</p>
             {variantLabelDisplay && (
               <p className="text-sm text-[var(--text-muted)] mt-0.5">{variantLabelDisplay}</p>
@@ -468,7 +466,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
       </div>
 
       {/* Mobile sticky bottom bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 p-4 bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-[0_-4px_30px_rgba(0,0,0,0.08)] safe-area-pb">
+      <div className="safe-area-pb fixed bottom-0 left-0 right-0 z-40 border-t border-[#eadfe1] bg-white/95 p-4 shadow-[0_-4px_30px_rgba(127,29,29,0.10)] backdrop-blur-xl md:hidden">
         <div className="max-w-7xl mx-auto flex gap-3">
           <button
             type="button"
@@ -483,7 +481,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
             type="button"
             onClick={scrollToOrderForm}
             disabled={ctaDisabled}
-            className="flex-1 py-4 px-6 rounded-xl bg-[#16a34a] text-white font-bold hover:bg-[#15803d] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-green-500/20"
+            className="flex-1 rounded-xl bg-[var(--primary)] px-6 py-4 font-bold text-white shadow-lg shadow-red-500/20 transition-all hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Commander {totalDzd.toLocaleString("fr-DZ")} DZD
           </button>

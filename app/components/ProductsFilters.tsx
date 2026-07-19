@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState, useEffect, useRef } from "react";
-import { SlidersHorizontal, X, Search, Check } from "lucide-react";
+import { SlidersHorizontal, X, Search, Check, ChevronDown } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import type { Category } from "@/lib/types/database";
 import type { ProductSort } from "@/lib/supabase/queries";
@@ -100,8 +100,6 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
     setShowFilters(false);
   };
 
-  const hasActiveFilters = categorie || searchFromUrl || minPrice || maxPrice || inStock;
-
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const q = searchInput.trim();
@@ -124,7 +122,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={t("products_search_placeholder")}
-            className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white placeholder:text-slate-400 focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10 outline-none transition-all text-sm font-medium shadow-sm hover:border-slate-300 dark:hover:border-slate-700"
+            className="public-interactive w-full rounded-xl border border-[#eadfe1] bg-white py-3 pl-10 pr-4 text-sm font-medium text-[var(--text)] shadow-sm outline-none placeholder:text-[#9a8e90] hover:border-[#dfc9cd] focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10"
             aria-label="Rechercher"
           />
         </form>
@@ -134,7 +132,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
             <select
               value={sort}
               onChange={handleSortChange}
-              className="appearance-none pl-4 pr-10 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10 outline-none transition text-sm font-medium shadow-sm hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer"
+              className="public-interactive cursor-pointer appearance-none rounded-xl border border-[#eadfe1] bg-white py-3 pl-4 pr-10 text-sm font-medium text-[var(--text)] shadow-sm outline-none hover:border-[#dfc9cd] focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -142,8 +140,8 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
                 </option>
               ))}
             </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#8b7d80]">
+              <ChevronDown className="h-5 w-5" />
             </div>
           </div>
 
@@ -151,18 +149,15 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
-              className={`inline-flex items-center gap-2 px-5 py-3 rounded-2xl border text-sm font-medium transition-all shadow-sm ${(minPrice || maxPrice || inStock)
+              className={`public-interactive inline-flex items-center gap-2 rounded-xl border px-5 py-3 text-sm font-medium shadow-sm ${(minPrice || maxPrice || inStock)
                 ? "border-[var(--primary)] bg-[var(--primary)]/5 text-[var(--primary)] hover:bg-[var(--primary)]/10"
-                : "border-slate-200 dark:border-slate-800 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white hover:border-slate-300 dark:hover:border-slate-700"
+                : "border-[#eadfe1] bg-white text-[var(--text)] hover:border-[#dfc9cd]"
                 }`}
             >
               <SlidersHorizontal className="w-4 h-4" />
               {t("products_filter_apply")}
               {(minPrice || maxPrice || inStock) && (
-                <span className="flex h-2 w-2 relative ml-1">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--primary)] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--primary)]"></span>
-                </span>
+                <span className="ml-1 h-2 w-2 rounded-full bg-[var(--primary)]" />
               )}
             </button>
 
@@ -175,7 +170,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
                 />
                 <form
                   onSubmit={handleFilterSubmit}
-                  className="absolute top-full right-0 mt-3 z-50 w-[320px] p-5 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d1b1b] shadow-2xl space-y-6"
+                  className="public-panel absolute right-0 top-full z-50 mt-3 w-[320px] space-y-6 p-5 shadow-2xl"
                 >
                   <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                     <span className="font-bold text-lg text-[#1E293B] dark:text-white">
@@ -268,7 +263,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
           onClick={() => setCategory("")}
           className={`shrink-0 h-10 px-5 rounded-full text-sm font-medium transition-all ${categorie === ""
             ? "bg-[var(--primary)] text-white shadow-md shadow-[var(--primary)]/20"
-            : "bg-white dark:bg-[#102222] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300 hover:text-slate-900 dark:hover:text-white"
+            : "border border-[#eadfe1] bg-white text-[var(--text-muted)] hover:border-[#dfc9cd] hover:text-[var(--text)]"
             }`}
         >
           {t("products_filter_all_categories")}
@@ -279,7 +274,7 @@ export function ProductsFilters({ categories }: ProductsFiltersProps) {
             onClick={() => setCategory(c.slug)}
             className={`shrink-0 flex items-center gap-2 h-10 px-5 rounded-full text-sm font-medium transition-all ${categorie === c.slug
               ? "bg-[var(--primary)] text-white shadow-md shadow-[var(--primary)]/20"
-              : "bg-white dark:bg-[#102222] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300 hover:text-slate-900 dark:hover:text-white"
+              : "border border-[#eadfe1] bg-white text-[var(--text-muted)] hover:border-[#dfc9cd] hover:text-[var(--text)]"
               }`}
           >
             {categorie === c.slug && <Check className="w-3.5 h-3.5" />}

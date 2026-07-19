@@ -6,6 +6,7 @@ import type { SiteSettings } from "@/lib/site-settings";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { trackPurchase } from "@/lib/marketing-events";
+import { Check } from "lucide-react";
 
 interface CheckoutSuccessProps {
   orderId: string;
@@ -25,16 +26,17 @@ export function CheckoutSuccess({ orderId, totalDzd, settings }: CheckoutSuccess
   return (
     <>
       <Nav settings={settings} />
-      <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <h1 className="font-bold text-3xl text-[#1E293B] mb-4">
+      <main className="public-page px-5 sm:px-8">
+        <div className="public-panel public-enter mx-auto max-w-2xl border-t-4 border-t-[var(--primary)] p-8 text-center sm:p-12">
+          <span className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary)] text-white"><Check className="h-7 w-7" /></span>
+          <h1 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text)] sm:text-4xl">
             {t("checkout_success_title")}
           </h1>
           <p className="text-[var(--text-muted)] mb-6">
             {t("checkout_success_message")}
           </p>
-          <p className="text-sm text-[var(--text-muted)] mb-8">
-            <strong className="text-[#1E293B]">{orderId}</strong>
+          <p className="mb-8 rounded-xl bg-[#fff4f3] p-3 text-sm text-[var(--text-muted)]">
+            <strong className="break-all text-[var(--text)]">{orderId}</strong>
           </p>
           <Link
             href="/produits"

@@ -39,7 +39,7 @@ export class DashboardErrorBoundary extends React.Component<Props, State> {
             <button
               type="button"
               onClick={() => this.setState({ hasError: false })}
-              className="px-4 py-2 rounded-xl bg-[#13ecec] text-[#102222] font-medium hover:bg-[#0ea5a5] transition-colors"
+              className="rounded-xl bg-[var(--dash-primary)] px-4 py-2 font-medium text-white transition-colors hover:bg-[var(--dash-primary-hover)]"
             >
               Réessayer
             </button>

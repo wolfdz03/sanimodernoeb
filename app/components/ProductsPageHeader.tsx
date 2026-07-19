@@ -5,14 +5,14 @@ import { useLanguage } from "@/context/LanguageContext";
 export function ProductsPageHeader() {
   const { t } = useLanguage();
   return (
-    <div className="text-center mb-12">
-      <span className="inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-800 text-sm font-semibold mb-4">
+    <div className="mb-10 max-w-3xl">
+      <span className="mb-4 block text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">
         {t("products_page_badge")}
       </span>
-      <h1 className="font-bold text-4xl sm:text-5xl text-[#1E293B] mb-4">
+      <h1 className="mb-4 text-4xl font-bold tracking-[-0.04em] text-[var(--text)] sm:text-6xl">
         {t("products_page_title")}
       </h1>
-      <p className="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
+      <p className="max-w-2xl text-base leading-7 text-[var(--text-muted)] sm:text-lg">
         {t("products_page_subtitle")}
       </p>
     </div>

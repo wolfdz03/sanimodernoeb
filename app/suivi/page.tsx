@@ -1,12 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { NavWithSettings } from "../components/NavWithSettings";
-import { useLanguage } from "@/context/LanguageContext";
+import { Nav } from "../components/Nav";
 import { Search, Package, CheckCircle2, Clock, Truck, XCircle } from "lucide-react";
 import { trackOrder } from "@/app/actions/orders";
 
-type OrderStatus = "pending" | "paid" | "shipped" | "delivered" | "cancelled";
+interface TrackedOrder {
+    id: string;
+    status: string;
+    created_at: string;
+    total_dzd: number;
+    shipping_name: string;
+    shipping_phone: string;
+    shipping_address: string;
+    shipping_city: string;
+    shipping_wilaya: string;
+}
 
 const STATUS_STEPS = [
     { id: "pending", label: "En attente", icon: Clock },
@@ -16,11 +25,10 @@ const STATUS_STEPS = [
 ];
 
 export default function SuiviPage() {
-    const { t } = useLanguage();
     const [orderId, setOrderId] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [order, setOrder] = useState<any>(null);
+    const [order, setOrder] = useState<TrackedOrder | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,20 +50,20 @@ export default function SuiviPage() {
 
     return (
         <>
-            <NavWithSettings />
-            <main className="min-h-screen bg-slate-50 pt-32 pb-16 px-6">
-                <div className="max-w-2xl mx-auto">
+            <Nav />
+            <main className="public-page px-5 sm:px-8">
+                <div className="public-enter mx-auto max-w-3xl">
                     <div className="text-center mb-10">
-                        <h1 className="font-bold text-3xl sm:text-4xl text-slate-900 mb-4">
+                        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)]">Sani Moderne</p>
+                        <h1 className="mb-4 text-4xl font-bold tracking-[-0.04em] text-[var(--text)] sm:text-6xl">
                             Suivi de Commande
                         </h1>
                         <p className="text-slate-500">
-                            Entrez votre numéro de commande pour suivre l'état de votre livraison.
+                            Entrez votre numéro de commande pour suivre l&apos;état de votre livraison.
                         </p>
                     </div>
 
-                    <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-8 mb-8 relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--primary)] to-blue-600" />
+                    <div className="public-panel relative mb-8 overflow-hidden border-t-4 border-t-[var(--primary)] p-6 sm:p-8">
                         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
                             <div className="relative flex-1">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -84,7 +92,7 @@ export default function SuiviPage() {
                     </div>
 
                     {order && (
-                        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-8 overflow-hidden transform transition-all animate-in fade-in slide-in-from-bottom-8 duration-500">
+                        <div className="public-panel public-enter overflow-hidden p-6 sm:p-8">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
                                 <div>
                                     <h2 className="font-bold text-xl text-slate-900 mb-1">Détails de la commande</h2>
@@ -105,7 +113,7 @@ export default function SuiviPage() {
                                     <div className="flex flex-col items-center justify-center text-center p-6 bg-red-50 rounded-2xl border border-red-100">
                                         <XCircle className="w-12 h-12 text-red-500 mb-3" />
                                         <h3 className="font-bold text-lg text-red-900 mb-1">Commande Annulée</h3>
-                                        <p className="text-red-700 text-sm">Cette commande a été annulée. Veuillez nous contacter pour plus d'informations.</p>
+                                        <p className="text-red-700 text-sm">Cette commande a été annulée. Veuillez nous contacter pour plus d&apos;informations.</p>
                                     </div>
                                 ) : (
                                     <div className="relative">

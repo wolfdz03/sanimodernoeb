@@ -14,7 +14,7 @@ export default async function ShowroomsPage() {
   return (
     <>
       <NavWithSettings />
-      <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
+      <main className="public-page public-enter">
         <ShowroomsPageContent />
       </main>
       <Footer settings={settings} />

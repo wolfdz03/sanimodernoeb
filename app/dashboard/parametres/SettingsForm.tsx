@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Phone, FileText, Lock, Palette, Mail, Link2, ChevronUp, ChevronDown, Trash2, Plus, Store, Save, Image } from "lucide-react";
+import { FileText, Lock, Palette, Mail, Link2, ChevronUp, ChevronDown, Trash2, Plus, Store, Save, Image as ImageIcon } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { updateSiteSettings } from "@/app/actions/settings";
 import { uploadSiteLogo } from "@/app/actions/upload";
@@ -364,7 +364,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                           className="block flex-1 rounded-lg border-[var(--dash-border)] bg-gray-50 py-2.5 pl-4 text-[var(--dash-text-main)] focus:border-[var(--dash-primary)] focus:ring-[var(--dash-primary)] text-sm transition-colors"
                         />
                         <label className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[var(--dash-border)] bg-gray-50 hover:bg-gray-100 cursor-pointer text-sm font-medium text-[var(--dash-text-main)]">
-                          <Image className="w-4 h-4" />
+                          <ImageIcon className="w-4 h-4" />
                           {logoUploading ? "…" : "Importer"}
                           <input
                             type="file"
@@ -636,7 +636,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
 
                   <div className="mb-4">
                     <p className="text-sm text-[var(--dash-text-muted)]">
-                      Fixez le prix de livraison pour chaque wilaya. Laissez 0 pour une livraison gratuite. Ces frais s'ajouteront automatiquement dans le panier et lors de la commande.
+                      Fixez le prix de livraison pour chaque wilaya. Laissez 0 pour une livraison gratuite. Ces frais s&apos;ajouteront automatiquement dans le panier et lors de la commande.
                     </p>
                   </div>
 
@@ -764,7 +764,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Liens</span>
-                          <button type="button" onClick={() => addLink(sectionIdx)} className="text-xs font-medium text-[#13ecec] hover:underline flex items-center gap-1">
+                          <button type="button" onClick={() => addLink(sectionIdx)} className="text-xs font-medium text-[var(--dash-primary)] hover:underline flex items-center gap-1">
                             <Plus className="w-3.5 h-3.5" /> {t("settings_footer_add_link")}
                           </button>
                         </div>
@@ -789,7 +789,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                     <button type="button" onClick={addSection} className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800">
                       <Plus className="w-4 h-4 inline-block mr-1.5 align-middle" /> {t("settings_footer_add_section")}
                     </button>
-                    <button type="button" onClick={handleFooterSave} disabled={footerSaving} className="px-4 py-2 rounded-xl bg-[#13ecec] text-[#102222] font-semibold text-sm hover:bg-[#0ea5a5] disabled:opacity-50">
+                    <button type="button" onClick={handleFooterSave} disabled={footerSaving} className="px-4 py-2 rounded-xl bg-[var(--dash-primary)] text-white font-semibold text-sm hover:bg-[var(--dash-primary-hover)] disabled:opacity-50">
                       {footerSaving ? "…" : t("settings_footer_save")}
                     </button>
                     {footerSaveSuccess && <span className="text-sm text-green-700 dark:text-green-300">{t("settings_footer_saved")}</span>}
@@ -819,7 +819,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                   {adminEmail && (
                     <div>
                       <h3 className="font-medium text-[#1E293B] dark:text-white flex items-center gap-2 mb-4">
-                        <Mail className="w-4 h-4 text-[#13ecec]" />
+                        <Mail className="w-4 h-4 text-[var(--dash-primary)]" />
                         {t("settings_admin_account")}
                       </h3>
                       <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">
@@ -846,7 +846,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                             type="email"
                             required
                             autoComplete="email"
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[#13ecec] outline-none transition"
+                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[var(--dash-primary)] outline-none transition"
                           />
                         </div>
                         <div>
@@ -859,7 +859,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                             type="email"
                             required
                             autoComplete="email"
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[#13ecec] outline-none transition"
+                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[var(--dash-primary)] outline-none transition"
                           />
                         </div>
                         <div>
@@ -873,7 +873,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                             required
                             minLength={8}
                             autoComplete="current-password"
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[#13ecec] outline-none transition"
+                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[var(--dash-primary)] outline-none transition"
                           />
                         </div>
                         <button
@@ -912,7 +912,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                           required
                           minLength={8}
                           autoComplete="current-password"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[#13ecec] outline-none transition"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[var(--dash-primary)] outline-none transition"
                         />
                       </div>
                       <div>
@@ -926,7 +926,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                           required
                           minLength={8}
                           autoComplete="new-password"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[#13ecec] outline-none transition"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[var(--dash-primary)] outline-none transition"
                         />
                       </div>
                       <div>
@@ -940,7 +940,7 @@ export function SettingsForm({ settings, adminEmail, initialShippingRates }: Set
                           required
                           minLength={8}
                           autoComplete="new-password"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[#13ecec] outline-none transition"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white focus:border-[var(--dash-primary)] outline-none transition"
                         />
                       </div>
                       <button

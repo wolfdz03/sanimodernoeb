@@ -20,7 +20,7 @@ export default async function DashboardCommandesPage({
   let query = supabase
     .from("orders")
     .select(
-      "id, status, total_dzd, shipping_name, shipping_phone, created_at, order_items(product_name, quantity, variant_label)"
+      "id, status, total_dzd, shipping_name, shipping_phone, shipping_wilaya, shipping_city, shipping_cost_dzd, created_at, order_items(product_name, quantity, variant_label)"
     )
     .order("created_at", { ascending: false });
   if (status === "pending") {
@@ -39,6 +39,9 @@ export default async function DashboardCommandesPage({
     total_dzd: o.total_dzd,
     shipping_name: o.shipping_name,
     shipping_phone: o.shipping_phone,
+    shipping_wilaya: o.shipping_wilaya ?? null,
+    shipping_city: o.shipping_city ?? null,
+    shipping_cost_dzd: o.shipping_cost_dzd ?? 0,
     created_at: o.created_at,
     items:
       (o.order_items as { product_name: string; quantity: number; variant_label?: string | null }[]) ??

@@ -10,7 +10,7 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ adminName, pendingCount, siteTitle = "Sani Modern" }: DashboardSidebarProps) {
   return (
-    <aside className="hidden md:flex w-[260px] shrink-0 flex-col bg-[var(--dash-surface)] self-stretch min-h-0 border-r border-[var(--dash-border)]">
+    <aside className="hidden min-h-0 w-[276px] shrink-0 flex-col self-stretch border-r border-[#30272a] bg-[#211b1d] md:flex">
       <DashboardNavPanel adminName={adminName} pendingCount={pendingCount} siteTitle={siteTitle} />
     </aside>
   );

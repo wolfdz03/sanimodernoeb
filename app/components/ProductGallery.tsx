@@ -27,7 +27,7 @@ export function ProductGallery({
 
   if (urls.length === 0) {
     return (
-      <div className="relative aspect-square rounded-3xl overflow-hidden bg-slate-50">
+      <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#f0e2e4] bg-[#fff1f1]">
         <img
           src="/placeholder-product.png"
           alt={product.name}
@@ -47,7 +47,7 @@ export function ProductGallery({
   return (
     <div className="space-y-4">
       {/* Main image */}
-      <div className="relative aspect-square rounded-3xl overflow-hidden bg-slate-50 group cursor-zoom-in" onClick={() => setIsZoomed(true)}>
+      <div className="group relative aspect-square cursor-zoom-in overflow-hidden rounded-2xl border border-[#f0e2e4] bg-[#fff1f1]" onClick={() => setIsZoomed(true)}>
         <AnimatePresence mode="wait">
           <motion.img
             key={mainUrl}
@@ -56,8 +56,8 @@ export function ProductGallery({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            transition={{ duration: 0.2 }}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </AnimatePresence>
 

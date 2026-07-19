@@ -15,9 +15,9 @@ export function CheckoutEmpty({ settings }: CheckoutEmptyProps) {
   return (
     <>
       <Nav settings={settings} />
-      <main className="min-h-screen bg-gradient-to-b from-white to-slate-50 pt-24 pb-16">
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <h1 className="font-bold text-2xl text-[#1E293B] mb-4">
+      <main className="public-page px-5 sm:px-8">
+        <div className="public-panel public-enter mx-auto max-w-2xl p-8 text-center sm:p-12">
+          <h1 className="mb-4 text-3xl font-bold tracking-tight text-[var(--text)]">
             {t("checkout_cart_empty")}
           </h1>
           <p className="text-[var(--text-muted)] mb-6">

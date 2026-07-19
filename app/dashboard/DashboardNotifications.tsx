@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Bell, Check, ShoppingBag, RefreshCw } from "lucide-react";
+import { Bell, ShoppingBag, RefreshCw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "@/context/LanguageContext";
 import type { TranslationKey } from "@/lib/translations";
@@ -160,7 +160,7 @@ export function DashboardNotifications() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="relative p-2 rounded-lg text-[var(--dash-text-muted)] hover:bg-emerald-50 hover:text-[var(--dash-primary)]"
+        className="relative rounded-lg p-2 text-[var(--dash-text-muted)] hover:bg-red-50 hover:text-[var(--dash-primary)]"
         aria-label={t("dashboard_notifications")}
       >
         <Bell className="w-[18px] h-[18px]" />
@@ -214,11 +214,11 @@ export function DashboardNotifications() {
                         markRead(n.id);
                         setOpen(false);
                       }}
-                      className={`flex gap-3 px-4 py-3 hover:bg-gray-50 ${!n.read ? "bg-emerald-50/40" : ""}`}
+                      className={`flex gap-3 px-4 py-3 hover:bg-gray-50 ${!n.read ? "bg-red-50/50" : ""}`}
                     >
                       {/* Icon */}
                       <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${n.type === "new_order"
-                          ? "bg-emerald-100 text-[var(--dash-primary)]"
+                          ? "bg-red-100 text-[var(--dash-primary)]"
                           : "bg-blue-50 text-blue-500"
                         }`}>
                         {n.type === "new_order" ? (

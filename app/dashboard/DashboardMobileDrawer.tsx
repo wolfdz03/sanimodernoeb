@@ -63,7 +63,7 @@ export function DashboardMobileDrawer({
       <aside
         ref={panelRef}
         id="dashboard-mobile-nav"
-        className={`absolute top-0 left-0 h-full w-[min(100%,288px)] max-w-[100vw] border-r border-[var(--dash-border)] shadow-xl flex flex-col bg-[var(--dash-surface)] transition-transform duration-200 ease-out pt-[env(safe-area-inset-top,0px)] ${
+        className={`absolute left-0 top-0 flex h-full w-[min(100%,288px)] max-w-[100vw] flex-col border-r border-[#30272a] bg-[#211b1d] shadow-2xl transition-transform duration-200 ease-out pt-[env(safe-area-inset-top,0px)] ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
@@ -81,7 +81,7 @@ export function DashboardMobileDrawer({
               <button
                 type="button"
                 onClick={onClose}
-                className="shrink-0 min-h-11 min-w-11 flex items-center justify-center rounded-lg text-[var(--dash-text-muted)] hover:bg-gray-50 hover:text-[var(--dash-text-main)]"
+                className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-white/50 hover:bg-white/[0.06] hover:text-white"
                 aria-label={t("dashboard_close_menu")}
               >
                 <X className="w-5 h-5" />

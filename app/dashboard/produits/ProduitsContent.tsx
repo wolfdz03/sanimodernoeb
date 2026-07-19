@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { Plus, Search, Edit, Package } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -88,7 +89,7 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto flex flex-col gap-5">
+    <div className="mx-auto flex max-w-[1400px] flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-2xl font-semibold tracking-tight text-[var(--dash-text-main)] font-display">
@@ -159,7 +160,7 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {filtered.map((product) => {
             const status = getStatus(product);
             return (
@@ -171,10 +172,12 @@ export function ProduitsContent({ products }: ProduitsContentProps) {
               >
                 <div className="relative aspect-square bg-gray-50">
                   {getProductPrimaryImage(product) ? (
-                    <img
+                    <Image
                       src={getProductPrimaryImage(product)!}
                       alt=""
-                      className={`w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-150 ${status === "out_of_stock" ? "grayscale" : ""
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className={`object-cover group-hover:scale-[1.03] transition-transform duration-150 ${status === "out_of_stock" ? "grayscale" : ""
                         }`}
                     />
                   ) : (

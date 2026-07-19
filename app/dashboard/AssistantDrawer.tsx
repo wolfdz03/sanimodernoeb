@@ -58,7 +58,7 @@ export function AssistantDrawer() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed z-50 w-14 h-14 rounded-full bg-[#13ecec] text-[#102222] shadow-lg shadow-[#13ecec]/30 flex items-center justify-center hover:bg-[#0ea5a5] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#13ecec] focus:ring-offset-2 focus:ring-offset-[#102222] bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] end-[max(1.25rem,env(safe-area-inset-right,0px))]"
+        className="fixed z-50 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--dash-primary)] text-white shadow-lg shadow-red-500/25 transition-colors hover:bg-[var(--dash-primary-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--dash-primary)] focus:ring-offset-2 bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] end-[max(1.25rem,env(safe-area-inset-right,0px))]"
         aria-label="Ouvrir l'assistant"
       >
         <MessageCircle className="w-7 h-7" />
@@ -116,7 +116,7 @@ export function AssistantDrawer() {
               <div
                 className={`max-w-[85%] rounded-xl px-4 py-2 text-sm ${
                   m.role === "user"
-                    ? "bg-[#13ecec] text-[#102222]"
+                    ? "bg-[var(--dash-primary)] text-white"
                     : "bg-slate-100 dark:bg-slate-800 text-[#1E293B] dark:text-slate-200"
                 }`}
               >
@@ -144,13 +144,13 @@ export function AssistantDrawer() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Votre question…"
             disabled={loading}
-            className="flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#102222] text-[#1E293B] dark:text-white placeholder:text-[var(--text-muted)] focus:border-[#13ecec] outline-none transition disabled:opacity-50"
+            className="flex-1 rounded-xl border border-[var(--dash-border)] bg-white px-4 py-3 text-[var(--dash-text-main)] outline-none transition placeholder:text-[var(--dash-text-muted)] focus:border-[var(--dash-primary)] disabled:opacity-50"
             aria-label="Question pour l'assistant"
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="px-5 py-3 rounded-xl bg-[#13ecec] text-[#102222] font-semibold hover:bg-[#0ea5a5] transition-colors disabled:opacity-50"
+            className="rounded-xl bg-[var(--dash-primary)] px-5 py-3 font-semibold text-white transition-colors hover:bg-[var(--dash-primary-hover)] disabled:opacity-50"
           >
             Envoyer
           </button>

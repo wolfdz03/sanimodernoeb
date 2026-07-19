@@ -1,55 +1,37 @@
 "use client";
 
-import { motion } from "motion/react";
-import { Shield, Award, Headphones, CheckCircle } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { Award, Headphones, Shield } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 const features = [
-  { icon: Shield, titleKey: "feature_quality_title" as const, color: "#DC2626" },
-  { icon: Award, titleKey: "feature_certified_title" as const, color: "#F59E0B" },
-  { icon: Headphones, titleKey: "feature_support_title" as const, color: "#059669" },
+  { icon: Shield, titleKey: "feature_quality_title" as const },
+  { icon: Award, titleKey: "feature_certified_title" as const },
+  { icon: Headphones, titleKey: "feature_support_title" as const },
 ];
 
 export function Features() {
   const { t } = useLanguage();
-  return (
-    <section
-      id="features"
-      className="relative bg-white border-b border-[var(--border)] py-5 overflow-hidden"
-    >
-      {/* Subtle top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--primary)]/20 to-transparent" />
+  const reduceMotion = useReducedMotion();
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.titleKey}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.08 }}
-              className="group flex items-center justify-center gap-3 py-3 px-4 rounded-xl hover:bg-slate-50 transition-all duration-300 cursor-default"
-            >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
-                style={{ backgroundColor: `${feature.color}10` }}
-              >
-                <feature.icon
-                  className="w-5 h-5"
-                  style={{ color: feature.color }}
-                  strokeWidth={2}
-                />
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="text-sm font-bold text-[var(--text)]">
-                  {t(feature.titleKey)}
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+  return (
+    <section id="features" className="border-b border-[#f0dfe1] bg-white">
+      <div className="mx-auto grid max-w-[1500px] grid-cols-1 px-5 sm:grid-cols-3 sm:px-10 lg:px-14 xl:px-20">
+        {features.map((feature, index) => (
+          <motion.div
+            key={feature.titleKey}
+            initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.7 }}
+            transition={{ duration: 0.3, delay: index * 0.04 }}
+            className="flex items-center gap-4 border-b border-[#d9dde1] py-6 last:border-b-0 sm:border-b-0 sm:border-r sm:px-7 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0 rtl:sm:border-l rtl:sm:border-r-0"
+          >
+            <feature.icon className="h-5 w-5 shrink-0 text-[var(--primary)]" strokeWidth={1.7} />
+            <span className="text-sm font-semibold tracking-[-0.01em] text-[#252a30]">
+              {t(feature.titleKey)}
+            </span>
+          </motion.div>
+        ))}
       </div>
     </section>
   );

@@ -22,7 +22,18 @@ export default async function DashboardOrderDetailPage({ params }: PageProps) {
     .eq("order_id", id)
     .order("id");
 
-  let customerStats = {
+  const productIds = Array.from(
+    new Set((items ?? []).map((item) => item.product_id).filter((value): value is string => Boolean(value)))
+  );
+  const { data: products } = productIds.length
+    ? await supabase
+        .from("products")
+        .select("id, slug, image_url, image_urls")
+        .in("id", productIds)
+    : { data: [] };
+  const productsById = new Map((products ?? []).map((product) => [product.id, product]));
+
+  const customerStats = {
     totalOrders: 1,
     ltv: order.total_dzd,
     otherOrderIds: [] as string[]
@@ -51,8 +62,12 @@ export default async function DashboardOrderDetailPage({ params }: PageProps) {
         shipping_name: order.shipping_name,
         shipping_phone: order.shipping_phone,
         shipping_address: order.shipping_address,
+        shipping_email: order.shipping_email ?? null,
         shipping_wilaya: order.shipping_wilaya ?? null,
         shipping_city: order.shipping_city ?? null,
+        shipping_cost_dzd: order.shipping_cost_dzd ?? 0,
+        created_at: order.created_at,
+        user_id: order.user_id ?? null,
       }}
       items={(items ?? []).map((i) => ({
         id: i.id,
@@ -60,6 +75,12 @@ export default async function DashboardOrderDetailPage({ params }: PageProps) {
         quantity: i.quantity,
         unit_price_dzd: i.unit_price_dzd,
         variant_label: i.variant_label ?? null,
+        product_id: i.product_id ?? null,
+        variant_id: i.variant_id ?? null,
+        product_slug: i.product_id ? productsById.get(i.product_id)?.slug ?? null : null,
+        image_url: i.product_id
+          ? productsById.get(i.product_id)?.image_urls?.[0] ?? productsById.get(i.product_id)?.image_url ?? null
+          : null,
       }))}
       customerStats={customerStats}
     />
