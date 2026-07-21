@@ -100,7 +100,7 @@ export default async function ProductPage({ params }: PageProps) {
 
               {/* Description */}
               {product.description && (
-                <p className="text-[var(--text-muted)] mb-8 leading-relaxed text-[15px]">
+                <p className="text-[var(--text-muted)] mb-8 leading-relaxed text-[15px] whitespace-pre-line">
                   {product.description}
                 </p>
               )}
