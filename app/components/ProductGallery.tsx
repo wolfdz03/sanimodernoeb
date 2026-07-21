@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, ZoomIn, X } from "lucide-react";
 import { getProductImageUrls } from "@/lib/product-images";
 import type { Product } from "@/lib/types/database";
 
@@ -148,13 +148,17 @@ export function ProductGallery({
               exit={{ scale: 0.9, opacity: 0 }}
               src={mainUrl}
               alt={product.name}
-              className="max-w-full max-h-full object-contain rounded-lg"
+              className="max-h-[85vh] max-w-[90vw] w-auto h-auto object-contain rounded-lg"
             />
 
-            {/* Close hint */}
-            <div className="absolute top-6 right-6 text-white/60 text-sm font-medium">
-              Cliquez pour fermer
-            </div>
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setIsZoomed(false)}
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
             {/* Lightbox nav */}
             {urls.length > 1 && (
@@ -162,18 +166,25 @@ export function ProductGallery({
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); goPrev(); }}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                  className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); goNext(); }}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                  className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/25 transition-colors"
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </>
+            )}
+
+            {/* Image counter */}
+            {urls.length > 1 && (
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-white/15 backdrop-blur-sm text-white text-xs font-medium">
+                {index + 1} / {urls.length}
+              </div>
             )}
           </motion.div>
         )}
