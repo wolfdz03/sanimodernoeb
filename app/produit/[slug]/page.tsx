@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getProductByPublicPath, getRelatedProducts } from "@/lib/supabase/queries";
 import { isProductPathUuid } from "@/lib/product-public-slug";
+import { getSiteSettings } from "@/lib/site-settings";
+import { getShippingRates } from "@/app/actions/shipping";
 
 export const dynamic = "force-dynamic";
 import { ProductDetailClient } from "../../components/ProductDetailClient";
@@ -24,7 +26,11 @@ export default async function ProductPage({ params }: PageProps) {
     redirect(`/produit/${product.slug}`);
   }
 
-  const related = await getRelatedProducts(product.category_id, product.id, 8);
+  const [related, settings, shippingRates] = await Promise.all([
+    getRelatedProducts(product.category_id, product.id, 8),
+    getSiteSettings(),
+    getShippingRates(),
+  ]);
 
   const categoryName =
     product.categories && "name" in product.categories
@@ -115,7 +121,7 @@ export default async function ProductPage({ params }: PageProps) {
               </div>
 
               {/* Variant selector + order form */}
-              <ProductDetailClient product={product}>
+              <ProductDetailClient product={product} shippingRates={shippingRates} settings={settings}>
                 {product.product_attributes && product.product_attributes.length > 0 && (
                   <div className="mb-8 mt-8">
                     <h2 className="font-bold text-lg text-[var(--text)] mb-4 flex items-center gap-2">

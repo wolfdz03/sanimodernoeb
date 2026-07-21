@@ -10,10 +10,13 @@ import { formatVariantLabel } from "@/lib/variant-label";
 import { createOrder } from "@/app/actions/orders";
 import { WILAYAS } from "@/lib/wilayas";
 import type { Product, ProductVariant } from "@/lib/types/database";
+import type { SiteSettings } from "@/lib/site-settings";
 
 interface ProductDetailClientProps {
   product: Product;
   children?: React.ReactNode;
+  shippingRates?: Record<string, number>;
+  settings?: SiteSettings | null;
 }
 
 function resolveVariant(
@@ -91,7 +94,7 @@ function isColorOption(optionTypeName: string): boolean {
   return n.includes("couleur") || n.includes("color") || n.includes("teinte");
 }
 
-export function ProductDetailClient({ product, children }: ProductDetailClientProps) {
+export function ProductDetailClient({ product, children, shippingRates, settings }: ProductDetailClientProps) {
   const router = useRouter();
   const orderFormRef = useRef<HTMLDivElement>(null);
   const hasVariants = (product.product_variants?.length ?? 0) > 0;
@@ -103,6 +106,7 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
     getFirstAvailableVariant(product) ?? {}
   );
   const [quantity, setQuantity] = useState(1);
+  const [selectedWilaya, setSelectedWilaya] = useState<string>("");
   const [orderError, setOrderError] = useState<string | null>(null);
   const [orderLoading, setOrderLoading] = useState(false);
   const { addItem } = useCart();
@@ -124,7 +128,11 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
     resolvedVariant && optionTypes.length
       ? formatVariantLabel(resolvedVariant, optionTypes)
       : null;
-  const totalDzd = displayPrice * Math.max(1, quantity);
+  const subtotal = displayPrice * Math.max(1, quantity);
+  const freeThreshold = settings?.free_delivery_threshold_dzd;
+  const isFreeDelivery = freeThreshold !== undefined && freeThreshold !== null && freeThreshold > 0 && subtotal >= freeThreshold;
+  const shippingCost = isFreeDelivery ? 0 : (shippingRates?.[selectedWilaya] ?? 0);
+  const totalDzd = subtotal + shippingCost;
 
   useEffect(() => {
     trackViewProduct({
@@ -364,19 +372,33 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
             <h2 className="font-extrabold text-xl text-[var(--text)]">Votre commande</h2>
           </div>
 
-          {/* Order summary */}
+          {/* Order summary / recap */}
           <div className="mb-8 rounded-2xl border border-[#f0e2e4] bg-[#fff8f7] p-5">
             <p className="font-bold text-[var(--text)]">{product.name}</p>
             {variantLabelDisplay && (
               <p className="text-sm text-[var(--text-muted)] mt-0.5">{variantLabelDisplay}</p>
             )}
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
-              <span className="text-sm text-[var(--text-muted)]">
-                {quantity} × {displayPrice.toLocaleString("fr-DZ")} DA
-              </span>
-              <span className="font-extrabold text-lg text-[var(--primary)]">
-                {totalDzd.toLocaleString("fr-DZ")} DZD
-              </span>
+            <div className="mt-3 pt-3 border-t border-slate-100 space-y-2">
+              <div className="flex items-center justify-between text-sm text-[var(--text-muted)]">
+                <span>Sous-total ({quantity} × {displayPrice.toLocaleString("fr-DZ")} DA)</span>
+                <span className="font-medium text-[var(--text)]">{subtotal.toLocaleString("fr-DZ")} DA</span>
+              </div>
+              <div className="flex items-center justify-between text-sm text-[var(--text-muted)]">
+                <span>Livraison {selectedWilaya ? `(${selectedWilaya})` : ""}</span>
+                <span className="font-medium text-[var(--text)]">
+                  {selectedWilaya
+                    ? isFreeDelivery
+                      ? <span className="text-emerald-600 font-medium tracking-wide text-xs bg-emerald-50 px-2 py-0.5 rounded uppercase">Gratuite</span>
+                      : `${shippingCost.toLocaleString("fr-DZ")} DA`
+                    : "—"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                <span className="font-bold text-[var(--text)]">Total</span>
+                <span className="font-extrabold text-lg text-[var(--primary)]">
+                  {totalDzd.toLocaleString("fr-DZ")} DA
+                </span>
+              </div>
             </div>
           </div>
 
@@ -415,6 +437,8 @@ export function ProductDetailClient({ product, children }: ProductDetailClientPr
               <select
                 name="shipping_wilaya"
                 required
+                value={selectedWilaya}
+                onChange={(e) => setSelectedWilaya(e.target.value)}
                 className="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/10 outline-none transition-all text-[var(--text)]"
               >
                 <option value="">Choisir une wilaya</option>
