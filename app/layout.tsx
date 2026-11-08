@@ -70,6 +70,9 @@ export default async function RootLayout({
   ]);
   return (
     <html lang="fr" suppressHydrationWarning>
+      <head>
+        <meta name="facebook-domain-verification" content="n6owndq7fo8culq6h8uik20wap22q7" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} ${inter.variable} ${spaceGrotesk.variable} antialiased`}
       >
